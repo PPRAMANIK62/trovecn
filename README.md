@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Trovecn[.]dev
 
-## Getting Started
-
-First, run the development server:
+A registry of interface patterns observed on real sites — Apple, Linear,
+Stripe, Vercel, Framer, Raycast — rebuilt from scratch and distributed as
+copyable source, the same model as [ui.shadcn.com](https://ui.shadcn.com).
+No package to install, no runtime dependency: every component becomes
+source you own.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npx shadcn add https://trovecn.dev/r/blur-navbar.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [Next.js](https://nextjs.org) (App Router) + React 19 + TypeScript
+- [Tailwind CSS v4](https://tailwindcss.com)
+- [shadcn](https://ui.shadcn.com) CLI, built on [Base UI](https://base-ui.com) primitives
+- [Framer Motion](https://www.framer.com/motion/) for animation
+- [Shiki](https://shiki.style) for syntax-highlighted code blocks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+See [`docs/design-system.md`](docs/design-system.md) for the visual language
+and component conventions, and [`docs/ideas.md`](docs/ideas.md) for the
+component backlog.
 
-## Learn More
+## Development
 
-To learn more about Next.js, take a look at the following resources:
+This project uses [bun](https://bun.sh).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+bun install
+bun dev          # start the dev server at http://localhost:3000
+bun run lint     # oxlint
+bun run format   # oxfmt
+bun run registry:build  # regenerate public/r/*.json from registry.json
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[MIT](LICENSE)

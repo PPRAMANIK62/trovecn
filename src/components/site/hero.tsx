@@ -7,6 +7,8 @@ import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { GithubIcon } from "@/components/site/github-icon";
 import { Button } from "@/components/ui/button";
 
+const GITHUB_URL = "https://github.com/PPRAMANIK62/trovecn";
+
 // Matches the site's established motion curve (docs/design-system.md) —
 // deliberate and weighted rather than the springy default most UI kits ship.
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -64,7 +66,7 @@ export function Hero({ componentCount }: HeroProps) {
             <ArrowRight data-icon="inline-end" />
           </Button>
           <Button
-            render={<Link href="https://github.com" target="_blank" rel="noreferrer" />}
+            render={<Link href={GITHUB_URL} target="_blank" rel="noreferrer" />}
             nativeButton={false}
             variant="elevated"
             size="lg"
