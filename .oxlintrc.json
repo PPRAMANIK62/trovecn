@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "unicorn", "typescript", "oxc", "import", "jsx-a11y", "nextjs"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "rules": {
+    // Next.js uses the automatic JSX runtime — no React import needed in scope.
+    "react/react-in-jsx-scope": "off",
+    // Side-effect imports (`import "./globals.css"`) are the standard Next.js pattern.
+    "import/no-unassigned-import": "off",
+    // Custom overlays (command palette, popovers) use div[role=dialog] intentionally —
+    // native <dialog> doesn't support Framer Motion's exit animations on close.
+    "jsx-a11y/prefer-tag-over-role": "off"
+  },
+  "env": {
+    "builtin": true
+  },
+  "ignorePatterns": [".next", "public/r", "registry.json"]
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "bento-grid-demo",
+  "registryDependencies": [
+    "bento-grid"
+  ],
+  "files": [
+    {
+      "path": "registry/trovecn/bento-grid/bento-grid-demo.tsx",
+      "content": "\"use client\";\n\nimport { Compass, Layers, ShieldCheck, Sparkles, Zap } from \"lucide-react\";\n\nimport { BentoCell, BentoGrid } from \"./bento-grid\";\n\nexport default function BentoGridDemo() {\n  return (\n    <BentoGrid className=\"mx-auto w-full max-w-3xl\">\n      <BentoCell colSpan={2} rowSpan={2}>\n        <Sparkles className=\"size-8 text-primary\" strokeWidth={1.5} />\n        <div className=\"mt-auto space-y-1.5\">\n          <h3 className=\"text-xl\">Adaptive Intelligence</h3>\n          <p className=\"text-sm text-muted-foreground\">\n            Every workflow reshapes itself around how your team actually works, learning patterns\n            without a single configuration screen.\n          </p>\n        </div>\n      </BentoCell>\n\n      <BentoCell>\n        <ShieldCheck className=\"size-6 text-primary\" strokeWidth={1.5} />\n        <div className=\"mt-auto space-y-1.5\">\n          <h3 className=\"text-base\">Bank-Grade Security</h3>\n          <p className=\"text-sm text-muted-foreground\">\n            SOC 2 Type II and end-to-end encryption on every layer.\n          </p>\n        </div>\n      </BentoCell>\n\n      <BentoCell>\n        <Zap className=\"size-6 text-primary\" strokeWidth={1.5} />\n        <div className=\"mt-auto space-y-1.5\">\n          <h3 className=\"text-base\">Instant Sync</h3>\n          <p className=\"text-sm text-muted-foreground\">\n            Changes propagate across every device in milliseconds.\n          </p>\n        </div>\n      </BentoCell>\n\n      <BentoCell>\n        <Layers className=\"size-6 text-primary\" strokeWidth={1.5} />\n        <div className=\"mt-auto space-y-1.5\">\n          <h3 className=\"text-base\">Unified Workspace</h3>\n          <p className=\"text-sm text-muted-foreground\">\n            Docs, tasks, and conversations live in one canvas.\n          </p>\n        </div>\n      </BentoCell>\n\n      <BentoCell colSpan={2}>\n        <Compass className=\"size-6 text-primary\" strokeWidth={1.5} />\n        <div className=\"mt-auto space-y-1.5\">\n          <h3 className=\"text-base\">Built to Scale</h3>\n          <p className=\"text-sm text-muted-foreground\">\n            From a two-person team to a thousand-person org, the same primitives hold.\n          </p>\n        </div>\n      </BentoCell>\n    </BentoGrid>\n  );\n}\n",
+      "type": "registry:example"
+    }
+  ],
+  "type": "registry:example"
+}

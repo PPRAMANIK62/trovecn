@@ -1,26 +1,230 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-link: var(--link);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-canvas: var(--canvas);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/*
+  "Warm Ink & Brass" docs palette: neutrals carry a faint warm tint (hue 75
+  — paper/ink rather than screen-gray) and the single accent is a muted
+  brass/bronze (hue ~70-75), not blue — chosen to echo the "Trovecn" concept
+  itself instead of reaching for generic SaaS blue. Still one accent color,
+  still reserved for links, active nav state, and focus rings — never a
+  background wash. Light is the default theme; `.dark` is toggled via a
+  class on <html>.
+*/
+:root {
+  /* One step deeper than --background — the gutter the app-frame panels
+     float on (src/components/site/app-frame.tsx). Not used as a surface
+     itself, only as the margin around rounded panels. Given more chroma and
+     a warmer hue than the rest of the neutral ramp (stone/sand rather than
+     paper) so it reads as a distinct material for the frame, not just a
+     darker copy of --background — the depth cue comes from color as well
+     as lightness, not lightness alone. */
+  --canvas: oklch(0.91 0.018 62);
+  --background: oklch(0.98 0.006 75);
+  --foreground: oklch(0.18 0.012 75);
+  --card: oklch(1 0.004 75);
+  --card-foreground: oklch(0.18 0.012 75);
+  --popover: oklch(1 0.004 75);
+  --popover-foreground: oklch(0.18 0.012 75);
+  --primary: oklch(0.205 0.01 75);
+  --primary-foreground: oklch(0.985 0.004 75);
+  --secondary: oklch(0.955 0.006 75);
+  --secondary-foreground: oklch(0.205 0.01 75);
+  --muted: oklch(0.955 0.006 75);
+  --muted-foreground: oklch(0.45 0.012 75);
+  --accent: oklch(0.955 0.02 70);
+  --accent-foreground: oklch(0.205 0.01 75);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.89 0.008 75);
+  --input: oklch(0.89 0.008 75);
+  --ring: oklch(0.56 0.08 70 / 40%);
+  --link: oklch(0.56 0.11 68);
+  --chart-1: oklch(0.56 0.11 68);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.5rem;
+  --sidebar: oklch(0.985 0.004 75);
+  --sidebar-foreground: oklch(0.18 0.012 75);
+  --sidebar-primary: oklch(0.205 0.01 75);
+  --sidebar-primary-foreground: oklch(0.985 0.004 75);
+  --sidebar-accent: oklch(0.955 0.02 70);
+  --sidebar-accent-foreground: oklch(0.205 0.01 75);
+  --sidebar-border: oklch(0.89 0.008 75);
+  --sidebar-ring: oklch(0.56 0.08 70 / 40%);
+}
+
+.dark {
+  /* A hair of warm chroma (hue ~75, amber/brown) instead of pure oklch
+     chroma-0 gray — reads as a material charcoal rather than a flat #-gray,
+     and card/popover step up from it enough to register as distinct planes
+     without a screenshot zoom. See docs/design-system.md "Visual language".
+     The accent (--link etc.) is brass — a brighter, more saturated version
+     of the same hue family as the neutrals, so it reads as "the neutrals,
+     lit up" rather than an unrelated color dropped in.
+
+     `--canvas` deliberately isn't near-black (an earlier pass had it at L
+     0.09): a step that reads as clearly "one plane down" in light mode gets
+     perceptually crushed once both sides of the comparison are already dark
+     — near-black next to dark-gray just reads as "more black," not as a
+     visible recess, no matter how correct the delta is on paper. Lightening
+     the whole ramp and widening the L gap between steps (~0.05 instead of
+     ~0.035) is what actually keeps the step visible at this end of the
+     lightness range. Chroma bumped and hue shifted warmer than the rest of
+     the ramp (espresso rather than a darker copy of --background), for the
+     same reason as the light-mode value above — see that comment. */
+  --canvas: oklch(0.15 0.02 55);
+  --background: oklch(0.21 0.007 75);
+  --foreground: oklch(0.97 0.004 75);
+  --card: oklch(0.275 0.008 75);
+  --card-foreground: oklch(0.97 0.004 75);
+  --popover: oklch(0.3 0.008 75);
+  --popover-foreground: oklch(0.97 0.004 75);
+  --primary: oklch(0.922 0.004 75);
+  --primary-foreground: oklch(0.205 0.01 75);
+  --secondary: oklch(0.33 0.007 75);
+  --secondary-foreground: oklch(0.97 0.004 75);
+  --muted: oklch(0.295 0.007 75);
+  --muted-foreground: oklch(0.72 0.01 75);
+  --accent: oklch(0.33 0.022 72);
+  --accent-foreground: oklch(0.97 0.004 75);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 15%);
+  --input: oklch(1 0 0 / 18%);
+  --ring: oklch(0.78 0.13 75 / 45%);
+  --link: oklch(0.78 0.13 75);
+  --chart-1: oklch(0.78 0.13 75);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.23 0.007 75);
+  --sidebar-foreground: oklch(0.97 0.004 75);
+  --sidebar-primary: oklch(0.78 0.13 75);
+  --sidebar-primary-foreground: oklch(0.16 0.01 75);
+  --sidebar-accent: oklch(0.33 0.022 72);
+  --sidebar-accent-foreground: oklch(0.97 0.004 75);
+  --sidebar-border: oklch(1 0 0 / 15%);
+  --sidebar-ring: oklch(0.78 0.13 75 / 45%);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* app-frame panels (src/components/site/app-frame.tsx): depth comes from a
+   soft drop shadow plus an inset top highlight (bevel) — no all-around
+   inset ring. An early pass added a faint 1px inset ring standing in for a
+   border, but at any opacity strong enough to register in dark mode it reads
+   as exactly the flat border this approach is meant to avoid — see
+   docs/design-system.md's "surfaces must visibly step" rule. The step is
+   carried instead by the --canvas/--background lightness gap (the panel
+   itself is a visibly lighter plane than the gutter it floats on) plus the
+   shadow, so there's no ring needed to draw the edge. */
+.shadow-panel {
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 5%),
+    0 12px 32px oklch(0 0 0 / 6%),
+    inset 0 1px 0 oklch(1 0 0 / 60%);
+}
+/* An outward drop shadow barely registers when it's dropping onto a surface
+   that's already dark — a black-on-near-black blur has almost no visible
+   edge. The inset top highlight (white-based, so it reads regardless of how
+   dark the surface under it is) does the real work of the depth cue here and
+   is boosted accordingly; the drop shadow is kept mostly for the slight
+   ambient darkening it adds just past the panel's own edge. */
+.dark .shadow-panel {
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 45%),
+    0 16px 40px oklch(0 0 0 / 45%),
+    inset 0 1px 0 oklch(1 0 0 / 10%);
+}
+
+/* Same shadow-over-border bevel as .shadow-panel, scaled down for small
+   controls (the Button "elevated" variant) instead of a full panel-sized
+   blur — a close 1px shadow plus the inset top highlight, no ring. */
+.shadow-bevel {
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 6%),
+    inset 0 1px 0 oklch(1 0 0 / 50%);
+}
+.dark .shadow-bevel {
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 35%),
+    inset 0 1px 0 oklch(1 0 0 / 12%);
+}
+
+/* Shiki dual-theme code blocks: light theme is inline by default, this
+   swaps every token to its dark-theme color when <html> has .dark.
+   See https://shiki.style/guide/dual-themes
+
+   Background is intentionally left out of that swap and stripped instead —
+   Shiki's own theme background (github-dark's blue-black `#0d1117`) doesn't
+   belong to this app's neutral, achromatic palette and reads as a mismatched
+   box dropped onto the page. `docs/design-system.md` already assigns code
+   blocks the `--card` token ("panel surface one step off background"), so
+   CodeBlock's wrapper owns the surface color via `bg-card` and Shiki is only
+   ever responsible for per-token foreground colors. */
+.shiki,
+.shiki span {
+  background-color: transparent !important;
+}
+.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
 }

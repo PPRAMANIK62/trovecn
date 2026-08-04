@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scroll-text-reveal",
+  "title": "Scroll Text Reveal",
+  "description": "Text that fades and rises into place word by word as it enters the viewport, as seen on apple.com product pages.",
+  "dependencies": [
+    "framer-motion"
+  ],
+  "files": [
+    {
+      "path": "registry/trovecn/scroll-text-reveal/scroll-text-reveal.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { motion, useReducedMotion } from \"framer-motion\";\n\nimport { cn } from \"@/lib/utils\";\n\nexport interface ScrollTextRevealProps {\n  /** The sentence or paragraph to reveal, split and animated word by word. */\n  text: string;\n  className?: string;\n  /**\n   * Element the text renders as. Defaults to `\"p\"`.\n   */\n  as?: \"h1\" | \"h2\" | \"h3\" | \"p\";\n  /**\n   * Scope the scroll trigger to a specific scrollable ancestor instead of\n   * the window (Framer Motion's `viewport.root`). Pass this when the\n   * component lives inside a nested scroll container — e.g. a demo preview\n   * box — rather than the page itself. Defaults to the window.\n   */\n  containerRef?: React.RefObject<HTMLElement | null>;\n}\n\n/** Stagger between each word's reveal, in seconds. */\nconst STAGGER = 0.03;\n\n/**\n * Text that fades and rises into place word-by-word as it scrolls into\n * view — the reveal used on apple.com product pages. Each word is an\n * independently animated `motion.span`; the surrounding element (h1–h3 or\n * p) keeps normal text flow so the sentence still wraps naturally.\n */\nexport function ScrollTextReveal({\n  text,\n  className,\n  as = \"p\",\n  containerRef,\n}: ScrollTextRevealProps) {\n  const Tag = as;\n  const words = React.useMemo(() => text.split(/\\s+/).filter(Boolean), [text]);\n  const reduceMotion = useReducedMotion();\n\n  return (\n    <Tag className={cn(className)}>\n      {words.map((word, index) => (\n        <React.Fragment key={`${word}-${index}`}>\n          <motion.span\n            className=\"inline-block will-change-transform\"\n            initial={reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0.15, y: 12 }}\n            whileInView={{ opacity: 1, y: 0 }}\n            viewport={{ once: true, root: containerRef, margin: \"-10% 0px\" }}\n            transition={{\n              duration: reduceMotion ? 0 : 0.6,\n              delay: reduceMotion ? 0 : index * STAGGER,\n              ease: [0.16, 1, 0.3, 1],\n            }}\n          >\n            {word}\n          </motion.span>\n          {index < words.length - 1 ? \" \" : \"\"}\n        </React.Fragment>\n      ))}\n    </Tag>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}

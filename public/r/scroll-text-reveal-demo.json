@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "scroll-text-reveal-demo",
+  "registryDependencies": [
+    "scroll-text-reveal"
+  ],
+  "files": [
+    {
+      "path": "registry/trovecn/scroll-text-reveal/scroll-text-reveal-demo.tsx",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { ChevronDown } from \"lucide-react\";\n\nimport { ScrollTextReveal } from \"./scroll-text-reveal\";\n\nexport default function ScrollTextRevealDemo() {\n  const containerRef = React.useRef<HTMLDivElement>(null);\n\n  return (\n    // Outer element owns the rounded-corner clipping and the elevation\n    // (`shadow-panel`) so the demo reads as a raised panel sitting on the\n    // preview stage, not a box that happens to share its border/fill with\n    // the stage around it. The scrollable element is the inner div — kept\n    // separate so the compound shadow isn't clipped by its own overflow.\n    <div className=\"w-full overflow-hidden rounded-lg border border-border bg-background shadow-panel\">\n      <div ref={containerRef} className=\"h-80 overflow-y-auto overscroll-contain\">\n        {/* Spacer so the reveal starts below the fold — scroll to trigger it.\n            Taller than the scroll container itself (h-80/320px) plus the\n            `whileInView` margin in scroll-text-reveal.tsx, so the heading\n            genuinely starts out of view instead of triggering on mount. */}\n        <div className=\"flex h-96 flex-col items-center justify-center gap-3 border-b border-border px-8 text-center\">\n          <span className=\"font-mono text-xs uppercase tracking-widest text-muted-foreground\">\n            Scroll to reveal\n          </span>\n          <ChevronDown className=\"size-4 text-muted-foreground\" />\n        </div>\n\n        <div className=\"flex flex-col gap-8 px-8 py-16\">\n          <ScrollTextReveal\n            as=\"h3\"\n            containerRef={containerRef}\n            text=\"Designed down to the last pixel, engineered to disappear.\"\n            className=\"text-2xl font-medium text-foreground sm:text-3xl\"\n          />\n          <ScrollTextReveal\n            as=\"p\"\n            containerRef={containerRef}\n            text=\"Every interaction is tuned by hand — weighted motion, quiet defaults, and just enough friction to feel considered rather than instant.\"\n            className=\"max-w-md text-base leading-relaxed text-muted-foreground\"\n          />\n        </div>\n\n        <div className=\"h-24\" />\n      </div>\n    </div>\n  );\n}\n",
+      "type": "registry:example"
+    }
+  ],
+  "type": "registry:example"
+}
