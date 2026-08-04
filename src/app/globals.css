@@ -96,66 +96,64 @@
 }
 
 /*
-  "Warm Ink & Brass" docs palette: neutrals carry a faint warm tint (hue 75
-  — paper/ink rather than screen-gray) and the single accent is a muted
-  brass/bronze (hue ~70-75), not blue — chosen to echo the "Trovecn" concept
-  itself instead of reaching for generic SaaS blue. Still one accent color,
-  still reserved for links, active nav state, and focus rings — never a
-  background wash. Light is the default theme; `.dark` is toggled via a
-  class on <html>.
+  Fully neutral token set: zero chroma on every step, no brand hue anywhere
+  — not on the base grays, not on links/focus rings/active states. This
+  library ships components that reference these token *names* only (never a
+  hardcoded hue), so the default values are kept as plain, unopinionated
+  gray as possible on purpose: a consuming project that already defines its
+  own theme tokens (shadcn or otherwise) can override any of these without
+  fighting a leftover custom tint. `--destructive` is the one exception —
+  it's a semantic error/danger state, not a brand accent, so it stays red.
+  Light is the default theme; `.dark` is toggled via a class on <html>.
 */
 :root {
   /* One step deeper than --background — the gutter the app-frame panels
      float on (src/components/site/app-frame.tsx). Not used as a surface
-     itself, only as the margin around rounded panels. Given more chroma and
-     a warmer hue than the rest of the neutral ramp (stone/sand rather than
-     paper) so it reads as a distinct material for the frame, not just a
-     darker copy of --background — the depth cue comes from color as well
-     as lightness, not lightness alone. */
-  --canvas: oklch(0.91 0.018 62);
-  --background: oklch(0.98 0.006 75);
-  --foreground: oklch(0.18 0.012 75);
-  --card: oklch(1 0.004 75);
-  --card-foreground: oklch(0.18 0.012 75);
-  --popover: oklch(1 0.004 75);
-  --popover-foreground: oklch(0.18 0.012 75);
-  --primary: oklch(0.205 0.01 75);
-  --primary-foreground: oklch(0.985 0.004 75);
-  --secondary: oklch(0.955 0.006 75);
-  --secondary-foreground: oklch(0.205 0.01 75);
-  --muted: oklch(0.955 0.006 75);
-  --muted-foreground: oklch(0.45 0.012 75);
-  --accent: oklch(0.955 0.02 70);
-  --accent-foreground: oklch(0.205 0.01 75);
+     itself, only as the margin around rounded panels. The depth cue here
+     comes from lightness alone (no hue/chroma difference from the rest of
+     the neutral ramp), consistent with the zero-chroma rule above. */
+  --canvas: oklch(0.91 0 0);
+  --background: oklch(0.98 0 0);
+  --foreground: oklch(0.18 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.955 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.955 0 0);
+  --muted-foreground: oklch(0.45 0 0);
+  --accent: oklch(0.955 0 0);
+  --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.89 0.008 75);
-  --input: oklch(0.89 0.008 75);
-  --ring: oklch(0.56 0.08 70 / 40%);
-  --link: oklch(0.56 0.11 68);
-  --chart-1: oklch(0.56 0.11 68);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
+  --border: oklch(0.89 0 0);
+  --input: oklch(0.89 0 0);
+  --ring: oklch(0.556 0 0 / 40%);
+  /* No separate accent color — links are the same neutral foreground,
+     carried by underline/weight instead of hue. */
+  --link: oklch(0.205 0 0);
+  --chart-1: oklch(0.4 0 0);
+  --chart-2: oklch(0.5 0 0);
+  --chart-3: oklch(0.6 0 0);
+  --chart-4: oklch(0.7 0 0);
+  --chart-5: oklch(0.8 0 0);
   --radius: 0.5rem;
-  --sidebar: oklch(0.985 0.004 75);
-  --sidebar-foreground: oklch(0.18 0.012 75);
-  --sidebar-primary: oklch(0.205 0.01 75);
-  --sidebar-primary-foreground: oklch(0.985 0.004 75);
-  --sidebar-accent: oklch(0.955 0.02 70);
-  --sidebar-accent-foreground: oklch(0.205 0.01 75);
-  --sidebar-border: oklch(0.89 0.008 75);
-  --sidebar-ring: oklch(0.56 0.08 70 / 40%);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.18 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.955 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.89 0 0);
+  --sidebar-ring: oklch(0.556 0 0 / 40%);
 }
 
 .dark {
-  /* A hair of warm chroma (hue ~75, amber/brown) instead of pure oklch
-     chroma-0 gray — reads as a material charcoal rather than a flat #-gray,
-     and card/popover step up from it enough to register as distinct planes
-     without a screenshot zoom. See docs/design-system.md "Visual language".
-     The accent (--link etc.) is brass — a brighter, more saturated version
-     of the same hue family as the neutrals, so it reads as "the neutrals,
-     lit up" rather than an unrelated color dropped in.
+  /* Pure chroma-0 gray, same rule as light mode above — no warm/brand tint,
+     just lightness steps. card/popover step up from --canvas/--background
+     enough to register as distinct planes on lightness alone.
 
      `--canvas` deliberately isn't near-black (an earlier pass had it at L
      0.09): a step that reads as clearly "one plane down" in light mode gets
@@ -164,42 +162,40 @@
      visible recess, no matter how correct the delta is on paper. Lightening
      the whole ramp and widening the L gap between steps (~0.05 instead of
      ~0.035) is what actually keeps the step visible at this end of the
-     lightness range. Chroma bumped and hue shifted warmer than the rest of
-     the ramp (espresso rather than a darker copy of --background), for the
-     same reason as the light-mode value above — see that comment. */
-  --canvas: oklch(0.15 0.02 55);
-  --background: oklch(0.21 0.007 75);
-  --foreground: oklch(0.97 0.004 75);
-  --card: oklch(0.275 0.008 75);
-  --card-foreground: oklch(0.97 0.004 75);
-  --popover: oklch(0.3 0.008 75);
-  --popover-foreground: oklch(0.97 0.004 75);
-  --primary: oklch(0.922 0.004 75);
-  --primary-foreground: oklch(0.205 0.01 75);
-  --secondary: oklch(0.33 0.007 75);
-  --secondary-foreground: oklch(0.97 0.004 75);
-  --muted: oklch(0.295 0.007 75);
-  --muted-foreground: oklch(0.72 0.01 75);
-  --accent: oklch(0.33 0.022 72);
-  --accent-foreground: oklch(0.97 0.004 75);
+     lightness range. */
+  --canvas: oklch(0.15 0 0);
+  --background: oklch(0.21 0 0);
+  --foreground: oklch(0.97 0 0);
+  --card: oklch(0.275 0 0);
+  --card-foreground: oklch(0.97 0 0);
+  --popover: oklch(0.3 0 0);
+  --popover-foreground: oklch(0.97 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.33 0 0);
+  --secondary-foreground: oklch(0.97 0 0);
+  --muted: oklch(0.295 0 0);
+  --muted-foreground: oklch(0.72 0 0);
+  --accent: oklch(0.33 0 0);
+  --accent-foreground: oklch(0.97 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 15%);
   --input: oklch(1 0 0 / 18%);
-  --ring: oklch(0.78 0.13 75 / 45%);
-  --link: oklch(0.78 0.13 75);
-  --chart-1: oklch(0.78 0.13 75);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.23 0.007 75);
-  --sidebar-foreground: oklch(0.97 0.004 75);
-  --sidebar-primary: oklch(0.78 0.13 75);
-  --sidebar-primary-foreground: oklch(0.16 0.01 75);
-  --sidebar-accent: oklch(0.33 0.022 72);
-  --sidebar-accent-foreground: oklch(0.97 0.004 75);
+  --ring: oklch(0.72 0 0 / 45%);
+  --link: oklch(0.97 0 0);
+  --chart-1: oklch(0.9 0 0);
+  --chart-2: oklch(0.75 0 0);
+  --chart-3: oklch(0.6 0 0);
+  --chart-4: oklch(0.45 0 0);
+  --chart-5: oklch(0.3 0 0);
+  --sidebar: oklch(0.23 0 0);
+  --sidebar-foreground: oklch(0.97 0 0);
+  --sidebar-primary: oklch(0.922 0 0);
+  --sidebar-primary-foreground: oklch(0.205 0 0);
+  --sidebar-accent: oklch(0.33 0 0);
+  --sidebar-accent-foreground: oklch(0.97 0 0);
   --sidebar-border: oklch(1 0 0 / 15%);
-  --sidebar-ring: oklch(0.78 0.13 75 / 45%);
+  --sidebar-ring: oklch(0.72 0 0 / 45%);
 }
 
 @layer base {

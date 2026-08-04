@@ -75,7 +75,7 @@ interface BentoCellProps {
 /**
  * A single cell within a `BentoGrid`. Reveals with a deliberate, weighted
  * fade-and-rise as it scrolls into view, staggered relative to its
- * siblings, then offers a gentle hover lift with a brass-tinted border.
+ * siblings, then offers a gentle hover lift with a `--primary`-tinted border.
  */
 function BentoCell({ children, className, colSpan = 1, rowSpan = 1 }: BentoCellProps) {
   const index = React.useContext(BentoIndexContext);

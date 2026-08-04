@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 export interface BlurNavbarLink {
   label: string;
   href: string;
-  /** Marks this link as the current page — rendered in the brass accent. */
+  /** Marks this link as the current page — rendered in `--primary`. */
   active?: boolean;
 }
 

@@ -43,28 +43,31 @@ Full component backlog lives in `docs/ideas.md`.
 
 ## Design tokens (src/app/globals.css)
 
-"Warm Ink & Brass" palette — near-white/near-black surfaces carry a faint
-warm tint (paper/ink, not screen-gray), gray text hierarchy, **brass is the
-only accent color** (`--link`), reserved for links, active nav state, and
-focus rings. Never use it as a background wash. Light is the default theme;
-dark is toggled via a `.dark` class on `<html>` (see
+Fully neutral, zero-chroma palette — no accent color anywhere, including
+`--link`, active nav state, and focus rings. Deliberate: components in this
+registry are distributed as source into other codebases that already ship
+their own theme tokens, so a plain gray default (not a custom brand hue) is
+what stays compatible with whatever palette a consumer overrides these
+tokens with. `--destructive` is the sole exception — a semantic error state,
+not a brand accent. Light is the default theme; dark is toggled via a
+`.dark` class on `<html>` (see
 `ThemeToggle`, `src/components/site/theme-toggle.tsx`) — always reach for
 the CSS variables below via Tailwind's `bg-*`/`text-*`/`border-*` utilities,
 never hardcode hex/rgb, so both themes stay correct automatically.
 
-| Token                                  | Role                                                                                                                                                  |
-| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--background`                         | page background                                                                                                                                       |
-| `--foreground`                         | primary text                                                                                                                                          |
-| `--card` / `--card-foreground`         | panel surface one step off background (code blocks, install command pill)                                                                             |
-| `--popover` / `--popover-foreground`   | floating surfaces (menus, command palette)                                                                                                            |
-| `--primary` / `--primary-foreground`   | near-black/near-white — default button fill. Not a "brand color," just ink.                                                                           |
-| `--link`                               | the one accent — brass/bronze. Active sidebar item, inline links, focus rings. Exposed as `text-link` / `border-link` / `bg-link` via `--color-link`. |
-| `--accent` / `--accent-foreground`     | hover fill for ghost / nav items                                                                                                                      |
-| `--secondary`, `--muted` + foregrounds | neutral gray panels and secondary text                                                                                                                |
-| `--border` / `--input`                 | hairline gray borders — thin lines, not boxy chrome                                                                                                   |
-| `--ring`                               | focus ring                                                                                                                                            |
-| `--radius`                             | `0.5rem` base — modest corners, not sharp/brutalist and not bubbly                                                                                    |
+| Token                                  | Role                                                                                                                                                                                                                        |
+| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--background`                         | page background                                                                                                                                                                                                             |
+| `--foreground`                         | primary text                                                                                                                                                                                                                |
+| `--card` / `--card-foreground`         | panel surface one step off background (code blocks, install command pill)                                                                                                                                                   |
+| `--popover` / `--popover-foreground`   | floating surfaces (menus, command palette)                                                                                                                                                                                  |
+| `--primary` / `--primary-foreground`   | near-black/near-white — default button fill. Not a "brand color," just ink.                                                                                                                                                 |
+| `--link`                               | same neutral as `--foreground` — no accent hue. Active sidebar item, inline links, and focus rings are carried by underline/weight instead of color. Exposed as `text-link` / `border-link` / `bg-link` via `--color-link`. |
+| `--accent` / `--accent-foreground`     | hover fill for ghost / nav items                                                                                                                                                                                            |
+| `--secondary`, `--muted` + foregrounds | neutral gray panels and secondary text                                                                                                                                                                                      |
+| `--border` / `--input`                 | hairline gray borders — thin lines, not boxy chrome                                                                                                                                                                         |
+| `--ring`                               | focus ring — neutral gray, not tinted                                                                                                                                                                                       |
+| `--radius`                             | `0.5rem` base — modest corners, not sharp/brutalist and not bubbly                                                                                                                                                          |
 
 Fonts (wired in `layout.tsx` / `globals.css`):
 
@@ -125,13 +128,12 @@ Concrete rules, not vibes — these are what separates "restrained" from
   can't tell a card has a border/fill without zooming into a screenshot,
   push the contrast further.
 - **One signature mark, reused everywhere.** The wordmark is always
-  `Trovecn[.]dev` — the bracket `[.]` sits in `--link` (the one accent
-  color, the same flourish the brand has always used) and the trailing
-  `dev` sits in `--muted-foreground` (subdued, echoing the domain without
-  competing with the accent). Both appear exactly once per instance of the
-  wordmark (header, footer, anywhere else it shows up). Don't invent
-  additional flourishes or logo variants; consistency of the one mark is
-  the point.
+  `Trovecn[.]dev` — the bracket `[.]` sits in `--link` (same neutral
+  foreground, no accent hue) and the trailing `dev` sits in
+  `--muted-foreground` (subdued, echoing the domain). Both appear exactly
+  once per instance of the wordmark (header, footer, anywhere else it shows
+  up). Don't invent additional flourishes or logo variants; consistency of
+  the one mark is the point.
 - **Catalog numbering on component pages.** Each component detail page shows
   its position in the collection next to its category, e.g.
   `Hero & Marketing · 03`. It signals a curated, ordered set rather than an
