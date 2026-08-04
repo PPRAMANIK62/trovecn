@@ -12,20 +12,10 @@ export function DocsSidebar() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-col gap-6 text-sm">
-      <Link
-        href="/docs"
-        className={cn(
-          "font-medium transition-colors",
-          pathname === "/docs" ? "text-link" : "text-foreground hover:text-link",
-        )}
-      >
-        Introduction
-      </Link>
-
+    <nav className="flex flex-col gap-6 text-minor">
       {groups.map((group) => (
         <div key={group.category}>
-          <p className="text-xs font-medium text-muted-foreground">{group.category}</p>
+          <p className="text-label uppercase text-muted-foreground">{group.category}</p>
           <ul className="mt-2.5 flex flex-col gap-0.5 border-l border-border">
             {group.items.map((item) => {
               const href = `/docs/components/${item.slug}`;

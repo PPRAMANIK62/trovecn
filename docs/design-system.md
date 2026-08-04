@@ -72,6 +72,42 @@ Fonts (wired in `layout.tsx` / `globals.css`):
   no separate display face; don't reintroduce one without updating this doc.
 - `font-mono` → Geist Mono — install commands, code, provenance labels.
 
+### Type scale
+
+Small and tight, not the 16px-body/36px-heading defaults Tailwind's named
+steps assume. Defined once
+as `@theme` font-size tokens in `globals.css` (same pattern as the color
+tokens above), each its own named utility — `text-display`, `text-title`,
+etc. — rather than repeated `text-[13.5px]` one-offs scattered across
+components. Sizes that always carry a fixed weight/tracking (headings,
+uppercase labels) bake that into the token via `--text-*--font-weight` /
+`--text-*--letter-spacing`, Tailwind v4's companion-variable mechanism, so
+the utility alone applies the full treatment. Headings are **medium weight,
+never bold/semibold**; negative tracking does the work weight would
+otherwise do.
+
+| Use                                               | Utility                | Size    |
+| ------------------------------------------------- | ---------------------- | ------- |
+| Landing headline                                  | `text-display`         | 32–52px |
+| Page title (docs `<h1>`)                          | `text-title`           | 27px    |
+| Lede (intro paragraph under a page title)         | `text-lede`            | 15px    |
+| Body / panel copy                                 | `text-body`            | 13.5px  |
+| Card title, row name, control label               | `text-control`         | 13.5px  |
+| Secondary copy, inline code, links                | `text-caption`         | 13px    |
+| Sidebar row, breadcrumb                           | `text-minor`           | 12.5px  |
+| Section label / column header (uppercase eyebrow) | `text-label uppercase` | 11px    |
+| Plain small mono/status line                      | `text-2xs`             | 11px    |
+| Metadata, source paths                            | `text-meta`            | 10.5px  |
+| Catalog numbers, tabular badges                   | `text-micro`           | 9.5px   |
+
+Reach for one of these tokens rather than a nearest named Tailwind step
+(`text-sm`, `text-lg`, …) or a fresh `text-[…px]` arbitrary value — the
+whole point of this scale is that it doesn't line up with Tailwind's
+defaults, and a new one-off value defeats the point of it being a shared
+scale at all. If nothing here fits, add a new `--text-*` token to
+`globals.css` and a row to this table rather than reaching for `text-[…]`
+inline.
+
 ## Visual language
 
 Concrete rules, not vibes — these are what separates "restrained" from
@@ -118,11 +154,20 @@ This is a multi-page docs site, not a single scrolling showcase:
 
 ```
 /                              — marketing landing page, links into /docs
-/docs                          — introduction
+/docs                          — the manifesto: why craft matters, not a
+                                  feature/install checklist. This is what
+                                  the homepage's "Browse components" CTA
+                                  lands on, not /docs/components directly.
 /docs/components               — index of all components, grouped by category
 /docs/components/[slug]        — one page per component (Preview/Code tabs,
                                   install command, dependencies)
 ```
+
+The docs layout's right-pane navbar (`src/app/docs/layout.tsx`) shows a
+breadcrumb trail (`src/components/site/breadcrumbs.tsx`) on the left —
+Docs / Components / [name] — and the theme toggle on the right. `/docs`
+itself isn't listed in the left sidebar (`DocsSidebar`); it's reached via
+the homepage CTA or the breadcrumb root, not as a persistent nav item.
 
 `src/lib/components-registry.ts` is the single source of truth for site
 metadata (title, description, category, source sites, dependencies, which

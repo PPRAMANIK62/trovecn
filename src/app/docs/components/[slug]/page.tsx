@@ -42,12 +42,14 @@ export default async function ComponentPage({ params }: PageProps) {
 
   return (
     <article className="max-w-3xl">
-      <p className="font-mono text-sm font-medium text-link">
+      <p className="font-mono text-2xs font-medium text-link">
         {item.category} · {getCatalogNumber(item.slug)}
       </p>
-      <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground">{item.title}</h1>
-      <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">{item.description}</p>
-      <p className="mt-2 font-mono text-xs text-muted-foreground/80">Observed — {item.source}</p>
+      <h1 className="mt-3 text-title text-foreground">{item.title}</h1>
+      <p className="mt-2.5 max-w-xl text-body leading-relaxed text-muted-foreground">
+        {item.description}
+      </p>
+      <p className="mt-2 font-mono text-meta text-muted-foreground/80">Observed — {item.source}</p>
 
       <Tabs defaultValue="preview" className="mt-8">
         <TabsList>
@@ -72,14 +74,16 @@ export default async function ComponentPage({ params }: PageProps) {
         </TabsContent>
       </Tabs>
 
-      <h2 className="mt-10 text-sm font-semibold text-foreground">Installation</h2>
+      <h2 className="mt-10 text-label uppercase text-muted-foreground">Installation</h2>
       <div className="mt-3 flex items-center justify-between gap-3 rounded-lg border border-border bg-card py-2 pr-2 pl-4">
-        <code className="overflow-x-auto font-mono text-sm text-foreground">{installCommand}</code>
+        <code className="overflow-x-auto font-mono text-caption text-foreground">
+          {installCommand}
+        </code>
         <CopyButton text={installCommand} />
       </div>
 
       {item.dependencies.length > 0 && (
-        <p className="mt-3 text-sm text-muted-foreground">
+        <p className="mt-3 text-caption text-muted-foreground">
           Depends on{" "}
           {item.dependencies.map((dep, i) => (
             <span key={dep}>

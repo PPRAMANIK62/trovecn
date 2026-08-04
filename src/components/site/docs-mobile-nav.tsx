@@ -21,9 +21,9 @@ export function DocsMobileNav() {
       aria-label="Jump to a docs page"
       value={pathname}
       onChange={(event) => router.push(event.target.value)}
-      className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm text-foreground md:hidden"
+      className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-caption text-foreground md:hidden"
     >
-      <option value="/docs">Introduction</option>
+      <option value="/docs">Overview</option>
       {groups.map((group) => (
         <optgroup key={group.category} label={group.category}>
           {group.items.map((item) => (

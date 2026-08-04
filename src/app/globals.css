@@ -47,6 +47,55 @@
 }
 
 /*
+  Type scale — see docs/design-system.md "Type scale". Small and tight, not
+  the 16px-body/36px-heading defaults Tailwind's named steps (`text-sm`,
+  `text-lg`, …) assume — these are new,
+  separately-named utilities (`text-lede`, `text-title`, …) rather than
+  overrides of those defaults, so existing `text-sm`/`text-xs` usage
+  elsewhere (buttons, tabs, form controls) is unaffected. Sizes that pair
+  with a fixed weight/tracking bake it into the token via `--text-*
+  --font-weight` / `--text-*--letter-spacing` so the utility alone applies
+  the full treatment; sizes that get composed with different weights
+  per-instance (body copy, captions) are left bare.
+*/
+@theme {
+  --text-display: clamp(2rem, 5.6vw, 3.25rem); /* 32–52px, landing headline */
+  --text-display--line-height: 1.08;
+  --text-display--letter-spacing: -0.04em;
+  --text-display--font-weight: 500;
+
+  --text-title: 1.6875rem; /* 27px, page <h1> */
+  --text-title--line-height: 1.15;
+  --text-title--letter-spacing: -0.03em;
+  --text-title--font-weight: 500;
+
+  --text-lede: 0.9375rem; /* 15px, intro paragraph under a page title */
+
+  --text-body: 0.84375rem; /* 13.5px, paragraph / panel copy */
+
+  --text-control: 0.84375rem; /* 13.5px, card title / row name / control label */
+  --text-control--letter-spacing: -0.01em;
+  --text-control--font-weight: 500;
+
+  --text-caption: 0.8125rem; /* 13px, secondary copy, inline code, links */
+
+  /* Named "minor", not "secondary" — `--color-secondary` already claims the
+     `text-secondary` utility name for a text *color*; reusing it here would
+     silently lose one of the two rules to the class-name collision. */
+  --text-minor: 0.78125rem; /* 12.5px, sidebar row, breadcrumb */
+
+  --text-label: 0.6875rem; /* 11px, uppercase section label / column header */
+  --text-label--letter-spacing: 0.08em;
+  --text-label--font-weight: 600;
+
+  --text-2xs: 0.6875rem; /* 11px, plain small mono/status line */
+
+  --text-meta: 0.65625rem; /* 10.5px, metadata, source paths */
+
+  --text-micro: 0.59375rem; /* 9.5px, catalog numbers, tabular badges */
+}
+
+/*
   "Warm Ink & Brass" docs palette: neutrals carry a faint warm tint (hue 75
   — paper/ink rather than screen-gray) and the single accent is a muted
   brass/bronze (hue ~70-75), not blue — chosen to echo the "Trovecn" concept
@@ -205,6 +254,30 @@
   box-shadow:
     0 1px 2px oklch(0 0 0 / 35%),
     inset 0 1px 0 oklch(1 0 0 / 12%);
+}
+
+/* Same drop-shadow-plus-top-highlight bevel as .shadow-bevel, plus a third
+   layer: a 1px all-around ring at much lower opacity than --border (5%
+   vs. --border's 15% in dark mode). A real `border` reads the same
+   strength on all four sides; this doesn't — the ring is uniform, but the
+   inset top highlight only lands on the top edge, so the top reads lit and
+   the other three sides read as barely-there. That asymmetry (plus the
+   much fainter ring than a flat border gives) is what separates a card
+   that looks "elevated" from one that just looks "boxed". Use this instead
+   of `border border-border` on content cards that need a legible edge on
+   every side, not just a top catch-light (that's .shadow-bevel's job, for
+   small controls). */
+.shadow-card {
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 4%),
+    inset 0 1px 0 oklch(1 0 0 / 50%),
+    0 0 0 1px oklch(0 0 0 / 5%);
+}
+.dark .shadow-card {
+  box-shadow:
+    0 1px 2px oklch(0 0 0 / 35%),
+    inset 0 1px 0 oklch(1 0 0 / 12%),
+    0 0 0 1px oklch(1 0 0 / 5%);
 }
 
 /* Shiki dual-theme code blocks: light theme is inline by default, this

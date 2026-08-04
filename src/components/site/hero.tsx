@@ -44,24 +44,27 @@ export function Hero({ componentCount }: HeroProps) {
       className="flex w-full flex-col px-6 py-16"
     >
       <div className="flex max-w-2xl flex-col items-start text-left sm:mx-16 md:mx-32 lg:mx-56">
-        <motion.p variants={item} className="font-mono text-xs text-muted-foreground">
+        <motion.p variants={item} className="font-mono text-2xs text-muted-foreground">
           <span className="text-link">{componentCount}</span> components, growing...
         </motion.p>
-        <motion.h1
-          variants={item}
-          className="mt-6 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl"
-        >
+        <motion.h1 variants={item} className="mt-6 text-balance text-display text-foreground">
           The small details that make interfaces feel premium.
         </motion.h1>
-        <motion.p variants={item} className="mt-6 text-base leading-7 text-muted-foreground">
+        <motion.p
+          variants={item}
+          className="mt-6 text-body leading-[1.7] text-muted-foreground sm:text-lede"
+        >
           The best interfaces share a quiet attention to craft — timing, spacing, restraint.
         </motion.p>
-        <motion.p variants={item} className="mt-4 text-base leading-7 text-muted-foreground">
+        <motion.p
+          variants={item}
+          className="mt-4 text-body leading-[1.7] text-muted-foreground sm:text-lede"
+        >
           Trovecn studies that craft in products like Apple, Linear, and Vercel, then ships it as
           plain React source you own.
         </motion.p>
         <motion.div variants={item} className="mt-10 flex items-center gap-3">
-          <Button render={<Link href="/docs/components" />} nativeButton={false} size="lg">
+          <Button render={<Link href="/docs" />} nativeButton={false} size="lg">
             Browse components
             <ArrowRight data-icon="inline-end" />
           </Button>

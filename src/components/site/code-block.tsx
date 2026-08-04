@@ -19,7 +19,7 @@ export async function CodeBlock({ code, className }: CodeBlockProps) {
       />
       <div
         className={[
-          "max-h-[36rem] overflow-auto text-sm [&_pre]:p-4 [&_pre]:leading-6",
+          "max-h-[36rem] overflow-auto text-caption [&_pre]:p-4 [&_pre]:leading-6",
           // Long lines (Tailwind class strings especially) routinely need
           // horizontal scroll, but the OS's thin auto-hiding overlay
           // scrollbar gives no visible cue that more content exists off to
