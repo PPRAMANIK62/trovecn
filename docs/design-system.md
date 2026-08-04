@@ -140,15 +140,74 @@ Concrete rules, not vibes — these are what separates "restrained" from
   arbitrary list — small effort, disproportionate effect on how intentional
   the collection feels.
 
-## Motion principles
+## Motion & interaction principles
 
-- Deliberate and weighted, not snappy/bouncy. Favor `ease: [0.16, 1, 0.3, 1]`
-  or Framer's `easeOut` over spring unless a spring genuinely reads as
-  premium (e.g. a magnetic button). Prefer duration 0.4–0.8s over the
-  0.15–0.2s common in generic UI kits.
-- One well-orchestrated entrance per component (staggered reveal) beats
-  animating everything.
-- Respect `prefers-reduced-motion`.
+Motion and interaction are functional, not decorative. Supersedes the old
+"deliberate and weighted, 0.4–0.8s, avoid springs" guidance — the whole
+premise inverts to fast, spring-based, information-carrying motion.
+
+**Motion as information.** An animation exists only to make a state change
+legible — something opened, something is now selected, focus moved
+somewhere. If a transition doesn't clarify a state change, cut it. This is
+the test every other rule below serves.
+
+**Spring tokens (`@/lib/springs`).** Three tiers, each an enter spring paired
+with a faster, bounce-free exit tween:
+
+| Token             | Enter                       | Exit           | Use for                                                                                                                                                       |
+| ----------------- | --------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spring.fast`     | duration 0.08s, bounce 0    | duration 0.06s | Hover, focus rings, fades, tooltips, selection indicators                                                                                                     |
+| `spring.moderate` | duration 0.16s, bounce 0    | duration 0.12s | Short travel / small expansion (dropdown & tab indicators, switch thumb, accordions) and panels that must land exactly (mobile drawer, selection merge/split) |
+| `spring.slow`     | duration 0.24s, bounce 0.12 | duration 0.16s | Large surfaces: dialogs, side panels, stepped flows                                                                                                           |
+
+**Rule:** the bigger the thing that moves, the slower the tier. No component
+invents its own duration — always import the token from `@/lib/springs`.
+
+**Exits are faster than enters.** A dismissal should read crisp and final,
+not like the entrance playing in reverse — that's why each tier's exit is a
+quicker, bounce-free tween rather than the same spring run backward.
+
+**Springs respond to interruption.** If a user reverses mid-transition
+(closes a panel they just opened, hovers off before a highlight finishes
+landing), the animation should adapt from its current position and velocity,
+not restart or snap. This is what spring physics buys over fixed-duration
+tweens — use it deliberately, not as an aesthetic default.
+
+**Transform/opacity only.** Animate `transform` and `opacity`, never `top` /
+`left` / `width` / `height`. Keeps motion on the GPU compositor and is what
+makes automatic reduced-motion handling (below) possible in the first place.
+
+**Reduced motion — fewer and gentler, not none.** Wire
+`<MotionConfig reducedMotion="user">` at the root (`src/app/layout.tsx`).
+This automatically disables `transform`/`layout` animation while leaving
+opacity and color transitions running — a dialog fades in instead of
+scaling, a drawer appears in place instead of sliding. Only works for
+components that follow the transform/opacity-only rule above; a component
+that animates `top`/`left`/`width`/`height` directly must gate its own
+movement on `useReducedMotion()`.
+
+**Proximity hover.** In interactive lists/grids/nav (sidebar items, table
+rows, card grids), highlight the item nearest the cursor before the user
+clicks — it previews where an action will land and reduces targeting
+errors. A subtle, non-decorative polish move, not a new visual language.
+
+**Elevation is a system, not a per-component judgment call.** This project
+already treats `--canvas` → `--background` → `--card` → `--popover` as
+successive planes ("Surfaces must visibly step," above). Treat that ladder
+as the formal elevation order: a component stacking on top of another
+surface (a dropdown inside a dialog, a tooltip inside a popover) steps up
+exactly one level from what it's layered on — never skip a level, never
+reuse the level underneath it.
+
+**Ghost-span for animated font-weight.** State changes (selected / checked /
+active / open) that make text heavier will reflow the layout if animated on
+a bare text node, because a heavier weight is wider. Use an invisible copy
+of the label at the heaviest weight to reserve the width, and animate
+`font-variation-settings` on the visible copy on top of it. Requires a
+variable font (Geist Sans already is one).
+
+**One well-orchestrated entrance per component** (a staggered reveal) beats
+animating everything at once — still true regardless of tier.
 
 ## Site structure
 
@@ -178,6 +237,29 @@ a component, add an entry there — the sidebar, the components index, and the
 detail page all read from it. `registry.json` is the separate shadcn-build
 manifest (`npm run registry:build`) and needs the same entry added
 independently; the two are intentionally not derived from each other.
+
+## Two tiers: primitives, then patterns
+
+`src/components/ui/` (primitives) and `registry/trovecn/` (patterns) are
+different tiers, not the same kind of thing at different maturity:
+
+- **Primitives** (`src/components/ui/<name>.tsx`) are structural —
+  Dialog, Popover, Menu, Tooltip, Accordion, Switch, Tabs. Scaffold each via
+  `npx shadcn add <name>` (style `base-nova`, per `components.json`) rather
+  than hand-writing a Base UI wrapper — the CLI generates the correct
+  Base UI binding, focus/portal/positioning behavior included. Once
+  scaffolded, apply the house motion system on top: the right
+  `@/lib/springs` tier for what the primitive does, its elevation step,
+  proximity hover if it's a list/grid of interactive items. A primitive
+  should look and move identically no matter which pattern below embeds it.
+- **Patterns** (`registry/trovecn/<name>/`) are what actually gets
+  browsed/installed — a specific interface moment observed on a real site
+  (blur navbar, command palette, bento grid). Built by composing primitives
+  plus whatever's specific to that one observed pattern; a pattern file
+  should very rarely need to reach past a primitive into raw Base UI itself.
+
+See `docs/ideas.md` for the current primitive checklist and the reasoning
+for building it before the pattern backlog.
 
 ## Component conventions
 

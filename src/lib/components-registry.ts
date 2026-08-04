@@ -1,11 +1,5 @@
 import type { ComponentType } from "react";
 
-import BlurNavbarDemo from "../../registry/trovecn/blur-navbar/blur-navbar-demo";
-import BentoGridDemo from "../../registry/trovecn/bento-grid/bento-grid-demo";
-import CommandPaletteDemo from "../../registry/trovecn/command-palette/command-palette-demo";
-import AnimatedBorderCardDemo from "../../registry/trovecn/animated-border-card/animated-border-card-demo";
-import ScrollTextRevealDemo from "../../registry/trovecn/scroll-text-reveal/scroll-text-reveal-demo";
-
 export interface RegistryItem {
   slug: string;
   title: string;
@@ -20,58 +14,7 @@ export interface RegistryItem {
 
 export const categories = ["Navigation", "Hero & Marketing", "Scroll & Reveal"] as const;
 
-export const registry: RegistryItem[] = [
-  {
-    slug: "blur-navbar",
-    title: "Blur Navbar",
-    description: "A navbar that gains a blurred background and shrinks as the page scrolls.",
-    category: "Navigation",
-    source: "apple.com, linear.app",
-    dependencies: ["framer-motion"],
-    file: "registry/trovecn/blur-navbar/blur-navbar.tsx",
-    Demo: BlurNavbarDemo,
-  },
-  {
-    slug: "command-palette",
-    title: "Command Palette",
-    description: "A keyboard-driven cmd+k search and action menu.",
-    category: "Navigation",
-    source: "linear.app, raycast.com",
-    dependencies: ["framer-motion", "lucide-react"],
-    file: "registry/trovecn/command-palette/command-palette.tsx",
-    Demo: CommandPaletteDemo,
-  },
-  {
-    slug: "bento-grid",
-    title: "Bento Grid",
-    description: "An asymmetric feature grid for showcasing product highlights.",
-    category: "Hero & Marketing",
-    source: "linear.app, vercel.com",
-    dependencies: ["framer-motion"],
-    file: "registry/trovecn/bento-grid/bento-grid.tsx",
-    Demo: BentoGridDemo,
-  },
-  {
-    slug: "animated-border-card",
-    title: "Animated Border Card",
-    description: "A card with a light beam that travels continuously along its border.",
-    category: "Hero & Marketing",
-    source: "vercel.com",
-    dependencies: ["framer-motion"],
-    file: "registry/trovecn/animated-border-card/animated-border-card.tsx",
-    Demo: AnimatedBorderCardDemo,
-  },
-  {
-    slug: "scroll-text-reveal",
-    title: "Scroll Text Reveal",
-    description: "Text that fades and rises into place word by word as it enters the viewport.",
-    category: "Scroll & Reveal",
-    source: "apple.com",
-    dependencies: ["framer-motion"],
-    file: "registry/trovecn/scroll-text-reveal/scroll-text-reveal.tsx",
-    Demo: ScrollTextRevealDemo,
-  },
-];
+export const registry: RegistryItem[] = [];
 
 export function getComponent(slug: string): RegistryItem | undefined {
   return registry.find((item) => item.slug === slug);

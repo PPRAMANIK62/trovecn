@@ -90,7 +90,7 @@ export default function DocsIndexPage() {
         into your project and pull in whatever it depends on.
       </p>
       <pre className="mt-4 overflow-x-auto rounded-lg border border-border bg-card px-4 py-3 font-mono text-caption text-foreground">
-        npx shadcn add https://trovecn.dev/r/blur-navbar.json
+        npx shadcn add https://trovecn.dev/r/[component].json
       </pre>
       <Link
         href="/docs/components"

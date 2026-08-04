@@ -6,25 +6,55 @@ grouping by pattern keeps the registry from having near-duplicate entries).
 
 Status legend: `[ ]` not started · `[~]` in progress · `[x]` shipped
 
+## Primitives — the skeleton layer
+
+Build these before the patterns below. Every pattern in this backlog is
+really one of these primitives plus a site-specific skin — a command
+palette is a Dialog/Combobox, a mega-menu is a Popover/Menu, a pricing
+toggle is a Switch. Solve structural correctness (focus trap, portal,
+positioning, keyboard nav) and house motion (spring tier, elevation step,
+proximity hover, ghost-span) once per primitive here, and every pattern
+built on top inherits both for free instead of re-deriving them per file.
+
+Workflow: `npx shadcn add <name>` scaffolds the Base UI wrapper into
+`src/components/ui/` (style `base-nova`, per `components.json`) — don't
+hand-write Base UI bindings. Then apply the house motion system from
+`docs/design-system.md` on top of what the CLI generates: swap in the
+correct `@/lib/springs` tier, wire the elevation step, add proximity hover
+where the primitive is a list/grid of interactive items.
+
+Priority ordered by how many backlog patterns below depend on it:
+
+- [ ] Popover — command palette, mega-menu, hover/preview panels
+- [ ] Dialog — command palette container, any future modal
+- [ ] Menu (dropdown) — mega-menu, sidebar row actions
+- [ ] Combobox / Autocomplete — command palette search-as-you-type
+- [ ] Tooltip — keyboard shortcut badges, hover previews
+- [ ] Accordion — changelog/roadmap timeline
+- [ ] Switch — pricing toggle
+- [~] Tabs — already scaffolded (`src/components/ui/tabs.tsx`); needs the
+  sliding-indicator motion pass (`spring.moderate`) before "animated tab
+  switcher" ships as a pattern
+
 ## Scroll & reveal
 
-- [x] Word-by-word / line-by-line text reveal on scroll — masked fade-up (Apple) → shipped as `scroll-text-reveal`
+- [ ] Word-by-word / line-by-line text reveal on scroll — masked fade-up (Apple)
 - [ ] Scroll-scrubbed video/frame sequence — canvas frame stepping tied to scroll progress (Apple: AirPods Pro, Vision Pro product pages)
 - [ ] Sticky pinned section with content swap — section stays pinned while image/text changes (Apple product pages)
 - [ ] Horizontal scroll-jacking gallery (Apple product feature carousels)
 
 ## Navigation & chrome
 
-- [x] Blur/glass navbar that shrinks and gains a background on scroll (Apple, Linear) → shipped as `blur-navbar`
-- [x] Command palette / Cmd+K search (Linear, Raycast) → shipped as `command-palette`
+- [ ] Blur/glass navbar that shrinks and gains a background on scroll (Apple, Linear)
+- [ ] Command palette / Cmd+K search (Linear, Raycast)
 - [ ] Mega-menu dropdown with preview panels (Apple nav)
 - [ ] Docked sidebar with active-route indicator animation (Linear app shell)
 
 ## Hero & marketing sections
 
-- [x] Bento grid feature showcase (Linear, Vercel) → shipped as `bento-grid`
+- [ ] Bento grid feature showcase (Linear, Vercel)
 - [ ] Spotlight/glow hover cards (Linear pricing/feature cards) — removed, didn't fit
-- [x] Border-beam / animated-border cards (Vercel-style glowing cards) → shipped as `animated-border-card`
+- [ ] Border-beam / animated-border cards (Vercel-style glowing cards)
 - [ ] Animated gradient mesh / noise background (Linear, Stripe)
 - [ ] Infinite logo marquee (Framer, Stripe customer walls)
 
@@ -41,14 +71,3 @@ Status legend: `[ ]` not started · `[~]` in progress · `[x]` shipped
 - [ ] Magnetic / cursor-follow buttons
 - [ ] Keyboard shortcut badge components (⌘K style, Raycast/Linear)
 - [ ] Animated tab switcher with sliding indicator (Apple feature tabs, Arc)
-
-## First batch — shipped
-
-Chosen for visual impact + reusability as primitives. Live in `registry/trovecn/`,
-wired into the homepage, and installable via `npx shadcn add`:
-
-1. Blur navbar
-2. Bento grid
-3. Command palette
-4. Animated border card
-5. Scroll text reveal

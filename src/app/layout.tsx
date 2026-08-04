@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { MotionConfig } from "framer-motion";
 import "./globals.css";
 
 import { themeInitScript } from "@/lib/theme-script";
@@ -34,7 +35,9 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="h-dvh overflow-hidden bg-canvas text-foreground">{children}</body>
+      <body className="h-dvh overflow-hidden bg-canvas text-foreground">
+        <MotionConfig reducedMotion="user">{children}</MotionConfig>
+      </body>
     </html>
   );
 }
