@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Overview — Trovecn",
+  title: "Introduction — Trovecn",
   description:
     "Why Trovecn exists: interfaces are judged as cheap or crafted in seconds, and almost never in words.",
 };
@@ -29,8 +29,8 @@ const cheapTells = [
 
 export default function DocsIndexPage() {
   return (
-    <article className="max-w-2xl">
-      <p className="text-label uppercase text-link">Overview</p>
+    <article className="mx-auto max-w-2xl">
+      <p className="text-label uppercase text-link">Introduction</p>
       <h1 className="mt-3 text-title text-foreground">
         Nobody tells you an interface feels cheap. They just leave.
       </h1>
@@ -84,14 +84,6 @@ export default function DocsIndexPage() {
         install once and never open again.
       </p>
 
-      <h2 className="mt-12 text-label uppercase text-muted-foreground">Getting started</h2>
-      <p className="mt-3 text-body leading-relaxed text-muted-foreground">
-        Every component page ships one install command. It uses the shadcn CLI to drop the component
-        into your project and pull in whatever it depends on.
-      </p>
-      <pre className="mt-4 overflow-x-auto rounded-lg border border-border bg-card px-4 py-3 font-mono text-caption text-foreground">
-        npx shadcn add https://trovecn.dev/r/[component].json
-      </pre>
       <Link
         href="/docs/components"
         className="mt-6 inline-flex items-center gap-1.5 text-caption font-medium text-link underline-offset-4 hover:underline"

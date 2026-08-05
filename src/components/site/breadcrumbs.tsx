@@ -30,7 +30,7 @@ function useCrumbs(): Crumb[] {
   }
 
   // /docs itself, and any other future top-level docs route.
-  return [{ label: "Overview" }];
+  return [{ label: "Introduction" }];
 }
 
 export function Breadcrumbs() {

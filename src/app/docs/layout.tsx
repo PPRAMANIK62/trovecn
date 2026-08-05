@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { AppFrame, Panel } from "@/components/site/app-frame";
 import { DocsSidebar } from "@/components/site/docs-sidebar";
-import { DocsMobileNav } from "@/components/site/docs-mobile-nav";
+import { DocsMobileSidebar } from "@/components/site/docs-mobile-sidebar";
 import { Brand } from "@/components/site/brand";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { ThemeToggle } from "@/components/site/theme-toggle";
@@ -32,7 +32,7 @@ import { ThemeToggle } from "@/components/site/theme-toggle";
 export default function DocsLayout({ children }: { children: ReactNode }) {
   return (
     <AppFrame>
-      <Panel scroll={false} className="relative hidden w-60 shrink-0 overflow-hidden md:block">
+      <Panel scroll={false} className="relative hidden w-60 shrink-0 overflow-hidden lg:block">
         <div className="absolute inset-0 overflow-y-auto overscroll-contain p-6 pt-20">
           <DocsSidebar />
         </div>
@@ -44,13 +44,20 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
       </Panel>
       <Panel scroll={false} className="relative min-w-0 flex-1 overflow-hidden">
         <div className="absolute inset-0 overflow-y-auto overscroll-contain pt-14">
-          <div className="mx-auto max-w-3xl px-6 py-10 pb-24">
-            <DocsMobileNav />
-            <div className="mt-6 md:mt-0">{children}</div>
-          </div>
+          <div className="mx-auto max-w-3xl px-20 pt-14 pb-24 lg:pt-10">{children}</div>
         </div>
         <nav className="absolute inset-x-0 top-0 z-10 flex h-14 items-center justify-between gap-4 border-b border-border bg-background/85 px-6 backdrop-blur-md">
-          <Breadcrumbs />
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="shrink-0 lg:hidden">
+              <Brand />
+            </div>
+            <div className="lg:hidden">
+              <DocsMobileSidebar />
+            </div>
+            <div className="hidden min-w-0 lg:block">
+              <Breadcrumbs />
+            </div>
+          </div>
           <ThemeToggle />
         </nav>
         <div className="pointer-events-none absolute inset-x-0 top-14 z-10 h-8 bg-gradient-to-b from-background via-background/70 to-transparent" />
