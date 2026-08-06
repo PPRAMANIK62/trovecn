@@ -21,7 +21,7 @@ export function DocsSidebar() {
       {populatedGroups.map((group) => (
         <div key={group.category}>
           <p className="text-label uppercase text-muted-foreground">{group.category}</p>
-          <ul className="mt-2.5 flex flex-col gap-0.5 border-l border-border">
+          <ul className="mt-2.5 flex flex-col gap-0.5">
             {group.items.map((item) => {
               const href = `/docs/components/${item.slug}`;
               const active = pathname === href;
@@ -30,10 +30,10 @@ export function DocsSidebar() {
                   <Link
                     href={href}
                     className={cn(
-                      "-ml-px block border-l py-1 pl-3 transition-colors",
+                      "block rounded-lg px-3 py-1.5 transition-colors",
                       active
-                        ? "border-link font-medium text-link"
-                        : "border-transparent text-muted-foreground hover:border-border hover:text-foreground",
+                        ? "bg-muted font-medium text-foreground"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
                     )}
                   >
                     {item.title}
