@@ -73,7 +73,7 @@ Fonts (wired in `layout.tsx` / `globals.css`):
 
 - `font-sans` → Geist Sans — body copy, UI labels, **and headings**. There is
   no separate display face; don't reintroduce one without updating this doc.
-- `font-mono` → Geist Mono — install commands, code, provenance labels.
+- `font-mono` → Geist Mono — code, catalog numbers, metadata labels.
 
 ### Type scale
 
@@ -220,8 +220,9 @@ This is a multi-page docs site, not a single scrolling showcase:
                                   the homepage's "Browse components" CTA
                                   lands on, not /docs/components directly.
 /docs/components               — index of all components, grouped by category
-/docs/components/[slug]        — one page per component (Preview/Code tabs,
-                                  install command, dependencies)
+/docs/components/[slug]        — one page per component (named examples,
+                                  each with Preview/Code tabs, plus API
+                                  reference tables)
 ```
 
 The docs layout's right-pane navbar (`src/app/docs/layout.tsx`) shows a
@@ -231,12 +232,16 @@ itself isn't listed in the left sidebar (`DocsSidebar`); it's reached via
 the homepage CTA or the breadcrumb root, not as a persistent nav item.
 
 `src/lib/components-registry.ts` is the single source of truth for site
-metadata (title, description, category, source sites, dependencies, which
-file to read for the Code tab, which demo component to render). When you add
-a component, add an entry there — the sidebar, the components index, and the
-detail page all read from it. `registry.json` is the separate shadcn-build
-manifest (`npm run registry:build`) and needs the same entry added
-independently; the two are intentionally not derived from each other.
+metadata (title, description, category, dependencies, the named `examples`
+and their demo files, the `api` reference tables). When you add a component,
+add an entry there — the sidebar, the components index, and the detail page
+all read from it. `registry.json` is the separate shadcn-build manifest
+(`npm run registry:build`) and needs the same entry added independently; the
+two are intentionally not derived from each other.
+
+No "observed on"/"source site" attribution and no install-command section on
+the detail page — a component's real-world inspiration (if any) belongs in
+conversation/commit history, not in `RegistryItem` or the rendered page.
 
 ## Two tiers: primitives, then patterns
 
@@ -263,22 +268,18 @@ for building it before the pattern backlog.
 
 ## Component conventions
 
-Each first-batch piece lives at:
+Each pattern piece lives at:
 
 ```
 registry/trovecn/<kebab-name>/<kebab-name>.tsx        — the component itself
-registry/trovecn/<kebab-name>/<kebab-name>-demo.tsx    — default-exported demo
 ```
 
 - `<kebab-name>.tsx` exports the reusable component(s) with real props (no
-  hardcoded demo content baked into the primitive). This is the file that
-  ships through the registry, and the one read verbatim onto the component
-  page's Code tab — treat its API and formatting as something a stranger
-  will both `npx shadcn add` and read.
-- `<kebab-name>-demo.tsx` default-exports a self-contained React component
-  with no required props — this is what gets rendered inside the detail
-  page's Preview tab. Keep it visually complete on its own (don't rely on
-  page-level context).
+  hardcoded demo content baked into the primitive). Primitives instead live
+  at `src/components/ui/<kebab-name>.tsx` (scaffolded via `npx shadcn add`,
+  see "Two tiers" above) — either way, this is the file that ships through
+  the registry and gets read verbatim for a Code tab, so treat its API and
+  formatting as something a stranger will both `npx shadcn add` and read.
 - Use `"use client"` where needed (anything with Framer Motion, state, or
   browser APIs).
 - Dependencies: `framer-motion`, `lucide-react`, `clsx`/`tailwind-merge`
@@ -286,6 +287,35 @@ registry/trovecn/<kebab-name>/<kebab-name>-demo.tsx    — default-exported demo
   them rather than adding new packages. If a component genuinely needs a
   new dependency, note it clearly at the top of the file instead of
   installing it yourself.
+
+### Component pages: named examples, not one generic demo
+
+A component detail page (`/docs/components/[slug]`) is a reference, not a
+screenshot. Each `RegistryItem` (`src/lib/components-registry.ts`) declares
+an `examples: ComponentExample[]` array instead of a single `Demo` — every
+example gets its own heading, one-sentence description, and its own
+Preview/Code tabs, e.g. Accordion's "Standalone" / "Single expand" / "Multi
+expand". This is what actually demonstrates the API surface (props,
+variants, edge cases) instead of one component instance doing everything at
+once.
+
+```
+registry/trovecn/<kebab-name>/examples/<example-slug>.tsx   — one worked example, default export
+```
+
+- Each example file is self-contained (no required props, no page-level
+  context) and is read verbatim via `readFileSync` for its own Code tab —
+  same "file is the single source of truth for both the demo and the
+  displayed code" principle as a primitive/pattern file, just scoped to one
+  example instead of the whole component.
+- `RegistryItem.api: ApiSection[]` supplies one `Prop | Type | Default |
+Description` table per exported piece (e.g. separate tables for
+  `Accordion`, `AccordionItem`, `AccordionTrigger`,
+  `AccordionContent`) — write these by hand from the component's actual
+  prop types, don't skip them for "obvious" props.
+- The page shell also renders Previous/Next links between components
+  (`getAdjacentComponents` in `components-registry.ts`), derived from
+  registry order — nothing to add per-component beyond registering it.
 
 ## Demoing scroll-driven effects
 
@@ -306,12 +336,13 @@ section for how to style it.
 
 ## Presentation shell (site-level, not per-component)
 
-`src/app/docs/components/[slug]/page.tsx` wraps each demo: category label,
-title, description, provenance line, the Preview/Code tabs
-(`src/components/ui/tabs.tsx`, a Base UI `Tabs` wrapper), and the install
-command with a copy button. Components themselves should not try to
-replicate this framing — just build the piece; the page shell is provided
-centrally.
+`src/app/docs/components/[slug]/page.tsx` wraps the whole page (category
+label, title, description, Previous/Next nav) and wraps each example in
+`item.examples` with a `ComponentPreview` card
+(`src/components/site/component-preview.tsx`) plus its own Preview/Code tabs
+(`src/components/ui/tabs.tsx`, a Base UI `Tabs` wrapper). Components and
+examples themselves should not try to replicate this framing — just build
+the piece; the page shell is provided centrally.
 
 The Preview tab's stage uses `bg-canvas` — one step _below_ `--background`,
 the same relationship `AppFrame` uses between its gutter and `Panel`. Demo

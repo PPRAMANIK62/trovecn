@@ -1,42 +1,40 @@
+import { cn } from "@/lib/utils";
 import { highlightTsx } from "@/lib/highlight";
 import { CopyButton } from "@/components/site/copy-button";
+import { CodeScroll } from "@/components/site/code-scroll";
 
 interface CodeBlockProps {
   code: string;
+  /** Shown in the footer's meta label, e.g. an example's file basename ("standalone"). */
+  label?: string;
   className?: string;
 }
 
-export async function CodeBlock({ code, className }: CodeBlockProps) {
+/**
+ * Same two-layer chrome as ComponentPreview (src/components/site/component-preview.tsx):
+ * a lifted shadow-card frame around a recessed shadow-well stage, plus a
+ * matching meta footer. Preview and Code are two tabs over the same card, so
+ * they carry the same physicality — switching tabs shouldn't read as
+ * dropping onto a flatter, bordered box.
+ */
+export async function CodeBlock({ code, label, className }: CodeBlockProps) {
   const html = await highlightTsx(code);
+  const lineCount = code.split("\n").length;
 
   return (
-    <div
-      className={`group relative overflow-hidden rounded-lg border border-border bg-card ${className ?? ""}`}
-    >
-      <CopyButton
-        text={code}
-        className="absolute top-2 right-2 z-10 border border-border bg-card opacity-0 transition-opacity group-hover:opacity-100"
-      />
-      <div
-        className={[
-          "max-h-[36rem] overflow-auto text-caption [&_pre]:p-4 [&_pre]:leading-6",
-          // Long lines (Tailwind class strings especially) routinely need
-          // horizontal scroll, but the OS's thin auto-hiding overlay
-          // scrollbar gives no visible cue that more content exists off to
-          // either side — a reader can land mid-scroll and see truncated
-          // text on both edges with nothing indicating why. Always-visible,
-          // themed scrollbars make the affordance obvious.
-          // `--border` is a near-white hairline token — invisible as a
-          // scrollbar thumb in light mode. `--muted-foreground` at partial
-          // opacity has real contrast in both themes.
-          "[scrollbar-color:color-mix(in_oklch,var(--muted-foreground)_40%,transparent)_transparent] [scrollbar-width:thin]",
-          "[&::-webkit-scrollbar]:h-2.5 [&::-webkit-scrollbar]:w-2.5",
-          "[&::-webkit-scrollbar-track]:bg-transparent",
-          "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/40",
-          "[&::-webkit-scrollbar-thumb:hover]:bg-muted-foreground/60",
-        ].join(" ")}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+    <div className={cn("rounded-xl bg-card p-[5px] shadow-card", className)}>
+      <div className="group relative overflow-hidden rounded-lg bg-background shadow-well">
+        <CopyButton
+          text={code}
+          className="absolute top-2 right-2 z-10 opacity-0 transition-opacity group-hover:opacity-100"
+        />
+        <CodeScroll html={html} lineCount={lineCount} />
+      </div>
+      {label && (
+        <div className="flex h-9 items-center px-2.5">
+          <span className="font-mono text-meta text-muted-foreground">{label}</span>
+        </div>
+      )}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 import { getComponentsByCategory } from "@/lib/components-registry";
 
 export const metadata: Metadata = {
-  title: "Components — Trovecn",
+  title: "Components — trove/cn",
 };
 
 export default function ComponentsIndexPage() {
@@ -35,7 +35,7 @@ export default function ComponentsIndexPage() {
                     <Link
                       key={item.slug}
                       href={`/docs/components/${item.slug}`}
-                      className="group flex flex-col justify-between gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:border-foreground/30 hover:bg-accent"
+                      className="group flex flex-col rounded-lg border border-border bg-card p-4 transition-colors hover:border-foreground/30 hover:bg-accent"
                     >
                       <div>
                         <div className="flex items-start justify-between gap-2">
@@ -46,7 +46,6 @@ export default function ComponentsIndexPage() {
                           {item.description}
                         </p>
                       </div>
-                      <p className="font-mono text-meta text-muted-foreground/80">{item.source}</p>
                     </Link>
                   ))}
                 </div>

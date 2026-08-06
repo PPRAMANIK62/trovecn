@@ -276,6 +276,22 @@
     0 0 0 1px oklch(1 0 0 / 5%);
 }
 
+/* The recessed counterpart to .shadow-card — a "cut in" slot rather than a
+   lifted surface, for the component-preview stage nested inside a
+   .shadow-card frame (src/components/site/component-preview.tsx). All
+   inset, no outward drop shadow: that inward direction is the entire cue,
+   so unlike .shadow-card there's no top highlight to fake a lit edge. */
+.shadow-well {
+  box-shadow:
+    inset 0 1px 2px oklch(0 0 0 / 5%),
+    inset 0 0 0 1px oklch(0 0 0 / 10%);
+}
+.dark .shadow-well {
+  box-shadow:
+    inset 0 1px 3px oklch(0 0 0 / 40%),
+    inset 0 0 0 1px oklch(1 0 0 / 3%);
+}
+
 /* Shiki dual-theme code blocks: light theme is inline by default, this
    swaps every token to its dark-theme color when <html> has .dark.
    See https://shiki.style/guide/dual-themes
@@ -283,10 +299,10 @@
    Background is intentionally left out of that swap and stripped instead —
    Shiki's own theme background (github-dark's blue-black `#0d1117`) doesn't
    belong to this app's neutral, achromatic palette and reads as a mismatched
-   box dropped onto the page. `docs/design-system.md` already assigns code
-   blocks the `--card` token ("panel surface one step off background"), so
-   CodeBlock's wrapper owns the surface color via `bg-card` and Shiki is only
-   ever responsible for per-token foreground colors. */
+   box dropped onto the page. CodeBlock owns the surface color instead
+   (`bg-card` frame, `bg-background` recessed stage — the same two-layer
+   chrome as ComponentPreview) and Shiki is only ever responsible for
+   per-token foreground colors. */
 .shiki,
 .shiki span {
   background-color: transparent !important;

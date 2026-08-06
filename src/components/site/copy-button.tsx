@@ -4,12 +4,16 @@ import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface CopyButtonProps {
   text: string;
   className?: string;
 }
 
+/** Floats over the code stage's top-right corner — same elevated/shadow-bevel
+ *  physicality as the rest of the control set, just icon-only since it sits
+ *  on top of content rather than in a footer row. */
 export function CopyButton({ text, className }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
@@ -24,16 +28,15 @@ export function CopyButton({ text, className }: CopyButtonProps) {
   }
 
   return (
-    <button
+    <Button
       type="button"
+      variant="elevated"
+      size="icon-xs"
       onClick={handleCopy}
       aria-label="Copy to clipboard"
-      className={cn(
-        "inline-flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground",
-        className,
-      )}
+      className={cn("text-muted-foreground hover:text-foreground", className)}
     >
-      {copied ? <Check className="size-3.5 text-link" /> : <Copy className="size-3.5" />}
-    </button>
+      {copied ? <Check className="text-link" /> : <Copy />}
+    </Button>
   );
 }

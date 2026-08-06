@@ -2,11 +2,19 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
-import { getCatalogNumber, getComponent, registry } from "@/lib/components-registry";
+import {
+  getAdjacentComponents,
+  getCatalogNumber,
+  getComponent,
+  registry,
+} from "@/lib/components-registry";
+import { ApiTable } from "@/components/site/api-table";
 import { CodeBlock } from "@/components/site/code-block";
-import { CopyButton } from "@/components/site/copy-button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ComponentPreview } from "@/components/site/component-preview";
+import { Tabs, TabsContent, TabsIndicator, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -20,7 +28,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const item = getComponent(slug);
   if (!item) return {};
-  return { title: `${item.title} — Trovecn`, description: item.description };
+  return { title: `${item.title} — trove/cn`, description: item.description };
+}
+
+// Every param is enumerated by generateStaticParams above, so this file read
+// only ever runs at build time against known repo-relative paths — never
+// against user input. The ignore comment stops Next's file tracer from
+// conservatively bundling the entire project into this route's output.
+function readSource(path: string): string {
+  return readFileSync(join(/* turbopackIgnore: true */ process.cwd(), path), "utf-8").trim();
 }
 
 export default async function ComponentPage({ params }: PageProps) {
@@ -28,72 +44,96 @@ export default async function ComponentPage({ params }: PageProps) {
   const item = getComponent(slug);
   if (!item) notFound();
 
-  // Every param is enumerated by generateStaticParams above, so this file
-  // read only ever runs at build time against known repo-relative paths —
-  // never against user input. The ignore comment stops Next's file tracer
-  // from conservatively bundling the entire project into this route's
-  // output (see the tracing warning this used to produce during `next build`).
-  const source = readFileSync(
-    join(/* turbopackIgnore: true */ process.cwd(), item.file),
-    "utf-8",
-  ).trim();
-  const installCommand = `npx shadcn add https://trovecn.dev/r/${item.slug}.json`;
-  const Demo = item.Demo;
+  const { previous, next } = getAdjacentComponents(slug);
 
   return (
     <article className="max-w-3xl">
-      <p className="font-mono text-2xs font-medium text-link">
-        {item.category} · {getCatalogNumber(item.slug)}
-      </p>
-      <h1 className="mt-3 text-title text-foreground">{item.title}</h1>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="font-mono text-2xs font-medium text-link">
+            {item.category} · {getCatalogNumber(item.slug)}
+          </p>
+          <h1 className="mt-3 text-title text-foreground">{item.title}</h1>
+        </div>
+        {(previous || next) && (
+          <div className="mt-1 flex shrink-0 items-center gap-1">
+            {previous ? (
+              <Link
+                href={`/docs/components/${previous.slug}`}
+                aria-label={`Previous: ${previous.title}`}
+                className="flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              >
+                <ArrowLeft className="size-4" />
+              </Link>
+            ) : (
+              <span className="flex size-7 items-center justify-center text-muted-foreground/30">
+                <ArrowLeft className="size-4" />
+              </span>
+            )}
+            {next ? (
+              <Link
+                href={`/docs/components/${next.slug}`}
+                aria-label={`Next: ${next.title}`}
+                className="flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+              >
+                <ArrowRight className="size-4" />
+              </Link>
+            ) : (
+              <span className="flex size-7 items-center justify-center text-muted-foreground/30">
+                <ArrowRight className="size-4" />
+              </span>
+            )}
+          </div>
+        )}
+      </div>
       <p className="mt-2.5 max-w-xl text-body leading-relaxed text-muted-foreground">
         {item.description}
       </p>
-      <p className="mt-2 font-mono text-meta text-muted-foreground/80">Observed — {item.source}</p>
 
-      <Tabs defaultValue="preview" className="mt-8">
-        <TabsList>
-          <TabsTrigger value="preview">Preview</TabsTrigger>
-          <TabsTrigger value="code">Code</TabsTrigger>
-        </TabsList>
-        <TabsContent value="preview">
-          {/* `bg-canvas` recesses the stage one step below `--background`,
-              the same relationship `AppFrame` uses between its gutter and
-              `Panel` (docs/design-system.md "Surfaces must visibly step").
-              Demo content sitting directly on it (bg-card / bg-popover
-              surfaces) reads as elevated by contrast alone, instead of two
-              identically-toned bordered boxes nesting into one flat shape. */}
-          <div className="flex min-h-96 items-center justify-center overflow-hidden rounded-xl border border-border bg-canvas p-8 sm:p-12">
-            <div className="w-full">
-              <Demo />
-            </div>
-          </div>
-        </TabsContent>
-        <TabsContent value="code">
-          <CodeBlock code={source} />
-        </TabsContent>
-      </Tabs>
+      <div className="mt-10 flex flex-col gap-12">
+        {item.examples.map((example) => {
+          const Demo = example.Demo;
+          const source = readSource(example.file);
+          const label =
+            example.file
+              .split("/")
+              .pop()
+              ?.replace(/\.tsx$/, "") ?? example.title;
+          return (
+            <section key={example.title}>
+              <h2 className="text-control font-medium text-foreground">{example.title}</h2>
+              <p className="mt-1.5 text-caption text-muted-foreground">{example.description}</p>
 
-      <h2 className="mt-10 text-label uppercase text-muted-foreground">Installation</h2>
-      <div className="mt-3 flex items-center justify-between gap-3 rounded-lg border border-border bg-card py-2 pr-2 pl-4">
-        <code className="overflow-x-auto font-mono text-caption text-foreground">
-          {installCommand}
-        </code>
-        <CopyButton text={installCommand} />
+              <Tabs defaultValue="preview" className="mt-4">
+                <TabsList>
+                  <TabsIndicator />
+                  <TabsTrigger value="preview">Preview</TabsTrigger>
+                  <TabsTrigger value="code">Code</TabsTrigger>
+                </TabsList>
+                <TabsContent value="preview">
+                  <ComponentPreview label={label}>
+                    <Demo />
+                  </ComponentPreview>
+                </TabsContent>
+                <TabsContent value="code">
+                  <CodeBlock code={source} label={label} />
+                </TabsContent>
+              </Tabs>
+            </section>
+          );
+        })}
       </div>
 
-      {item.dependencies.length > 0 && (
-        <p className="mt-3 text-caption text-muted-foreground">
-          Depends on{" "}
-          {item.dependencies.map((dep, i) => (
-            <span key={dep}>
-              <code className="font-mono text-foreground">{dep}</code>
-              {i < item.dependencies.length - 1 ? ", " : ""}
-            </span>
-          ))}
-          .
-        </p>
-      )}
+      <div className="mt-16 flex flex-col gap-10">
+        {item.api.map((section) => (
+          <section key={section.component}>
+            <h2 className="text-label uppercase text-muted-foreground">
+              API Reference — {section.component}
+            </h2>
+            <ApiTable rows={section.props} className="mt-3" />
+          </section>
+        ))}
+      </div>
     </article>
   );
 }
