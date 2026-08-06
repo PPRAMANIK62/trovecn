@@ -1,4 +1,4 @@
-# Design System — "Trovecn"
+# Design System — "trove/cn"
 
 Reference doc for anyone (human or agent) adding a component to this repo.
 Read this before writing UI code — it exists so six people can build six
@@ -128,12 +128,13 @@ Concrete rules, not vibes — these are what separates "restrained" from
   can't tell a card has a border/fill without zooming into a screenshot,
   push the contrast further.
 - **One signature mark, reused everywhere.** The wordmark is always
-  `Trovecn[.]dev` — the bracket `[.]` sits in `--link` (same neutral
-  foreground, no accent hue) and the trailing `dev` sits in
-  `--muted-foreground` (subdued, echoing the domain). Both appear exactly
-  once per instance of the wordmark (header, footer, anywhere else it shows
-  up). Don't invent additional flourishes or logo variants; consistency of
-  the one mark is the point.
+  `trove/cn` — `trove` sits in `font-sans` / `--foreground` (the house
+  weight/tracking, same as any other text) and `/cn` sits in `font-mono` /
+  `--muted-foreground`, echoing the CLI install command. No accent hue and no
+  separate display face — the sans/mono pairing plus the slash is the whole
+  mark. Both pieces appear exactly once per instance (header, footer,
+  anywhere else it shows up). Don't invent additional flourishes or logo
+  variants; consistency of the one mark is the point.
 - **Catalog numbering on component pages.** Each component detail page shows
   its position in the collection next to its category, e.g.
   `Hero & Marketing · 03`. It signals a curated, ordered set rather than an

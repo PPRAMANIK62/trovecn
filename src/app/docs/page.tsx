@@ -3,9 +3,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Introduction — Trovecn",
+  title: "Introduction — trove/cn",
   description:
-    "Why Trovecn exists: interfaces are judged as cheap or crafted in seconds, and almost never in words.",
+    "Why trove/cn exists: interfaces are judged as cheap or crafted in seconds, and almost never in words.",
 };
 
 const cheapTells = [
@@ -30,7 +30,7 @@ const cheapTells = [
 export default function DocsIndexPage() {
   return (
     <article className="mx-auto max-w-2xl">
-      <h1 className="text-title text-foreground">
+      <h1 className="text-title text-foreground lg:mt-8">
         Nobody tells you an interface feels cheap.
         <br />
         They just leave.
@@ -72,7 +72,7 @@ export default function DocsIndexPage() {
         What we&apos;re doing about it
       </h2>
       <p className="mt-3 text-body leading-relaxed text-muted-foreground">
-        Trovecn studies the interfaces that get this right — the ones people call
+        trove/cn studies the interfaces that get this right — the ones people call
         &ldquo;expensive&rdquo; without being able to say why — and rebuilds the actual mechanism
         behind each one: a spring that answers in under a tenth of a second and adapts if you
         interrupt it instead of snapping back to start, a type and spacing scale where every size

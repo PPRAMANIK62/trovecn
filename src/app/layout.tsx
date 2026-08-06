@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Trovecn — a collected component registry",
+  title: "trove/cn — a collected component registry",
   description:
     "A curated registry of premium UI patterns, observed in the wild and rebuilt for installation via shadcn.",
 };

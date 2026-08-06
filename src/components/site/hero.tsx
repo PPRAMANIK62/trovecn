@@ -60,7 +60,7 @@ export function Hero({ componentCount }: HeroProps) {
           variants={item}
           className="mt-4 text-body leading-[1.7] text-muted-foreground sm:text-lede"
         >
-          Trovecn studies that craft in products like Apple, Linear, and Vercel, then ships it as
+          trove/cn studies that craft in products like Apple, Linear, and Vercel, then ships it as
           plain React source you own.
         </motion.p>
         <motion.div variants={item} className="mt-10 flex items-center gap-3">
