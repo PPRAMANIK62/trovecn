@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 
 import { getComponentsByCategory } from "@/lib/components-registry";
-import { cn } from "@/lib/utils";
+import { useProximityHover } from "@/hooks/use-proximity-hover";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Brand } from "@/components/site/brand";
+import { SidebarNavLink, SidebarHoverPill } from "@/components/site/sidebar-nav-link";
 
 const groups = getComponentsByCategory();
 
@@ -31,6 +31,11 @@ const populatedGroups = groups.filter((group) => group.items.length > 0);
 export function DocsMobileSidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { activeIndex, itemRects, sessionRef, handlers, registerItem } =
+    useProximityHover(containerRef);
+
+  let index = -1;
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -47,62 +52,70 @@ export function DocsMobileSidebar() {
           <Brand />
           <SheetTitle className="sr-only">Components navigation</SheetTitle>
         </SheetHeader>
-        <nav className="flex flex-col gap-6 overflow-y-auto overscroll-contain px-8 py-6 text-minor">
-          <ul className="flex flex-col gap-0.5 text-caption">
-            {pinned.map((item) => {
-              const active = pathname === item.href;
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className={cn(
-                      "block rounded-lg px-3 py-1.5 transition-colors",
-                      active
-                        ? "bg-muted font-medium text-foreground"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-          {populatedGroups.length === 0 ? (
-            <p className="text-muted-foreground">No components yet — check back soon.</p>
-          ) : (
-            populatedGroups.map((group) => (
-              <div key={group.category}>
-                <p className="flex items-baseline gap-1.5 text-label uppercase text-muted-foreground">
-                  {group.category}
-                  <span className="text-muted-foreground/60">{group.items.length}</span>
-                </p>
-                <ul className="mt-2.5 flex flex-col gap-0.5">
-                  {group.items.map((item) => {
-                    const href = `/docs/components/${item.slug}`;
-                    const active = pathname === href;
-                    return (
-                      <li key={item.slug}>
-                        <Link
-                          href={href}
-                          onClick={() => setOpen(false)}
-                          className={cn(
-                            "block rounded-lg px-3 py-1.5 transition-colors",
-                            active
-                              ? "bg-muted font-medium text-foreground"
-                              : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                          )}
-                        >
-                          {item.title}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ))
-          )}
+        <nav className="text-minor">
+          <div
+            ref={containerRef}
+            className="relative flex flex-col gap-6 overflow-y-auto overscroll-contain px-8 py-6"
+            onMouseMove={handlers.onMouseMove}
+            onMouseEnter={handlers.onMouseEnter}
+            onMouseLeave={handlers.onMouseLeave}
+          >
+            <SidebarHoverPill
+              activeRect={activeIndex !== null ? itemRects[activeIndex] : null}
+              sessionKey={sessionRef.current}
+            />
+            <ul className="flex flex-col gap-0.5 text-caption">
+              {pinned.map((item) => {
+                index += 1;
+                const itemIndex = index;
+                return (
+                  <li key={item.href}>
+                    <SidebarNavLink
+                      href={item.href}
+                      index={itemIndex}
+                      active={pathname === item.href}
+                      registerItem={registerItem}
+                      onClick={() => setOpen(false)}
+                    >
+                      {item.label}
+                    </SidebarNavLink>
+                  </li>
+                );
+              })}
+            </ul>
+            {populatedGroups.length === 0 ? (
+              <p className="text-muted-foreground">No components yet — check back soon.</p>
+            ) : (
+              populatedGroups.map((group) => (
+                <div key={group.category}>
+                  <p className="flex items-baseline gap-1.5 text-label uppercase text-muted-foreground">
+                    {group.category}
+                    <span className="text-muted-foreground/60">{group.items.length}</span>
+                  </p>
+                  <ul className="mt-2.5 flex flex-col gap-0.5">
+                    {group.items.map((item) => {
+                      index += 1;
+                      const itemIndex = index;
+                      const href = `/docs/components/${item.slug}`;
+                      return (
+                        <li key={item.slug}>
+                          <SidebarNavLink
+                            href={href}
+                            index={itemIndex}
+                            active={pathname === href}
+                            registerItem={registerItem}
+                            onClick={() => setOpen(false)}
+                          >
+                            {item.title}
+                          </SidebarNavLink>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ))
+            )}
+          </div>
         </nav>
       </SheetContent>
     </Sheet>
