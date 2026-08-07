@@ -47,7 +47,7 @@ export function DocsMobileSidebar() {
           </Button>
         }
       />
-      <SheetContent side="left" showCloseButton={false} aria-describedby={undefined}>
+      <SheetContent side="left" aria-describedby={undefined}>
         <SheetHeader>
           <Brand />
           <SheetTitle className="sr-only">Components navigation</SheetTitle>

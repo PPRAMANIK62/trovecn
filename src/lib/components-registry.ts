@@ -9,6 +9,10 @@ import DialogSizesExample from "../../registry/trovecn/dialog/examples/sizes";
 import DialogWithFooterExample from "../../registry/trovecn/dialog/examples/with-footer";
 import TooltipStandaloneExample from "../../registry/trovecn/tooltip/examples/standalone";
 import TooltipPlacementExample from "../../registry/trovecn/tooltip/examples/placement";
+import ButtonVariantsExample from "../../registry/trovecn/button/examples/variants";
+import ButtonSizesExample from "../../registry/trovecn/button/examples/sizes";
+import SheetStandaloneExample from "../../registry/trovecn/sheet/examples/standalone";
+import SheetSideExample from "../../registry/trovecn/sheet/examples/side";
 
 export interface ComponentExample {
   title: string;
@@ -416,6 +420,145 @@ export const registry: RegistryItem[] = [
             type: "ReactNode",
             default: "—",
             description: "Tooltip content.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "button",
+    title: "Button",
+    description:
+      "Base UI button with variant and size styling via class-variance-authority — the trigger every other primitive renders through `render`.",
+    category: "Primitives",
+    dependencies: ["@base-ui/react", "class-variance-authority"],
+    file: "src/components/ui/button.tsx",
+    examples: [
+      {
+        title: "Variants",
+        description: "All seven style variants side by side.",
+        file: "registry/trovecn/button/examples/variants.tsx",
+        Demo: ButtonVariantsExample,
+      },
+      {
+        title: "Sizes",
+        description: "The full size scale, from 2xs to lg.",
+        file: "registry/trovecn/button/examples/sizes.tsx",
+        Demo: ButtonSizesExample,
+      },
+    ],
+    api: [
+      {
+        component: "Button",
+        props: [
+          {
+            prop: "variant",
+            type: '"default" | "outline" | "elevated" | "secondary" | "ghost" | "destructive" | "link"',
+            default: '"default"',
+            description: "Visual style of the button.",
+          },
+          {
+            prop: "size",
+            type: '"2xs" | "xs" | "sm" | "default" | "lg" | "icon-xs" | "icon-sm" | "icon" | "icon-lg"',
+            default: '"default"',
+            description:
+              "Height/padding scale — the `icon-*` sizes are square, for icon-only buttons.",
+          },
+          {
+            prop: "render",
+            type: "ReactElement",
+            default: "—",
+            description:
+              "Render as a different element (e.g. a link) while keeping button styling.",
+          },
+          {
+            prop: "children",
+            type: "ReactNode",
+            default: "—",
+            description: "Button label or content.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "sheet",
+    title: "Sheet",
+    description:
+      "Edge-anchored panel built on the Dialog primitive — slides in flush against a viewport edge with a fading backdrop, unlike Dialog's detached floating plane.",
+    category: "Primitives",
+    dependencies: ["@base-ui/react"],
+    file: "src/components/ui/sheet.tsx",
+    examples: [
+      {
+        title: "Standalone",
+        description: "A left-anchored sheet showing a proximity-hover nav list.",
+        file: "registry/trovecn/sheet/examples/standalone.tsx",
+        Demo: SheetStandaloneExample,
+      },
+      {
+        title: "Side",
+        description:
+          "The same sheet anchored to each edge, with content shaped for its position — a banner up top, settings on the right, an icon-row action sheet on the bottom, and the same nav list as Standalone on the left.",
+        file: "registry/trovecn/sheet/examples/side.tsx",
+        Demo: SheetSideExample,
+      },
+    ],
+    api: [
+      {
+        component: "Sheet",
+        props: [
+          {
+            prop: "defaultOpen",
+            type: "boolean",
+            default: "false",
+            description: "Whether the sheet is initially open, uncontrolled.",
+          },
+          {
+            prop: "open",
+            type: "boolean",
+            default: "—",
+            description: "Controlled open state.",
+          },
+          {
+            prop: "onOpenChange",
+            type: "(open: boolean) => void",
+            default: "—",
+            description: "Called when the open state changes.",
+          },
+          {
+            prop: "modal",
+            type: 'boolean | "trap-focus"',
+            default: "true",
+            description: "Whether the rest of the page is inert while the sheet is open.",
+          },
+        ],
+      },
+      {
+        component: "SheetContent",
+        props: [
+          {
+            prop: "side",
+            type: '"top" | "right" | "bottom" | "left"',
+            default: '"left"',
+            description: "Which viewport edge the sheet slides in from.",
+          },
+          {
+            prop: "children",
+            type: "ReactNode",
+            default: "—",
+            description: "Sheet content — typically SheetHeader and body content.",
+          },
+        ],
+      },
+      {
+        component: "SheetTitle / SheetDescription",
+        props: [
+          {
+            prop: "children",
+            type: "ReactNode",
+            default: "—",
+            description: "Title or description content.",
           },
         ],
       },
