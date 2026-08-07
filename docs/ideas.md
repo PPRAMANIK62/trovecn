@@ -25,12 +25,12 @@ where the primitive is a list/grid of interactive items.
 
 Priority ordered by how many backlog patterns below depend on it:
 
-- [ ] Popover — command palette, mega-menu, hover/preview panels
+- [x] Popover — command palette, mega-menu, hover/preview panels
 - [ ] Dialog — command palette container, any future modal
 - [ ] Menu (dropdown) — mega-menu, sidebar row actions
 - [ ] Combobox / Autocomplete — command palette search-as-you-type
 - [ ] Tooltip — keyboard shortcut badges, hover previews
-- [ ] Accordion — changelog/roadmap timeline
+- [x] Accordion — changelog/roadmap timeline
 - [ ] Switch — pricing toggle
 - [~] Tabs — already scaffolded (`src/components/ui/tabs.tsx`); needs the
   sliding-indicator motion pass (`spring.moderate`) before "animated tab

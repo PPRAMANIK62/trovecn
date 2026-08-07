@@ -28,6 +28,24 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "description": "Anchored floating panel that grows out of its trigger, scaling from Base UI's transform-origin.",
+      "dependencies": ["framer-motion", "@base-ui/react"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/popover.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/lib/springs.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }
