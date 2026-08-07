@@ -16,25 +16,9 @@ positioning, keyboard nav) and house motion (spring tier, elevation step,
 proximity hover, ghost-span) once per primitive here, and every pattern
 built on top inherits both for free instead of re-deriving them per file.
 
-Workflow: `npx shadcn add <name>` scaffolds the Base UI wrapper into
-`src/components/ui/` (style `base-nova`, per `components.json`) — don't
-hand-write Base UI bindings. Then apply the house motion system from
-`docs/design-system.md` on top of what the CLI generates: swap in the
-correct `@/lib/springs` tier, wire the elevation step, add proximity hover
-where the primitive is a list/grid of interactive items.
-
-Priority ordered by how many backlog patterns below depend on it:
-
-- [x] Popover — command palette, mega-menu, hover/preview panels
-- [x] Dialog — command palette container, any future modal
-- [ ] Menu (dropdown) — mega-menu, sidebar row actions
-- [ ] Combobox / Autocomplete — command palette search-as-you-type
-- [x] Tooltip — keyboard shortcut badges, hover previews
-- [x] Accordion — changelog/roadmap timeline
-- [ ] Switch — pricing toggle
-- [~] Tabs — already scaffolded (`src/components/ui/tabs.tsx`); needs the
-  sliding-indicator motion pass (`spring.moderate`) before "animated tab
-  switcher" ships as a pattern
+Full backlog, priority order, and build workflow now live in
+`docs/primitives.md` — keep that file as the single source of truth for
+primitive ideas rather than duplicating the list here.
 
 ## Scroll & reveal
 
