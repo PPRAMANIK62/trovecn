@@ -13,6 +13,8 @@ import ButtonVariantsExample from "../../registry/trovecn/button/examples/varian
 import ButtonSizesExample from "../../registry/trovecn/button/examples/sizes";
 import SheetStandaloneExample from "../../registry/trovecn/sheet/examples/standalone";
 import SheetSideExample from "../../registry/trovecn/sheet/examples/side";
+import TabsStandaloneExample from "../../registry/trovecn/tabs/examples/standalone";
+import TabsIconsExample from "../../registry/trovecn/tabs/examples/icons";
 
 export interface ComponentExample {
   title: string;
@@ -559,6 +561,112 @@ export const registry: RegistryItem[] = [
             type: "ReactNode",
             default: "—",
             description: "Title or description content.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "tabs",
+    title: "Tabs",
+    description:
+      "Tab list with a spring-driven sliding indicator and proximity hover across every tab — the item nearest the cursor previews with a subtle wash before it's clicked.",
+    category: "Primitives",
+    dependencies: ["framer-motion", "@base-ui/react"],
+    file: "src/components/ui/tabs.tsx",
+    examples: [
+      {
+        title: "Standalone",
+        description: "Three tabs with the indicator sliding between them.",
+        file: "registry/trovecn/tabs/examples/standalone.tsx",
+        Demo: TabsStandaloneExample,
+      },
+      {
+        title: "Icons",
+        description: "A tab per icon+label pair — the indicator resizes to fit each one.",
+        file: "registry/trovecn/tabs/examples/icons.tsx",
+        Demo: TabsIconsExample,
+      },
+    ],
+    api: [
+      {
+        component: "Tabs",
+        props: [
+          {
+            prop: "defaultValue",
+            type: "unknown",
+            default: "—",
+            description: "Initially active tab value, uncontrolled.",
+          },
+          {
+            prop: "value",
+            type: "unknown",
+            default: "—",
+            description: "Controlled active tab value.",
+          },
+          {
+            prop: "onValueChange",
+            type: "(value) => void",
+            default: "—",
+            description: "Called when the active tab changes.",
+          },
+          {
+            prop: "orientation",
+            type: '"horizontal" | "vertical"',
+            default: '"horizontal"',
+            description: "Layout and keyboard navigation axis.",
+          },
+        ],
+      },
+      {
+        component: "TabsList",
+        props: [
+          {
+            prop: "children",
+            type: "ReactNode",
+            default: "—",
+            description:
+              "One TabsTrigger per tab. The sliding indicator and the proximity hover pill render automatically — no separate indicator component to place.",
+          },
+        ],
+      },
+      {
+        component: "TabsTrigger",
+        props: [
+          {
+            prop: "value",
+            type: "unknown",
+            default: "—",
+            description: "Identifies which TabsContent this trigger activates.",
+          },
+          {
+            prop: "disabled",
+            type: "boolean",
+            default: "false",
+            description: "Whether this tab is disabled.",
+          },
+          {
+            prop: "children",
+            type: "ReactNode",
+            default: "—",
+            description: "Tab label — an icon plus text lays out side by side automatically.",
+          },
+        ],
+      },
+      {
+        component: "TabsContent",
+        props: [
+          {
+            prop: "value",
+            type: "unknown",
+            default: "—",
+            description: "Matches the TabsTrigger value this panel belongs to.",
+          },
+          {
+            prop: "children",
+            type: "ReactNode",
+            default: "—",
+            description: "Panel content, shown while its tab is active.",
           },
         ],
       },

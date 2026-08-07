@@ -114,6 +114,32 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "Tab list with a spring-driven sliding indicator and proximity hover across every tab.",
+      "dependencies": ["framer-motion", "@base-ui/react"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/tabs.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/hooks/use-proximity-hover.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "src/lib/springs.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/font-weight.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }

@@ -1,72 +1,332 @@
 "use client";
 
+import {
+  Children,
+  cloneElement,
+  createContext,
+  isValidElement,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactElement,
+} from "react";
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { cn } from "@/lib/utils";
+import { spring } from "@/lib/springs";
+import { fontWeights } from "@/lib/font-weight";
+import {
+  useProximityHover,
+  proximityHoverWashClassName,
+  proximityHoverWashOpacity,
+  type ItemRect,
+} from "@/hooks/use-proximity-hover";
 
-function Tabs({ className, ...props }: TabsPrimitive.Root.Props) {
-  return (
-    <TabsPrimitive.Root
-      data-slot="tabs"
-      className={cn("flex flex-col gap-2", className)}
-      {...props}
-    />
-  );
+// ─── Contexts ────────────────────────────────────────────────────────────────
+// Base UI doesn't expose a public hook for "which value is active" to
+// arbitrary descendants (only its own Root/List/Tab/Panel/Indicator
+// components can see that internally) — TabsList needs it to resolve the
+// selected tab's index into `itemRects`, so Tabs tracks it itself instead.
+
+interface TabsValueOrderContextValue {
+  valueOrder: string[];
+  setValueOrder: (order: string[]) => void;
+  selectedValue: string | undefined;
 }
 
-function TabsList({ className, ...props }: TabsPrimitive.List.Props) {
-  return (
-    <TabsPrimitive.List
-      data-slot="tabs-list"
-      className={cn(
-        "relative inline-flex h-8 w-fit items-center gap-0.5 rounded-md bg-background p-[3px] text-muted-foreground shadow-well",
-        className,
-      )}
-      {...props}
-    />
-  );
+const TabsValueOrderContext = createContext<TabsValueOrderContextValue | null>(null);
+
+interface TabsListContextValue {
+  registerTab: (index: number, element: HTMLElement | null) => void;
+  hoveredIndex: number | null;
+  selectedValue: string | undefined;
+  /** Optimistically set on click so the indicator jumps immediately, without waiting for the controlled value to round-trip back. */
+  setOptimisticIndex: (index: number) => void;
 }
 
-/**
- * The sliding chip: Base UI measures the active tab and exposes its rect as
- * CSS vars (--active-tab-left/width/…) on this span, so it works for any
- * number/width of tabs without us hand-measuring anything. Positioned with
- * left/width rather than a transform because those vars are the only handle
- * Base UI gives us — same tradeoff the accordion's item-highlight pill
- * already makes (src/components/ui/accordion.tsx), so this isn't a new
- * exception to "transform/opacity only," just the same one.
- */
-function TabsIndicator({ className, ...props }: TabsPrimitive.Indicator.Props) {
+const TabsListContext = createContext<TabsListContextValue | null>(null);
+
+function useTabsListContext() {
+  const ctx = useContext(TabsListContext);
+  if (!ctx) throw new Error("TabsTrigger must be used within a TabsList");
+  return ctx;
+}
+
+// ─── Tabs ────────────────────────────────────────────────────────────────────
+
+function Tabs({
+  value,
+  onValueChange,
+  defaultValue,
+  children,
+  className,
+  ...props
+}: TabsPrimitive.Root.Props) {
+  const [valueOrder, setValueOrder] = useState<string[]>([]);
+  const [uncontrolledValue, setUncontrolledValue] = useState<unknown>(defaultValue);
+
+  const updateValueOrder = useCallback((order: string[]) => {
+    setValueOrder((current) =>
+      current.length === order.length && current.every((v, i) => v === order[i]) ? current : order,
+    );
+  }, []);
+
+  const resolvedValue = value ?? uncontrolledValue ?? valueOrder[0];
+
+  // Base UI passes (value, eventDetails) — only the value matters here.
+  const handleValueChange = useCallback(
+    (newValue: unknown, eventDetails: unknown) => {
+      if (value === undefined) setUncontrolledValue(newValue);
+      (onValueChange as ((v: unknown, e: unknown) => void) | undefined)?.(newValue, eventDetails);
+    },
+    [onValueChange, value],
+  );
+
   return (
-    <TabsPrimitive.Indicator
-      data-slot="tabs-indicator"
-      className={cn(
-        "absolute rounded-sm bg-card shadow-bevel transition-[left,width] duration-180 ease-[cubic-bezier(0.23,1,0.32,1)]",
-        className,
-      )}
-      style={{
-        left: "var(--active-tab-left)",
-        top: "var(--active-tab-top)",
-        width: "var(--active-tab-width)",
-        height: "var(--active-tab-height)",
+    <TabsValueOrderContext.Provider
+      value={{
+        valueOrder,
+        setValueOrder: updateValueOrder,
+        selectedValue: resolvedValue as string | undefined,
       }}
-      {...props}
-    />
+    >
+      {/*
+        Always controlled: Base UI's useControlled warns in dev when value
+        flips undefined → defined. valueOrder is empty on the first commit,
+        so fall back to an empty-string sentinel — TabsList's layout effect
+        populates valueOrder pre-paint, so the corrected value lands before
+        anything is visible.
+      */}
+      <TabsPrimitive.Root
+        data-slot="tabs"
+        value={resolvedValue ?? ""}
+        onValueChange={handleValueChange}
+        className={cn("flex flex-col gap-2", className)}
+        {...props}
+      >
+        {children}
+      </TabsPrimitive.Root>
+    </TabsValueOrderContext.Provider>
   );
 }
 
-function TabsTrigger({ className, ...props }: TabsPrimitive.Tab.Props) {
+// ─── TabsList ────────────────────────────────────────────────────────────────
+// Owns the sliding "selected" pill and the proximity hover pill — the same
+// measured-rect pattern Accordion's item-highlight and DocsSidebar's nav pill
+// already use (docs/design-system.md "Proximity hover"), applied along the x
+// axis since tabs lay out horizontally.
+
+function TabsList({ children, className, ...props }: TabsPrimitive.List.Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isMouseInsideRef = useRef(false);
+  const valueOrderCtx = useContext(TabsValueOrderContext);
+  const [optimisticIndex, setOptimisticIndex] = useState<number | null>(null);
+
+  const values = Children.toArray(children)
+    .filter(isValidElement)
+    .map((child) => (child.props as { value?: string }).value)
+    .filter((v): v is string => typeof v === "string");
+  const valueOrderKey = values.join(",");
+  const setValueOrder = valueOrderCtx?.setValueOrder;
+
+  useLayoutEffect(() => {
+    setValueOrder?.(values);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setValueOrder, valueOrderKey]);
+
+  const {
+    activeIndex: hoveredIndex,
+    setActiveIndex: setHoveredIndex,
+    itemRects,
+    handlers,
+    registerItem,
+    measureItems,
+  } = useProximityHover(containerRef, { axis: "x" });
+
+  useEffect(() => {
+    measureItems();
+  }, [measureItems, children]);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      isMouseInsideRef.current = true;
+      handlers.onMouseMove(e);
+    },
+    [handlers],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    isMouseInsideRef.current = false;
+    handlers.onMouseLeave();
+  }, [handlers]);
+
+  const selectedValue = valueOrderCtx?.selectedValue;
+  const selectedIndex = selectedValue !== undefined ? values.indexOf(selectedValue) : -1;
+
+  useEffect(() => {
+    setOptimisticIndex(selectedIndex >= 0 ? selectedIndex : null);
+  }, [selectedIndex]);
+
+  const selectedRect: ItemRect | null =
+    optimisticIndex !== null ? (itemRects[optimisticIndex] ?? null) : null;
+  const hoverRect: ItemRect | null =
+    hoveredIndex !== null ? (itemRects[hoveredIndex] ?? null) : null;
+  const isHoveringSelected = hoveredIndex === optimisticIndex;
+  const isHovering = hoveredIndex !== null && !isHoveringSelected;
+
+  // Auto-index children so callers never hand-thread an index just for
+  // proximity hover/rect tracking — mirrors Accordion's indexedChildren.
+  const indexedChildren = Children.map(children, (child, index) => {
+    if (!isValidElement(child)) return child;
+    return cloneElement(child as ReactElement<{ _index?: number }>, { _index: index });
+  });
+
+  return (
+    <TabsListContext.Provider
+      value={{
+        registerTab: registerItem,
+        hoveredIndex,
+        selectedValue,
+        setOptimisticIndex,
+      }}
+    >
+      <TabsPrimitive.List
+        data-slot="tabs-list"
+        ref={(node: HTMLDivElement | null) => {
+          (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        }}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handlers.onMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocus={(e: React.FocusEvent) => {
+          const trigger = (e.target as HTMLElement).closest("[data-proximity-index]");
+          const indexAttr = trigger?.getAttribute("data-proximity-index");
+          if (indexAttr != null) setHoveredIndex(Number(indexAttr));
+        }}
+        onBlur={(e: React.FocusEvent) => {
+          if (containerRef.current?.contains(e.relatedTarget as Node)) return;
+          if (!isMouseInsideRef.current) setHoveredIndex(null);
+        }}
+        className={cn(
+          "relative inline-flex w-fit items-center gap-0.5 rounded-lg bg-background p-1 text-muted-foreground shadow-well",
+          className,
+        )}
+        {...props}
+      >
+        {selectedRect && (
+          <motion.div
+            className="pointer-events-none absolute rounded-md bg-card shadow-bevel"
+            initial={false}
+            animate={{
+              left: selectedRect.left,
+              top: selectedRect.top,
+              width: selectedRect.width,
+              height: selectedRect.height,
+              opacity: isHovering ? 0.85 : 1,
+            }}
+            transition={{ ...spring.moderate.enter, opacity: { duration: 0.08 } }}
+          />
+        )}
+
+        <AnimatePresence>
+          {hoverRect && !isHoveringSelected && selectedRect && (
+            <motion.div
+              className={cn("pointer-events-none absolute rounded-md", proximityHoverWashClassName)}
+              initial={{
+                left: selectedRect.left,
+                top: selectedRect.top,
+                width: selectedRect.width,
+                height: selectedRect.height,
+                opacity: 0,
+              }}
+              animate={{
+                left: hoverRect.left,
+                top: hoverRect.top,
+                width: hoverRect.width,
+                height: hoverRect.height,
+                opacity: proximityHoverWashOpacity,
+              }}
+              exit={{ opacity: 0, transition: spring.fast.exit }}
+              transition={spring.fast.enter}
+            />
+          )}
+        </AnimatePresence>
+
+        {indexedChildren}
+      </TabsPrimitive.List>
+    </TabsListContext.Provider>
+  );
+}
+
+// ─── TabsTrigger ─────────────────────────────────────────────────────────────
+
+function TabsTrigger({
+  className,
+  children,
+  onClick,
+  _index = 0,
+  ...props
+}: TabsPrimitive.Tab.Props & { _index?: number }) {
+  const { registerTab, hoveredIndex, selectedValue, setOptimisticIndex } = useTabsListContext();
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    registerTab(_index, ref.current);
+    return () => registerTab(_index, null);
+  }, [_index, registerTab]);
+
+  const isSelected = selectedValue === props.value;
+  const isActive = hoveredIndex === _index || isSelected;
+
   return (
     <TabsPrimitive.Tab
+      ref={ref}
       data-slot="tabs-trigger"
+      data-proximity-index={_index}
+      // Composed, not spread-overridable: a consumer onClick must not
+      // replace the optimistic indicator jump.
+      onClick={(e) => {
+        setOptimisticIndex(_index);
+        onClick?.(e);
+      }}
       className={cn(
-        "relative z-1 inline-flex h-[26px] items-center justify-center rounded-sm px-3 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors data-active:text-foreground hover:text-foreground disabled:pointer-events-none disabled:opacity-50",
+        "relative z-10 inline-flex h-8 items-center justify-center rounded-md px-3 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50",
         className,
       )}
       {...props}
-    />
+    >
+      {/* Ghost-span: an invisible copy at the heaviest weight reserves the
+          width so the visible copy's weight can animate without reflowing
+          the tab (docs/design-system.md "Ghost-span"). Each stacked copy is
+          its own flex row (not the outer Tab) so an icon + label child pair
+          still lays out side by side within each copy. */}
+      <span className="col-start-1 row-start-1 grid text-control">
+        <span
+          className="invisible col-start-1 row-start-1 inline-flex items-center gap-1.5"
+          style={{ fontVariationSettings: fontWeights.medium }}
+          aria-hidden="true"
+        >
+          {children}
+        </span>
+        <span
+          className={cn(
+            "col-start-1 row-start-1 inline-flex items-center gap-1.5 transition-colors duration-80",
+            isActive ? "text-foreground" : "text-muted-foreground",
+          )}
+          style={{ fontVariationSettings: isSelected ? fontWeights.medium : fontWeights.normal }}
+        >
+          {children}
+        </span>
+      </span>
+    </TabsPrimitive.Tab>
   );
 }
+
+// ─── TabsContent ─────────────────────────────────────────────────────────────
 
 function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
   return (
@@ -78,4 +338,4 @@ function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
   );
 }
 
-export { Tabs, TabsList, TabsIndicator, TabsTrigger, TabsContent };
+export { Tabs, TabsList, TabsTrigger, TabsContent };

@@ -14,7 +14,7 @@ import {
 import { ApiTable } from "@/components/site/api-table";
 import { CodeBlock } from "@/components/site/code-block";
 import { ComponentPreview } from "@/components/site/component-preview";
-import { Tabs, TabsContent, TabsIndicator, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -106,7 +106,6 @@ export default async function ComponentPage({ params }: PageProps) {
 
               <Tabs defaultValue="preview" className="mt-4">
                 <TabsList>
-                  <TabsIndicator />
                   <TabsTrigger value="preview">Preview</TabsTrigger>
                   <TabsTrigger value="code">Code</TabsTrigger>
                 </TabsList>
