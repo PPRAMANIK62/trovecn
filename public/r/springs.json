@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "springs",
+  "title": "Springs",
+  "description": "Three-tier spring/tween motion tokens — fast, moderate, slow.",
+  "dependencies": [
+    "framer-motion"
+  ],
+  "files": [
+    {
+      "path": "src/lib/springs.ts",
+      "content": "import type { Transition } from \"framer-motion\";\n\n/**\n * Motion tokens — see docs/design-system.md \"Motion & interaction\n * principles\". Three tiers, each an enter spring paired with a faster,\n * bounce-free exit tween. Never hand-write a duration/transition inline —\n * import the tier that matches how big the thing moving is.\n */\n\ninterface SpringTier {\n  /** Enter transition — spring, responds naturally to interruption. */\n  enter: Transition;\n  /** Exit transition — plain tween, one notch quicker, no bounce. */\n  exit: Transition;\n}\n\nexport const spring = {\n  /** Hover, focus rings, fades, tooltips, selection indicators. */\n  fast: {\n    enter: { type: \"spring\", duration: 0.08, bounce: 0 },\n    exit: { duration: 0.06, ease: \"easeOut\" },\n  },\n  /**\n   * Short travel / small expansion (dropdown & tab indicators, switch\n   * thumb, accordions) and panels that must land exactly (mobile drawer,\n   * selection merge/split).\n   */\n  moderate: {\n    enter: { type: \"spring\", duration: 0.16, bounce: 0 },\n    exit: { duration: 0.12, ease: \"easeOut\" },\n  },\n  /** Large surfaces: dialogs, side panels, stepped flows. */\n  slow: {\n    enter: { type: \"spring\", duration: 0.24, bounce: 0.12 },\n    exit: { duration: 0.16, ease: \"easeOut\" },\n  },\n} satisfies Record<\"fast\" | \"moderate\" | \"slow\", SpringTier>;\n",
+      "type": "registry:lib"
+    }
+  ],
+  "type": "registry:lib"
+}

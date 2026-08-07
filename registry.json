@@ -4,28 +4,66 @@
   "homepage": "https://trovecn.dev",
   "items": [
     {
+      "name": "utils",
+      "type": "registry:lib",
+      "title": "Utils",
+      "description": "cn() class merger, extended with the custom text-* font-size scale from globals.css so tailwind-merge doesn't drop it.",
+      "dependencies": ["clsx", "tailwind-merge"],
+      "files": [
+        {
+          "path": "src/lib/utils.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "springs",
+      "type": "registry:lib",
+      "title": "Springs",
+      "description": "Three-tier spring/tween motion tokens — fast, moderate, slow.",
+      "dependencies": ["framer-motion"],
+      "files": [
+        {
+          "path": "src/lib/springs.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "font-weight",
+      "type": "registry:lib",
+      "title": "Font weight",
+      "description": "Geist variable-font weight tokens for animated font-weight transitions.",
+      "files": [
+        {
+          "path": "src/lib/font-weight.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "use-proximity-hover",
+      "type": "registry:hook",
+      "title": "useProximityHover",
+      "description": "Tracks cursor distance across a list of items to preview the nearest one before it's clicked.",
+      "files": [
+        {
+          "path": "src/hooks/use-proximity-hover.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "accordion",
       "type": "registry:ui",
       "title": "Accordion",
       "description": "Collapsible accordion with spring-animated height and chevron, and proximity hover across every row.",
       "dependencies": ["framer-motion", "@base-ui/react", "lucide-react"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["utils", "springs", "font-weight", "use-proximity-hover"],
       "files": [
         {
           "path": "src/components/ui/accordion.tsx",
           "type": "registry:ui"
-        },
-        {
-          "path": "src/hooks/use-proximity-hover.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/lib/springs.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/lib/font-weight.ts",
-          "type": "registry:lib"
         }
       ]
     },
@@ -35,15 +73,11 @@
       "title": "Popover",
       "description": "Anchored floating panel that grows out of its trigger, scaling from Base UI's transform-origin.",
       "dependencies": ["framer-motion", "@base-ui/react"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["utils", "springs"],
       "files": [
         {
           "path": "src/components/ui/popover.tsx",
           "type": "registry:ui"
-        },
-        {
-          "path": "src/lib/springs.ts",
-          "type": "registry:lib"
         }
       ]
     },
@@ -53,15 +87,11 @@
       "title": "Dialog",
       "description": "Centered modal with a spring-scaled popup and fading backdrop.",
       "dependencies": ["framer-motion", "@base-ui/react", "lucide-react"],
-      "registryDependencies": ["utils", "button"],
+      "registryDependencies": ["utils", "springs", "button"],
       "files": [
         {
           "path": "src/components/ui/dialog.tsx",
           "type": "registry:ui"
-        },
-        {
-          "path": "src/lib/springs.ts",
-          "type": "registry:lib"
         }
       ]
     },
@@ -71,19 +101,11 @@
       "title": "Tooltip",
       "description": "Fast, fading label that slides in from the trigger's side.",
       "dependencies": ["framer-motion", "@base-ui/react"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["utils", "springs", "font-weight"],
       "files": [
         {
           "path": "src/components/ui/tooltip.tsx",
           "type": "registry:ui"
-        },
-        {
-          "path": "src/lib/springs.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/lib/font-weight.ts",
-          "type": "registry:lib"
         }
       ]
     },
@@ -121,23 +143,11 @@
       "title": "Tabs",
       "description": "Tab list with a spring-driven sliding indicator and proximity hover across every tab.",
       "dependencies": ["framer-motion", "@base-ui/react"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["utils", "springs", "font-weight", "use-proximity-hover"],
       "files": [
         {
           "path": "src/components/ui/tabs.tsx",
           "type": "registry:ui"
-        },
-        {
-          "path": "src/hooks/use-proximity-hover.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/lib/springs.ts",
-          "type": "registry:lib"
-        },
-        {
-          "path": "src/lib/font-weight.ts",
-          "type": "registry:lib"
         }
       ]
     }

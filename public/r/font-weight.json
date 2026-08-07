@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "font-weight",
+  "title": "Font weight",
+  "description": "Geist variable-font weight tokens for animated font-weight transitions.",
+  "files": [
+    {
+      "path": "src/lib/font-weight.ts",
+      "content": "/**\n * Geist Sans weight tokens for `fontVariationSettings` — see\n * docs/design-system.md \"Ghost-span for animated font-weight\". Geist is a\n * variable font (loaded without a fixed `weight` in layout.tsx, so\n * next/font/google serves the full `wght` axis) but has no `opsz` axis, so\n * unlike some variable fonts there's no optical-size compensation to pair\n * each weight with.\n */\nexport const fontWeights = {\n  normal: \"'wght' 400\",\n  medium: \"'wght' 500\",\n} as const;\n",
+      "type": "registry:lib"
+    }
+  ],
+  "type": "registry:lib"
+}

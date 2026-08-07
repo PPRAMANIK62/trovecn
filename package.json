@@ -4,13 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "predev": "bun run registry:index",
+    "prebuild": "bun run registry:index && shadcn build",
     "build": "next build",
     "start": "next start",
     "lint": "oxlint",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "prepare": "husky",
-    "registry:build": "shadcn build"
+    "registry:build": "shadcn build",
+    "registry:index": "bun run scripts/generate-registry-index.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
