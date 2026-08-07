@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "predev": "bun run registry:index",
-    "prebuild": "bun run registry:index && shadcn build",
+    "predev": "bun run registry:index && bun run registry:manifest",
+    "prebuild": "bun run registry:index && bun run registry:manifest && shadcn build",
     "build": "next build",
     "start": "next start",
     "lint": "oxlint",
@@ -13,7 +13,8 @@
     "format:check": "oxfmt --check",
     "prepare": "husky",
     "registry:build": "shadcn build",
-    "registry:index": "bun run scripts/generate-registry-index.ts"
+    "registry:index": "bun run scripts/generate-registry-index.ts",
+    "registry:manifest": "bun run scripts/generate-registry-manifest.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

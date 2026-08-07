@@ -4,14 +4,13 @@
   "homepage": "https://trovecn.dev",
   "items": [
     {
-      "name": "utils",
+      "name": "font-weight",
       "type": "registry:lib",
-      "title": "Utils",
-      "description": "cn() class merger, extended with the custom text-* font-size scale from globals.css so tailwind-merge doesn't drop it.",
-      "dependencies": ["clsx", "tailwind-merge"],
+      "title": "Font weight",
+      "description": "Geist variable-font weight tokens for animated font-weight transitions.",
       "files": [
         {
-          "path": "src/lib/utils.ts",
+          "path": "src/lib/font-weight.ts",
           "type": "registry:lib"
         }
       ]
@@ -21,7 +20,9 @@
       "type": "registry:lib",
       "title": "Springs",
       "description": "Three-tier spring/tween motion tokens — fast, moderate, slow.",
-      "dependencies": ["framer-motion"],
+      "dependencies": [
+        "framer-motion"
+      ],
       "files": [
         {
           "path": "src/lib/springs.ts",
@@ -30,13 +31,17 @@
       ]
     },
     {
-      "name": "font-weight",
+      "name": "utils",
       "type": "registry:lib",
-      "title": "Font weight",
-      "description": "Geist variable-font weight tokens for animated font-weight transitions.",
+      "title": "Utils",
+      "description": "cn() class merger, extended with the custom text-* font-size scale from globals.css so tailwind-merge doesn't drop it.",
+      "dependencies": [
+        "clsx",
+        "tailwind-merge"
+      ],
       "files": [
         {
-          "path": "src/lib/font-weight.ts",
+          "path": "src/lib/utils.ts",
           "type": "registry:lib"
         }
       ]
@@ -58,53 +63,20 @@
       "type": "registry:ui",
       "title": "Accordion",
       "description": "Collapsible accordion with spring-animated height and chevron, and proximity hover across every row.",
-      "dependencies": ["framer-motion", "@base-ui/react", "lucide-react"],
-      "registryDependencies": ["utils", "springs", "font-weight", "use-proximity-hover"],
+      "dependencies": [
+        "framer-motion",
+        "@base-ui/react",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "font-weight",
+        "use-proximity-hover"
+      ],
       "files": [
         {
           "path": "src/components/ui/accordion.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
-      "name": "popover",
-      "type": "registry:ui",
-      "title": "Popover",
-      "description": "Anchored floating panel that grows out of its trigger, scaling from Base UI's transform-origin.",
-      "dependencies": ["framer-motion", "@base-ui/react"],
-      "registryDependencies": ["utils", "springs"],
-      "files": [
-        {
-          "path": "src/components/ui/popover.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
-      "name": "dialog",
-      "type": "registry:ui",
-      "title": "Dialog",
-      "description": "Centered modal with a spring-scaled popup and fading backdrop.",
-      "dependencies": ["framer-motion", "@base-ui/react", "lucide-react"],
-      "registryDependencies": ["utils", "springs", "button"],
-      "files": [
-        {
-          "path": "src/components/ui/dialog.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
-      "name": "tooltip",
-      "type": "registry:ui",
-      "title": "Tooltip",
-      "description": "Fast, fading label that slides in from the trigger's side.",
-      "dependencies": ["framer-motion", "@base-ui/react"],
-      "registryDependencies": ["utils", "springs", "font-weight"],
-      "files": [
-        {
-          "path": "src/components/ui/tooltip.tsx",
           "type": "registry:ui"
         }
       ]
@@ -114,11 +86,58 @@
       "type": "registry:ui",
       "title": "Button",
       "description": "Base UI button with variant and size styling via class-variance-authority.",
-      "dependencies": ["@base-ui/react", "class-variance-authority"],
-      "registryDependencies": ["utils"],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
       "files": [
         {
           "path": "src/components/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "Centered modal with a spring-scaled popup and fading backdrop.",
+      "dependencies": [
+        "framer-motion",
+        "@base-ui/react",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "popover",
+      "type": "registry:ui",
+      "title": "Popover",
+      "description": "Anchored floating panel that grows out of its trigger, scaling from Base UI's transform-origin.",
+      "dependencies": [
+        "framer-motion",
+        "@base-ui/react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/popover.tsx",
           "type": "registry:ui"
         }
       ]
@@ -128,8 +147,12 @@
       "type": "registry:ui",
       "title": "Sheet",
       "description": "Edge-anchored panel built on the Dialog primitive, sliding in from any side with a fading backdrop.",
-      "dependencies": ["@base-ui/react"],
-      "registryDependencies": ["utils"],
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
       "files": [
         {
           "path": "src/components/ui/sheet.tsx",
@@ -142,11 +165,40 @@
       "type": "registry:ui",
       "title": "Tabs",
       "description": "Tab list with a spring-driven sliding indicator and proximity hover across every tab.",
-      "dependencies": ["framer-motion", "@base-ui/react"],
-      "registryDependencies": ["utils", "springs", "font-weight", "use-proximity-hover"],
+      "dependencies": [
+        "framer-motion",
+        "@base-ui/react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "font-weight",
+        "use-proximity-hover"
+      ],
       "files": [
         {
           "path": "src/components/ui/tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "Fast, fading label that slides in from the trigger's side.",
+      "dependencies": [
+        "framer-motion",
+        "@base-ui/react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "font-weight"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/tooltip.tsx",
           "type": "registry:ui"
         }
       ]

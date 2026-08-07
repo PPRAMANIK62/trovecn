@@ -41,3 +41,25 @@ export interface RegistryItem {
   examples: ComponentExample[];
   api: ApiSection[];
 }
+
+export type RegistryItemType = "registry:ui" | "registry:hook" | "registry:lib";
+
+export interface RegistryManifestFile {
+  path: string;
+  type: RegistryItemType;
+}
+
+/** Shape of one `registry.json` entry — the shadcn CLI's distribution
+ * manifest, not the docs site's `RegistryItem`. Kept separate because the
+ * two have different concerns (install-time deps/files vs. docs copy) and
+ * different lifecycles: e.g. `springs`/`utils` are manifest-only, they
+ * never get a docs page. */
+export interface RegistryManifestItem {
+  name: string;
+  type: RegistryItemType;
+  title: string;
+  description: string;
+  dependencies?: string[];
+  registryDependencies?: string[];
+  files: RegistryManifestFile[];
+}
