@@ -6,7 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/springs";
-import type { ItemRect } from "@/hooks/use-proximity-hover";
+import {
+  proximityHoverWashClassName,
+  proximityHoverWashOpacity,
+  type ItemRect,
+} from "@/hooks/use-proximity-hover";
 
 /**
  * Shared by DocsSidebar and DocsMobileSidebar: a nav pill that registers
@@ -42,9 +46,15 @@ export function SidebarNavLink({
       onClick={onClick}
       className={cn(
         "relative z-10 block rounded-lg px-3 py-1.5 transition-colors",
+        // No hover:bg-* here — the SidebarHoverPill underneath is the sole
+        // hover indicator (docs/design-system.md "Proximity hover"). A
+        // competing full-strength hover:bg-muted on the link itself would
+        // fire at full opacity on real hover, making the pill's capped
+        // 0.4 wash invisible under it and reading as indistinguishable
+        // from the persistent bg-muted active state on the line below.
         active
           ? "bg-muted font-medium text-foreground"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground",
+          : "text-muted-foreground hover:text-foreground",
       )}
     >
       {children}
@@ -52,7 +62,7 @@ export function SidebarNavLink({
   );
 }
 
-/** The hover pill that tracks the item nearest the cursor — same faint wash the Accordion primitive uses. */
+/** The hover pill that tracks the item nearest the cursor — same faint wash every proximity-hover consumer uses (see use-proximity-hover.ts). */
 export function SidebarHoverPill({
   activeRect,
   sessionKey,
@@ -65,7 +75,7 @@ export function SidebarHoverPill({
       {activeRect && (
         <motion.div
           key={sessionKey}
-          className="pointer-events-none absolute rounded-lg bg-foreground/[0.04] dark:bg-foreground/[0.06]"
+          className={cn("pointer-events-none absolute rounded-lg", proximityHoverWashClassName)}
           initial={{
             opacity: 0,
             top: activeRect.top,
@@ -74,7 +84,7 @@ export function SidebarHoverPill({
             height: activeRect.height,
           }}
           animate={{
-            opacity: 1,
+            opacity: proximityHoverWashOpacity,
             top: activeRect.top,
             left: activeRect.left,
             width: activeRect.width,

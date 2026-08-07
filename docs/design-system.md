@@ -191,6 +191,16 @@ movement on `useReducedMotion()`.
 rows, card grids), highlight the item nearest the cursor before the user
 clicks — it previews where an action will land and reduces targeting
 errors. A subtle, non-decorative polish move, not a new visual language.
+Implemented once, in `useProximityHover` (`@/hooks/use-proximity-hover`) —
+every consumer (Accordion, Tabs, DocsSidebar, DocsMobileSidebar) wires that
+hook up to the same wash, exported from the same module as
+`proximityHoverWashClassName` / `proximityHoverWashOpacity`. Import those
+rather than re-typing `bg-foreground/[0.04] dark:bg-foreground/[0.06]` and
+an opacity by hand: the wash is a transient "nearest, not yet selected"
+preview, and at full layer-opacity it lands close enough to a persistent
+selected/expanded state built from a similarly light neutral token
+(`bg-card`, `bg-muted`, `bg-accent/20`) to read as the same color,
+especially in dark mode — the capped opacity is what keeps it subordinate.
 
 **Elevation is a system, not a per-component judgment call.** This project
 already treats `--canvas` → `--background` → `--card` → `--popover` as

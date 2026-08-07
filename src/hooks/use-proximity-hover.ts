@@ -17,6 +17,23 @@ export interface ItemRect {
   width: number;
 }
 
+/**
+ * Shared visual for every proximity-hover consumer's transient "nearest
+ * item" wash (Accordion, Tabs, DocsSidebar, DocsMobileSidebar, the Sheet
+ * examples' nav/settings lists — anywhere `useProximityHover` drives a
+ * pill). A faint --foreground tint reused as-is everywhere.
+ */
+export const proximityHoverWashClassName = "bg-foreground/[0.04] dark:bg-foreground/[0.06]";
+
+/**
+ * Cap on that wash's peak layer-opacity while animating in. At 1 (full
+ * layer-opacity) the already-translucent wash lands close enough to a
+ * persistent selected/expanded state built from a similarly light neutral
+ * token (bg-card, bg-muted, bg-accent/20) to read as the same color,
+ * especially in dark mode. 0.4 keeps it a clearly subordinate preview.
+ */
+export const proximityHoverWashOpacity = 0.4;
+
 interface UseProximityHoverOptions {
   /**
    * Which direction to resolve the nearest item along.

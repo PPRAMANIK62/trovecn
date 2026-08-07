@@ -24,7 +24,12 @@ import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/springs";
 import { fontWeights } from "@/lib/font-weight";
-import { useProximityHover, type ItemRect } from "@/hooks/use-proximity-hover";
+import {
+  useProximityHover,
+  proximityHoverWashClassName,
+  proximityHoverWashOpacity,
+  type ItemRect,
+} from "@/hooks/use-proximity-hover";
 
 // SSR-safe layout effect (client components still server-render in Next).
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -308,13 +313,15 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>((props, ref) => {
         </AnimatePresence>
 
         {/* Hover pill — tracks the item nearest the cursor. A faint
-            foreground-tinted wash (not --accent), matching the reference's
-            dedicated near-transparent hover color rather than a solid fill. */}
+            foreground-tinted wash (not --accent), capped below full
+            layer-opacity (see use-proximity-hover.ts) so it stays clearly
+            subordinate to the persistent bg-accent/20 expanded-item
+            background above, not a second "expanded" look. */}
         <AnimatePresence>
           {activeRect && (
             <motion.div
               key={sessionRef.current}
-              className="pointer-events-none absolute rounded-lg bg-foreground/[0.04] dark:bg-foreground/[0.06]"
+              className={cn("pointer-events-none absolute rounded-lg", proximityHoverWashClassName)}
               initial={{
                 opacity: 0,
                 top: activeRect.top,
@@ -323,7 +330,7 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>((props, ref) => {
                 height: activeRect.height,
               }}
               animate={{
-                opacity: 1,
+                opacity: proximityHoverWashOpacity,
                 top: activeRect.top,
                 left: activeRect.left,
                 width: activeRect.width,
