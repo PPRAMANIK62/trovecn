@@ -46,6 +46,24 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "dialog",
+      "type": "registry:ui",
+      "title": "Dialog",
+      "description": "Centered modal with a spring-scaled popup and fading backdrop.",
+      "dependencies": ["framer-motion", "@base-ui/react", "lucide-react"],
+      "registryDependencies": ["utils", "button"],
+      "files": [
+        {
+          "path": "src/components/ui/dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/lib/springs.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }
