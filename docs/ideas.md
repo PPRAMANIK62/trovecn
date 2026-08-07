@@ -29,7 +29,7 @@ Priority ordered by how many backlog patterns below depend on it:
 - [x] Dialog — command palette container, any future modal
 - [ ] Menu (dropdown) — mega-menu, sidebar row actions
 - [ ] Combobox / Autocomplete — command palette search-as-you-type
-- [ ] Tooltip — keyboard shortcut badges, hover previews
+- [x] Tooltip — keyboard shortcut badges, hover previews
 - [x] Accordion — changelog/roadmap timeline
 - [ ] Switch — pricing toggle
 - [~] Tabs — already scaffolded (`src/components/ui/tabs.tsx`); needs the

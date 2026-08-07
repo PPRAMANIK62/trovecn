@@ -64,6 +64,28 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "Fast, fading label that slides in from the trigger's side.",
+      "dependencies": ["framer-motion", "@base-ui/react"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "src/components/ui/tooltip.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/lib/springs.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/lib/font-weight.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }

@@ -7,6 +7,8 @@ import PopoverStandaloneExample from "../../registry/trovecn/popover/examples/st
 import PopoverPlacementExample from "../../registry/trovecn/popover/examples/placement";
 import DialogSizesExample from "../../registry/trovecn/dialog/examples/sizes";
 import DialogWithFooterExample from "../../registry/trovecn/dialog/examples/with-footer";
+import TooltipStandaloneExample from "../../registry/trovecn/tooltip/examples/standalone";
+import TooltipPlacementExample from "../../registry/trovecn/tooltip/examples/placement";
 
 export interface ComponentExample {
   title: string;
@@ -343,6 +345,77 @@ export const registry: RegistryItem[] = [
             type: "ReactNode",
             default: "—",
             description: "Title or description content.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "tooltip",
+    title: "Tooltip",
+    description:
+      "Fast, fading label for icon buttons and truncated text — slides a few pixels in from the trigger's side on top of the fade.",
+    category: "Primitives",
+    dependencies: ["framer-motion", "@base-ui/react"],
+    file: "src/components/ui/tooltip.tsx",
+    examples: [
+      {
+        title: "Standalone",
+        description: "A row of icon buttons, each labeled by its own tooltip.",
+        file: "registry/trovecn/tooltip/examples/standalone.tsx",
+        Demo: TooltipStandaloneExample,
+      },
+      {
+        title: "Placement",
+        description: "The same tooltip anchored to each side of its trigger.",
+        file: "registry/trovecn/tooltip/examples/placement.tsx",
+        Demo: TooltipPlacementExample,
+      },
+    ],
+    api: [
+      {
+        component: "TooltipProvider",
+        props: [
+          {
+            prop: "delay",
+            type: "number",
+            default: "200",
+            description: "Hover delay before tooltips open, in milliseconds.",
+          },
+        ],
+      },
+      {
+        component: "TooltipContent",
+        props: [
+          {
+            prop: "side",
+            type: '"top" | "right" | "bottom" | "left"',
+            default: '"top"',
+            description: "Which side of the trigger to render on.",
+          },
+          {
+            prop: "sideOffset",
+            type: "number",
+            default: "8",
+            description: "Gap between the trigger and the tooltip, in pixels.",
+          },
+          {
+            prop: "align",
+            type: '"start" | "center" | "end"',
+            default: '"center"',
+            description: "Alignment along the side.",
+          },
+          {
+            prop: "alignOffset",
+            type: "number",
+            default: "0",
+            description: "Offset along the alignment axis, in pixels.",
+          },
+          {
+            prop: "children",
+            type: "ReactNode",
+            default: "—",
+            description: "Tooltip content.",
           },
         ],
       },
