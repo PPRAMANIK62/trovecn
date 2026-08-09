@@ -155,30 +155,87 @@ premise inverts to fast, spring-based, information-carrying motion.
 
 **Motion as information.** An animation exists only to make a state change
 legible — something opened, something is now selected, focus moved
-somewhere. If a transition doesn't clarify a state change, cut it. This is
-the test every other rule below serves.
+somewhere, or _where you are in the app just changed_. If a transition
+doesn't clarify one of those, cut it. This is the test every other rule
+below serves.
 
-**Spring tokens (`@/lib/springs`).** Three tiers, each an enter spring paired
+**Spring tokens (`@/lib/springs`).** Four tiers, each an enter spring paired
 with a faster, bounce-free exit tween:
 
-| Token             | Enter                       | Exit           | Use for                                                                                                                                                       |
-| ----------------- | --------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `spring.fast`     | duration 0.08s, bounce 0    | duration 0.06s | Hover, focus rings, fades, tooltips, selection indicators                                                                                                     |
-| `spring.moderate` | duration 0.16s, bounce 0    | duration 0.12s | Short travel / small expansion (dropdown & tab indicators, switch thumb, accordions) and panels that must land exactly (mobile drawer, selection merge/split) |
-| `spring.slow`     | duration 0.24s, bounce 0.12 | duration 0.16s | Large surfaces: dialogs, side panels, stepped flows                                                                                                           |
+| Token             | Enter                       | Exit           | Use for                                                                                                                                                   |
+| ----------------- | --------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `spring.fast`     | duration 0.08s, bounce 0    | duration 0.06s | Continuous, pointer-tracked motion only — proximity-hover pills, live highlight rects that follow the cursor. Never a discrete click/open, however small. |
+| `spring.quick`    | duration 0.14s, bounce 0.1  | duration 0.1s  | One-shot feedback that isn't continuously tracked: tooltips, preview cards, icon crossfades, small entrance staggers.                                     |
+| `spring.moderate` | duration 0.2s, bounce 0.12  | duration 0.15s | Short travel / small expansion (dropdown & tab indicators, switch thumb, accordions) and panels that must land exactly (selection merge/split)            |
+| `spring.slow`     | duration 0.32s, bounce 0.18 | duration 0.22s | Large surfaces: dialogs, side panels/drawers, stepped flows                                                                                               |
 
 **Rule:** the bigger the thing that moves, the slower the tier. No component
 invents its own duration — always import the token from `@/lib/springs`.
+`fast` is reserved for motion that tracks the pointer in real time; if it's
+triggered by a discrete click or open, it belongs on `quick` or above even
+if it's visually small — a tooltip is not the same category as a hover wash.
 
 **Exits are faster than enters.** A dismissal should read crisp and final,
 not like the entrance playing in reverse — that's why each tier's exit is a
-quicker, bounce-free tween rather than the same spring run backward.
+quicker, bounce-free tween rather than the same spring run backward. Every
+tier's exit also rides a strong custom ease-out (`cubic-bezier(0.23, 1,
+0.32, 1)`), never a bare `ease`/`easeOut` keyword — built-in easings are too
+weak to read as deliberate.
 
 **Springs respond to interruption.** If a user reverses mid-transition
 (closes a panel they just opened, hovers off before a highlight finishes
 landing), the animation should adapt from its current position and velocity,
 not restart or snap. This is what spring physics buys over fixed-duration
 tweens — use it deliberately, not as an aesthetic default.
+
+**Motion communicates space, not just state.** A transition should answer
+"where did this come from, and where did I just go" — not only "something
+changed." Concretely:
+
+- Navigating deeper into the docs (sidebar → a component's page) and
+  navigating back use _opposite_ directions — vertically, not horizontally:
+  forward rises up into place, back drops down into place, matching "content
+  sliding up communicates arrival, sliding down communicates departure."
+  Implemented with this repo's own Motion/spring system —
+  `DocsPageTransition` (`@/components/site/docs-page-transition`), an
+  `AnimatePresence` keyed on `usePathname()`, using `spring.slow` (the
+  content pane is the single biggest moving surface in the app) and a small
+  `±24px` offset read from `@/lib/docs-nav-direction`, a plain module-level
+  value set by whichever nav element (`SidebarNavLink`, `Breadcrumbs`,
+  `ComponentPager`) was actually clicked. React's native `<ViewTransition>` /
+  `experimental.viewTransition` was tried first and matches the framework's
+  own documented pattern exactly, but empirically never invoked the browser
+  API for `<Link>` navigation in this Next/React combination — confirmed by
+  polling `:active-view-transition` across a full second on every tested
+  nav path, both before and after a required config-reload restart. Not
+  pursued further; the Motion version is guaranteed to run since it's the
+  same mechanism every other animation in this app already relies on.
+  Because `DocsPageTransition` only wraps `{children}`, the sidebar/nav bars
+  outside it are untouched automatically — no anchoring step needed the way
+  the native API would have required.
+- Within a single page, a content swap that stays in the same container
+  (tab panels, filtered results) crossfades in place — it never borrows the
+  directional slide, which is reserved for genuine navigation.
+- Shared-element continuity (the same object visually persisting across a
+  navigation, e.g. a sidebar label morphing into a page heading) was also
+  tried via `<ViewTransition name="...">` and reverted — it doesn't work
+  with a 1:1 name match when the "before" element lives in persistent chrome
+  that never unmounts, since both ends are then mounted simultaneously (see
+  `plans/015-shared-element-component-identity.md`). Not reattempted with
+  Motion; treat this as an open problem rather than settled guidance.
+
+**Delight is rationed, not sprinkled evenly.** Motion intensity should track
+how often a user sees it, not how good it could theoretically look:
+
+- Seen constantly (hover, selection indicators, tab switches) — `fast`,
+  stays almost invisible. If a reviewer _notices_ a hover animation, it's
+  already too much.
+- Seen occasionally (dialogs, dropdowns, drawer, switch) — `moderate`/`slow`,
+  full spring polish, no restraint needed.
+- Seen rarely or once (first successful copy, completing an install flow,
+  the homepage Hero) — this is the one place a component is allowed a beat
+  more personality than the tier table strictly requires. Don't spend this
+  budget on anything a user sees twice a session.
 
 **Transform/opacity only.** Animate `transform` and `opacity`, never `top` /
 `left` / `width` / `height`. Keeps motion on the GPU compositor and is what
@@ -191,7 +248,11 @@ opacity and color transitions running — a dialog fades in instead of
 scaling, a drawer appears in place instead of sliding. Only works for
 components that follow the transform/opacity-only rule above; a component
 that animates `top`/`left`/`width`/`height` directly must gate its own
-movement on `useReducedMotion()`.
+movement on `useReducedMotion()`. `<ViewTransition>` motion is a separate
+mechanism `MotionConfig` doesn't reach — directional slides get their own
+`prefers-reduced-motion` rule that drops `animation-duration` to `0s` on
+`::view-transition-*` pseudo-elements, same reasoning as `toast.tsx`'s
+standalone reduced-motion rule for its non-Motion transitions.
 
 **Proximity hover.** In interactive lists/grids/nav (sidebar items, table
 rows, card grids), highlight the item nearest the cursor before the user
@@ -201,12 +262,24 @@ Implemented once, in `useProximityHover` (`@/hooks/use-proximity-hover`) —
 every consumer (Accordion, Tabs, DocsSidebar, DocsMobileSidebar) wires that
 hook up to the same wash, exported from the same module as
 `proximityHoverWashClassName` / `proximityHoverWashOpacity`. Import those
-rather than re-typing `bg-foreground/[0.04] dark:bg-foreground/[0.06]` and
-an opacity by hand: the wash is a transient "nearest, not yet selected"
-preview, and at full layer-opacity it lands close enough to a persistent
-selected/expanded state built from a similarly light neutral token
-(`bg-card`, `bg-muted`, `bg-accent/20`) to read as the same color,
-especially in dark mode — the capped opacity is what keeps it subordinate.
+rather than re-typing `bg-hover` and an opacity by hand: the wash is a
+transient "nearest, not yet selected" preview, and at full layer-opacity it
+lands close enough to a persistent selected/expanded state (`bg-active`, or
+a similarly light neutral token like `bg-card` on non-popover surfaces) to
+read as the same color, especially in dark mode — the capped opacity is
+what keeps it subordinate.
+
+**Interactive-state overlays vs. surface tokens.** `--hover`/`--active`
+(`bg-hover`/`bg-active`, `src/app/globals.css`) are foreground-tinted washes
+for hover/selected/expanded states — not surfaces. Reach for them instead of
+`bg-muted`/`bg-accent` for anything that must stay legible regardless of
+which elevation rung (`--background`, `--card`, `--popover`) it's painted
+on: a flat token like `--muted` is tuned against the surface its main
+consumers sit on (`--background`) and can land within ~0.03 L of
+`--popover` in dark mode — close enough to disappear. `--muted`/`--accent`
+stay correct wherever a component is calibrated for the surface it actually
+sits on (top-level nav/menubar triggers on `--background`, static chips and
+badges).
 
 **Elevation is a system, not a per-component judgment call.** This project
 already treats `--canvas` → `--background` → `--card` → `--popover` as
@@ -222,6 +295,13 @@ a bare text node, because a heavier weight is wider. Use an invisible copy
 of the label at the heaviest weight to reserve the width, and animate
 `font-variation-settings` on the visible copy on top of it. Requires a
 variable font (Geist Sans already is one).
+
+**Label content morphs, never teleports.** When a label's _text_ changes
+(not just its weight) — "Copy" → "Copied", a tab's active language label, a
+toast's status line — crossfade the old and new content on `spring.quick`
+rather than swapping instantly. Same underlying idea as the ghost-span rule
+above (an in-place state change should never read as a cut), just for
+content instead of weight.
 
 **One well-orchestrated entrance per component** (a staggered reveal) beats
 animating everything at once — still true regardless of tier.

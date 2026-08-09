@@ -5,6 +5,7 @@ import {
   useState,
   useCallback,
   useEffect,
+  useLayoutEffect,
   type Dispatch,
   type RefObject,
   type SetStateAction,
@@ -19,11 +20,11 @@ export interface ItemRect {
 
 /**
  * Shared visual for every proximity-hover consumer's transient "nearest
- * item" wash (Accordion, Tabs, DocsSidebar, DocsMobileSidebar, the Sheet
+ * item" wash (Accordion, Tabs, DocsSidebar, DocsMobileSidebar, the Drawer
  * examples' nav/settings lists — anywhere `useProximityHover` drives a
  * pill). A faint --foreground tint reused as-is everywhere.
  */
-export const proximityHoverWashClassName = "bg-foreground/[0.04] dark:bg-foreground/[0.06]";
+export const proximityHoverWashClassName = "bg-hover";
 
 /**
  * Cap on that wash's peak layer-opacity while animating in. At 1 (full
@@ -99,6 +100,7 @@ export function useProximityHover<T extends HTMLElement>(
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [itemRects, setItemRects] = useState<ItemRect[]>([]);
   const [isMeasured, setIsMeasured] = useState(false);
+  const [registerTick, setRegisterTick] = useState(0);
   const itemRectsRef = useRef<ItemRect[]>([]);
   const sessionRef = useRef(0);
   const rafIdRef = useRef<number | null>(null);
@@ -198,24 +200,47 @@ export function useProximityHover<T extends HTMLElement>(
     scheduleMeasurement(measurementAttempts);
   }, [scheduleMeasurement]);
 
-  const registerItem = useCallback(
-    (index: number, element: HTMLElement | null) => {
-      if (element) {
-        itemsRef.current.set(index, element);
-      } else {
-        itemsRef.current.delete(index);
-      }
-      // Coalesce rapid register/unregister calls (e.g. when an AnimatePresence
-      // remounts a list of rows) into a single remeasure on the next frame, so
-      // consumers don't have to manually call measureItems after the
-      // container's children swap.
-      remeasure();
-    },
-    [remeasure],
-  );
+  const registerItem = useCallback((index: number, element: HTMLElement | null) => {
+    if (element) {
+      itemsRef.current.set(index, element);
+    } else {
+      itemsRef.current.delete(index);
+    }
+    // Bump a tick rather than calling remeasure() directly. Consumers that
+    // register items from a `useLayoutEffect` (e.g. Tabs) all fire within the
+    // same pre-paint commit; React batches the resulting setState calls, so
+    // the effect below runs once, after every sibling has registered, still
+    // before the browser paints — no bare-then-populated flash on mount, and
+    // no per-item measurement pass reading a still-partial item set.
+    setRegisterTick((t) => t + 1);
+  }, []);
+
+  // Coalesced pass for registration changes specifically (see registerItem
+  // above). Falls back to the rAF retry loop only when an item exists but
+  // hasn't been laid out yet (e.g. it's inside a not-yet-visible popup) —
+  // the same case `runMeasurement`/`scheduleMeasurement` already handle.
+  useLayoutEffect(() => {
+    if (registerTick === 0) return;
+    if (runMeasurement()) {
+      setIsMeasured(true);
+    } else {
+      setIsMeasured(false);
+      scheduleMeasurement(measurementAttempts);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [registerTick]);
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
+      // React bubbles synthetic events along the component tree, not the DOM
+      // tree, so a portaled descendant (e.g. NavigationMenuContent, teleported
+      // into a shared Viewport elsewhere in the DOM) still reaches this
+      // handler. Guard on real DOM containment so hovering that portaled
+      // content can't drag the pill across unrelated trigger rects.
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        return;
+      }
+
       const mouseX = e.clientX;
       const mouseY = e.clientY;
 

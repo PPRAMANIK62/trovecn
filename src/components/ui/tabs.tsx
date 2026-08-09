@@ -218,15 +218,16 @@ function TabsList({ children, className, ...props }: TabsPrimitive.List.Props) {
       >
         {selectedRect && (
           <motion.div
+            layout
             className="pointer-events-none absolute rounded-md bg-card shadow-bevel"
-            initial={false}
-            animate={{
+            style={{
               left: selectedRect.left,
               top: selectedRect.top,
               width: selectedRect.width,
               height: selectedRect.height,
-              opacity: isHovering ? 0.85 : 1,
             }}
+            initial={false}
+            animate={{ opacity: isHovering ? 0.85 : 1 }}
             transition={{ ...spring.moderate.enter, opacity: { duration: 0.08 } }}
           />
         )}
@@ -234,21 +235,16 @@ function TabsList({ children, className, ...props }: TabsPrimitive.List.Props) {
         <AnimatePresence>
           {hoverRect && !isHoveringSelected && selectedRect && (
             <motion.div
+              layout
               className={cn("pointer-events-none absolute rounded-md", proximityHoverWashClassName)}
-              initial={{
-                left: selectedRect.left,
-                top: selectedRect.top,
-                width: selectedRect.width,
-                height: selectedRect.height,
-                opacity: 0,
-              }}
-              animate={{
+              style={{
                 left: hoverRect.left,
                 top: hoverRect.top,
                 width: hoverRect.width,
                 height: hoverRect.height,
-                opacity: proximityHoverWashOpacity,
               }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: proximityHoverWashOpacity }}
               exit={{ opacity: 0, transition: spring.fast.exit }}
               transition={spring.fast.enter}
             />
@@ -273,7 +269,10 @@ function TabsTrigger({
   const { registerTab, hoveredIndex, selectedValue, setOptimisticIndex } = useTabsListContext();
   const ref = useRef<HTMLElement>(null);
 
-  useEffect(() => {
+  // useLayoutEffect, not useEffect: pairs with useProximityHover's
+  // registration-tick effect so the selected pill is measured and painted in
+  // the same pre-paint commit as mount, instead of popping in a frame later.
+  useLayoutEffect(() => {
     registerTab(_index, ref.current);
     return () => registerTab(_index, null);
   }, [_index, registerTab]);
@@ -313,7 +312,7 @@ function TabsTrigger({
         </span>
         <span
           className={cn(
-            "col-start-1 row-start-1 inline-flex items-center gap-1.5 transition-colors duration-80",
+            "col-start-1 row-start-1 inline-flex items-center gap-1.5 transition-colors duration-fast",
             isActive ? "text-foreground" : "text-muted-foreground",
           )}
           style={{ fontVariationSettings: isSelected ? fontWeights.medium : fontWeights.normal }}

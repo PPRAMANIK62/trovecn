@@ -6,12 +6,9 @@ import { motion, useReducedMotion, type Variants } from "motion/react";
 
 import { GithubIcon } from "@/components/site/github-icon";
 import { Button } from "@/components/ui/button";
+import { spring } from "@/lib/springs";
 
 const GITHUB_URL = "https://github.com/PPRAMANIK62/trovecn";
-
-// Matches the site's established motion curve (docs/design-system.md) —
-// deliberate and weighted rather than the springy default most UI kits ship.
-const EASE = [0.16, 1, 0.3, 1] as const;
 
 interface HeroProps {
   componentCount: number;
@@ -32,7 +29,7 @@ export function Hero({ componentCount }: HeroProps) {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: reduceMotion ? 0 : 0.5, ease: EASE },
+      transition: reduceMotion ? { duration: 0 } : spring.slow.enter,
     },
   };
 

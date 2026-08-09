@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { Check, Copy } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { spring } from "@/lib/springs";
 
 interface CopyButtonProps {
   text: string;
@@ -21,7 +23,7 @@ export function CopyButton({ text, className }: CopyButtonProps) {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
+      setTimeout(() => setCopied(false), 2000);
     } catch {
       // clipboard unavailable — silently ignore, the text is selectable
     }
@@ -31,12 +33,30 @@ export function CopyButton({ text, className }: CopyButtonProps) {
     <Button
       type="button"
       variant="elevated"
-      size="icon-xs"
+      size="icon-sm"
       onClick={handleCopy}
       aria-label="Copy to clipboard"
-      className={cn("text-muted-foreground hover:text-foreground", className)}
+      // elevated's dark:bg-input/30 (and dark:hover:bg-input/50) is meant for
+      // chrome sitting on plain background — translucent enough here to let
+      // the code text underneath show through. Force it fully opaque, same
+      // fix as CodeScroll's expand/collapse control.
+      className={cn(
+        "bg-card text-muted-foreground hover:bg-card hover:text-foreground dark:bg-card dark:hover:bg-card",
+        className,
+      )}
     >
-      {copied ? <Check className="text-link" /> : <Copy />}
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={copied ? "check" : "copy"}
+          className="inline-flex"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9, transition: spring.quick.exit }}
+          transition={spring.quick.enter}
+        >
+          {copied ? <Check className="text-success" /> : <Copy />}
+        </motion.span>
+      </AnimatePresence>
     </Button>
   );
 }

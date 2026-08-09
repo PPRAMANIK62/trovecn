@@ -7,6 +7,7 @@ import {
   isValidElement,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   type ComponentProps,
   type ReactElement,
@@ -123,6 +124,12 @@ function MenuContent({
 
   const activeRect = activeIndex !== null ? itemRects[activeIndex] : null;
   const indexedChildren = indexMenuChildren(children, { current: 0 });
+  // Without this, `{ registerItem }` is a fresh object every render, so
+  // every item's registration effect (keyed on this context value) re-fires
+  // every render, bumps useProximityHover's registerTick, and re-renders
+  // this popup — an infinite loop caught as "Maximum update depth
+  // exceeded." `registerItem` itself is already a stable useCallback.
+  const proximityContextValue = useMemo(() => ({ registerItem }), [registerItem]);
 
   return (
     <MenuPortal>
@@ -180,7 +187,7 @@ function MenuContent({
                     />
                   )}
                 </AnimatePresence>
-                <MenuProximityContext.Provider value={{ registerItem }}>
+                <MenuProximityContext.Provider value={proximityContextValue}>
                   {indexedChildren}
                 </MenuProximityContext.Provider>
               </motion.div>
@@ -268,7 +275,11 @@ function MenuSubTrigger({
       data-slot="menu-sub-trigger"
       data-inset={inset}
       className={cn(
-        "relative z-10 flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-control text-muted-foreground outline-none transition-colors select-none data-inset:pl-7 data-highlighted:text-foreground data-popup-open:bg-accent data-popup-open:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg]:text-muted-foreground",
+        // Persistent "submenu open" tint, not the transient hover wash (that's
+        // data-highlighted, painted separately by the proximity pill below).
+        // bg-accent would sit ~0.03 L off this popup's bg-popover in dark
+        // mode — see --active's definition in globals.css.
+        "relative z-10 flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-control text-muted-foreground outline-none transition-colors select-none data-inset:pl-7 data-highlighted:text-foreground data-popup-open:bg-active data-popup-open:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg]:text-muted-foreground",
         className,
       )}
       {...props}

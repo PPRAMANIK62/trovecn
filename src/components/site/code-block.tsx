@@ -28,7 +28,7 @@ export async function CodeBlock({ code, label, lang = "tsx", className }: CodeBl
       <div className="group relative overflow-hidden rounded-lg bg-background shadow-well">
         <CopyButton
           text={code}
-          className="absolute top-2 right-2 z-10 opacity-0 transition-opacity group-hover:opacity-100"
+          className="absolute top-2 right-2 z-10 opacity-0 transition-opacity duration-fast group-hover:opacity-100"
         />
         <CodeScroll html={html} lineCount={lineCount} />
       </div>

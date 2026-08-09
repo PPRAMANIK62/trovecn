@@ -12,6 +12,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type ReactNode,
@@ -224,6 +225,12 @@ function ComboboxList({ className, children, ...props }: ComboboxPrimitive.List.
   }, [measureItems, children]);
 
   const activeRect = activeIndex !== null ? itemRects[activeIndex] : null;
+  // Without this, `{ registerItem }` is a fresh object every render, so
+  // every item's registration effect (keyed on this context value) re-fires
+  // every render, bumps useProximityHover's registerTick, and re-renders
+  // this list — an infinite loop caught as "Maximum update depth
+  // exceeded." `registerItem` itself is already a stable useCallback.
+  const proximityContextValue = useMemo(() => ({ registerItem }), [registerItem]);
 
   return (
     <ComboboxPrimitive.List
@@ -264,7 +271,7 @@ function ComboboxList({ className, children, ...props }: ComboboxPrimitive.List.
               />
             )}
           </AnimatePresence>
-          <ComboboxProximityContext.Provider value={{ registerItem }}>
+          <ComboboxProximityContext.Provider value={proximityContextValue}>
             {(listProps as { children?: ReactNode }).children}
           </ComboboxProximityContext.Provider>
         </div>
@@ -315,16 +322,15 @@ function ComboboxItem({ className, children, index, ...props }: ComboboxPrimitiv
       index={index}
       data-slot="combobox-item"
       className={cn(
-        // Persistent selected-item tint. Plain bg-accent reads identically to
-        // the transient proximity-hover wash here — --accent is neutral gray,
-        // same value as --secondary, and sits only ~0.03 L off --popover, the
-        // same order of magnitude as the hover wash's own peak (~0.02
-        // effective, see use-proximity-hover.ts). Using the same foreground-
-        // tint mechanism as that wash, but at a constant, clearly stronger
-        // opacity instead of its capped/animated peak, keeps "selected" in
-        // the same visual language while reading as heavier than a passing
-        // hover, not a coincidentally similar shade.
-        "relative z-10 flex cursor-default items-center gap-2 rounded-md py-1.5 pr-8 pl-2 text-control text-muted-foreground outline-none transition-colors select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:text-foreground data-[selected]:bg-foreground/[0.06] dark:data-[selected]:bg-foreground/[0.1] data-[selected]:text-foreground",
+        // Persistent selected-item tint, not the transient proximity-hover
+        // wash below (--hover). bg-accent would read almost identically to
+        // --popover here (--accent is neutral gray, only ~0.03 L off
+        // --popover in dark mode) — --active is the same foreground-tint
+        // mechanism as the hover wash, at a constant, clearly stronger
+        // opacity instead of the wash's capped/animated peak, so "selected"
+        // reads heavier than a passing hover rather than a coincidentally
+        // similar shade. See --active's definition in globals.css.
+        "relative z-10 flex cursor-default items-center gap-2 rounded-md py-1.5 pr-8 pl-2 text-control text-muted-foreground outline-none transition-colors select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:text-foreground data-[selected]:bg-active data-[selected]:text-foreground",
         className,
       )}
       {...props}

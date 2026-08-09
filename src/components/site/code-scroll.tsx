@@ -2,7 +2,7 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ export function CodeScroll({ html, lineCount, className }: CodeScrollProps) {
   const [expanded, setExpanded] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
   const [naturalHeight, setNaturalHeight] = useState<number | null>(null);
+  const reduceMotion = useReducedMotion();
 
   // Measured once, right after mount — at this point `expanded` is still
   // false so BUTTON_RESERVE hasn't been added to the DOM yet, giving the
@@ -57,7 +58,9 @@ export function CodeScroll({ html, lineCount, className }: CodeScrollProps) {
       <motion.div
         initial={false}
         animate={{ height }}
-        transition={expanded ? spring.slow.enter : spring.slow.exit}
+        transition={
+          reduceMotion ? { duration: 0 } : expanded ? spring.slow.enter : spring.slow.exit
+        }
         className={cn(
           "text-caption [&_pre]:p-4 [&_pre]:leading-6",
           needsCollapse && (expanded ? "overflow-auto" : "overflow-hidden"),

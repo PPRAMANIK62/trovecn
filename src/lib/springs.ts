@@ -1,10 +1,16 @@
-import type { Transition } from "motion/react";
+import type { Easing, Transition } from "motion/react";
 
 /**
- * Motion tokens. Three tiers, each an enter spring paired with a faster,
+ * Motion tokens. Four tiers, each an enter spring paired with a faster,
  * bounce-free exit tween. Never hand-write a duration/transition inline —
- * import the tier that matches how big the thing moving is.
+ * import the tier that matches how big the thing moving is, and how often
+ * it fires.
  */
+
+/** Strong ease-out, matching this repo's `AUDIT.md` guidance that built-in
+ *  easing keywords are too weak for deliberate UI motion. Used on every
+ *  tier's exit tween. Motion's array form of `cubic-bezier(0.23, 1, 0.32, 1)`. */
+const easeOutStrong: Easing = [0.23, 1, 0.32, 1];
 
 interface SpringTier {
   /** Enter transition — spring, responds naturally to interruption. */
@@ -14,10 +20,22 @@ interface SpringTier {
 }
 
 export const spring = {
-  /** Hover, focus rings, fades, tooltips, selection indicators. */
+  /** Continuous, pointer-tracked motion only: proximity-hover pills, live
+   *  highlight rects that follow the cursor, drag indicators. Anything
+   *  triggered by a discrete click/open — even something small — belongs on
+   *  `quick` or above. Kept at its current speed; this tier is not part of
+   *  the retune, it already needs to feel instant. */
   fast: {
     enter: { type: "spring", duration: 0.08, bounce: 0 },
-    exit: { duration: 0.06, ease: "easeOut" },
+    exit: { duration: 0.06, ease: easeOutStrong },
+  },
+  /** One-shot feedback that isn't continuously tracked: tooltips, preview
+   *  cards, icon crossfades, small entrance staggers. Enough spring to read
+   *  as motion rather than a cut, still fast enough to keep up with the
+   *  interaction that triggered it. */
+  quick: {
+    enter: { type: "spring", duration: 0.14, bounce: 0.1 },
+    exit: { duration: 0.1, ease: easeOutStrong },
   },
   /**
    * Short travel / small expansion (dropdown & tab indicators, switch
@@ -25,12 +43,12 @@ export const spring = {
    * selection merge/split).
    */
   moderate: {
-    enter: { type: "spring", duration: 0.16, bounce: 0 },
-    exit: { duration: 0.12, ease: "easeOut" },
+    enter: { type: "spring", duration: 0.2, bounce: 0.12 },
+    exit: { duration: 0.15, ease: easeOutStrong },
   },
   /** Large surfaces: dialogs, side panels, stepped flows. */
   slow: {
-    enter: { type: "spring", duration: 0.24, bounce: 0.12 },
-    exit: { duration: 0.16, ease: "easeOut" },
+    enter: { type: "spring", duration: 0.32, bounce: 0.18 },
+    exit: { duration: 0.22, ease: easeOutStrong },
   },
-} satisfies Record<"fast" | "moderate" | "slow", SpringTier>;
+} satisfies Record<"fast" | "quick" | "moderate" | "slow", SpringTier>;

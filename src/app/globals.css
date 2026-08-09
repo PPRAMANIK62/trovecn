@@ -31,6 +31,8 @@
   --color-accent-blue-hover: var(--accent-blue-hover);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
+  --color-hover: var(--hover);
+  --color-active: var(--active);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -46,6 +48,14 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  /* Mirrors src/lib/springs.ts's four tiers (fast/quick/moderate/slow enter
+     durations) for the handful of plain-CSS transitions that can't consume
+     a Framer Motion spring object directly. Keep these numbers in sync with
+     springs.ts by hand if that file's durations ever change. */
+  --duration-fast: 80ms;
+  --duration-quick: 140ms;
+  --duration-moderate: 200ms;
+  --duration-slow: 320ms;
 }
 
 /*
@@ -133,7 +143,25 @@
   --muted-foreground: oklch(0.45 0 0);
   --accent: oklch(0.955 0 0);
   --accent-foreground: oklch(0.205 0 0);
+  /* Interactive-state overlays, not surfaces — a foreground-tinted wash
+     rather than a flat token pinned to one lightness, so a hover/active fill
+     stays visible regardless of which rung of the elevation ladder
+     (--background, --card, --popover) it's painted on. --muted/--accent
+     can't do this job themselves: they're tuned against --background (where
+     most of their consumers sit) and go nearly invisible layered on
+     --popover (0.295/0.33 vs popover's 0.3 in dark mode — a ~0.03 L step or
+     less). --hover is the transient "nearest under the cursor" preview
+     (proximityHoverWashClassName in use-proximity-hover.ts); --active is the
+     firmer, persistent version for a genuinely open/selected/expanded state
+     (ComboboxItem's data-[selected], a submenu trigger's data-popup-open).
+     Values match this project's own already-proven wash opacities. */
+  --hover: color-mix(in oklab, var(--foreground) 4%, transparent);
+  --active: color-mix(in oklab, var(--foreground) 6%, transparent);
   --destructive: oklch(0.577 0.245 27.325);
+  /* Its own semantic green, unrelated to --link/--ring's blue or
+     --destructive's red — success/confirmation states (e.g. the copy
+     button's checkmark) are a distinct meaning, not a tint of either. */
+  --success: oklch(0.6 0.15 145);
   /* Same 265 hue as --ring/--link, but scoped to a single consumer — Switch's
      checked track (registry/trovecn/switch) — not a general-purpose token.
      Bolder than a hover wash on purpose: a filled control needs to read as
@@ -194,7 +222,13 @@
   --muted-foreground: oklch(0.72 0 0);
   --accent: oklch(0.33 0 0);
   --accent-foreground: oklch(0.97 0 0);
+  --hover: color-mix(in oklab, var(--foreground) 6%, transparent);
+  --active: color-mix(in oklab, var(--foreground) 10%, transparent);
   --destructive: oklch(0.704 0.191 22.216);
+  /* Same relit-for-dark relationship --destructive above uses: lighter,
+     less saturated than the light-mode value so it doesn't look neon
+     against the dark surface. */
+  --success: oklch(0.75 0.17 145);
   --border: oklch(1 0 0 / 15%);
   --input: oklch(1 0 0 / 18%);
   --ring: oklch(0.72 0.14 265 / 45%);

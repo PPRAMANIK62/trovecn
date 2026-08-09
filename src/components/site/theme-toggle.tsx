@@ -24,8 +24,10 @@ export function ThemeToggle({ className }: { className?: string }) {
       size="icon"
       className={className}
     >
-      <Sun className="size-4 dark:hidden" />
-      <Moon className="hidden size-4 dark:block" />
+      <span className="relative inline-flex size-4">
+        <Sun className="absolute inset-0 size-4 rotate-0 opacity-100 transition-[opacity,transform] duration-fast dark:-rotate-90 dark:opacity-0" />
+        <Moon className="absolute inset-0 size-4 rotate-90 opacity-0 transition-[opacity,transform] duration-fast dark:rotate-0 dark:opacity-100" />
+      </span>
     </Button>
   );
 }

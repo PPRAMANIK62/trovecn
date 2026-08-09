@@ -17,19 +17,15 @@ import {
   type ReactNode,
   type HTMLAttributes,
 } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Accordion as AccordionPrimitive } from "@base-ui/react/accordion";
 import { ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/springs";
 import { fontWeights } from "@/lib/font-weight";
-import {
-  useProximityHover,
-  proximityHoverWashClassName,
-  proximityHoverWashOpacity,
-  type ItemRect,
-} from "@/hooks/use-proximity-hover";
+import { ProximityHoverPill } from "@/components/ui/proximity-hover-pill";
+import { useProximityHover, type ItemRect } from "@/hooks/use-proximity-hover";
 
 // SSR-safe layout effect (client components still server-render in Next).
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -317,30 +313,7 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>((props, ref) => {
             layer-opacity (see use-proximity-hover.ts) so it stays clearly
             subordinate to the persistent bg-accent/20 expanded-item
             background above, not a second "expanded" look. */}
-        <AnimatePresence>
-          {activeRect && (
-            <motion.div
-              key={sessionRef.current}
-              className={cn("pointer-events-none absolute rounded-lg", proximityHoverWashClassName)}
-              initial={{
-                opacity: 0,
-                top: activeRect.top,
-                left: activeRect.left,
-                width: activeRect.width,
-                height: activeRect.height,
-              }}
-              animate={{
-                opacity: proximityHoverWashOpacity,
-                top: activeRect.top,
-                left: activeRect.left,
-                width: activeRect.width,
-                height: activeRect.height,
-              }}
-              exit={{ opacity: 0, transition: spring.fast.exit }}
-              transition={spring.fast.enter}
-            />
-          )}
-        </AnimatePresence>
+        <ProximityHoverPill activeRect={activeRect} sessionKey={sessionRef.current} />
 
         {indexedChildren}
       </AccordionPrimitive.Root>
@@ -441,7 +414,7 @@ const AccordionTrigger = forwardRef<HTMLButtonElement, AccordionTriggerProps>(
             </span>
             <span
               className={cn(
-                "col-start-1 row-start-1 transition-colors duration-80",
+                "col-start-1 row-start-1 transition-colors duration-fast",
                 isOpen || isActive ? "text-foreground" : "text-muted-foreground",
               )}
               style={{ fontVariationSettings: isOpen ? fontWeights.medium : fontWeights.normal }}
@@ -459,7 +432,7 @@ const AccordionTrigger = forwardRef<HTMLButtonElement, AccordionTriggerProps>(
               size={16}
               strokeWidth={isOpen || isActive ? 2 : 1.5}
               className={cn(
-                "transition-colors duration-80",
+                "transition-colors duration-fast",
                 isOpen || isActive ? "text-foreground" : "text-muted-foreground",
               )}
             />
@@ -496,6 +469,7 @@ const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(
     // not spring — framer would measure the spring's numeric start visually
     // and play a shrink. Items that open later spring normally.
     const needsSnap = useRef(isOpen);
+    const reduceMotion = useReducedMotion();
 
     const measureRef = useCallback((el: HTMLDivElement | null) => {
       roRef.current?.disconnect();
@@ -551,7 +525,7 @@ const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(
           initial={{ height: isOpen ? "auto" : 0 }}
           animate={{ height: isOpen ? (contentHeight ?? 0) : 0 }}
           // bounce: 0 — pure height looks better without overshoot (moderate is already bounce 0).
-          transition={needsSnap.current ? { duration: 0 } : spring.moderate.enter}
+          transition={needsSnap.current || reduceMotion ? { duration: 0 } : spring.moderate.enter}
           onUpdate={() => ctx.remeasure()}
           onAnimationComplete={() => {
             ctx.remeasure();

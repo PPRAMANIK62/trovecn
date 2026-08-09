@@ -51,7 +51,7 @@ export function ComponentPreview({ children, label, className }: ComponentPrevie
         >
           <RotateCw
             data-icon="inline-start"
-            className="transition-transform duration-[420ms] ease-[cubic-bezier(0.23,1,0.32,1)]"
+            className="transition-transform duration-[160ms] ease-out"
             style={{ transform: `rotate(${take * 360}deg)` }}
           />
           replay

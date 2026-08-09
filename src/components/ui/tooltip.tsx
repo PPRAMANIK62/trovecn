@@ -81,7 +81,7 @@ function TooltipContent({
                 style={{ fontVariationSettings: fontWeights.medium }}
                 initial={{ opacity: 0, ...offset }}
                 animate={exiting ? { opacity: 0, ...offset } : { opacity: 1, x: 0, y: 0 }}
-                transition={exiting ? spring.fast.exit : spring.fast.enter}
+                transition={exiting ? spring.quick.exit : spring.quick.enter}
               >
                 {children}
                 <TooltipPrimitive.Arrow

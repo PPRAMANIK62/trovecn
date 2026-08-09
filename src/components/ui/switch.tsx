@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Switch as SwitchPrimitive } from "@base-ui/react/switch";
-import { motion, useMotionValue, animate } from "motion/react";
+import { motion, useMotionValue, useReducedMotion, animate } from "motion/react";
 
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/springs";
@@ -82,6 +82,7 @@ function Switch({
   const thumbX = checked ? offset + travel - (thumbWidth - thumb) : offset;
 
   const motionX = useMotionValue(thumbX);
+  const reduceMotion = useReducedMotion();
   const hasMountedRef = useRef(false);
   useEffect(() => {
     hasMountedRef.current = true;
@@ -191,7 +192,9 @@ function Switch({
         className="pointer-events-none absolute -top-px -left-px block rounded-full bg-background shadow-sm dark:bg-foreground"
         style={{ x: motionX }}
         animate={{ y: thumbY, width: thumbWidth, height: thumbHeight }}
-        transition={hasMountedRef.current ? spring.moderate.enter : { duration: 0 }}
+        transition={
+          !hasMountedRef.current || reduceMotion ? { duration: 0 } : spring.moderate.enter
+        }
       />
     </SwitchPrimitive.Root>
   );
