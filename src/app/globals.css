@@ -27,6 +27,8 @@
   --color-input: var(--input);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-blue-hover: var(--accent-blue-hover);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -96,14 +98,17 @@
 }
 
 /*
-  Fully neutral token set: zero chroma on every step, no brand hue anywhere
-  — not on the base grays, not on links/focus rings/active states. This
-  library ships components that reference these token *names* only (never a
-  hardcoded hue), so the default values are kept as plain, unopinionated
-  gray as possible on purpose: a consuming project that already defines its
-  own theme tokens (shadcn or otherwise) can override any of these without
-  fighting a leftover custom tint. `--destructive` is the one exception —
-  it's a semantic error/danger state, not a brand accent, so it stays red.
+  Zero chroma on the structural tokens — surfaces, borders, --primary
+  (button fill stays ink, not brand color), and --accent, which stays a
+  neutral hover-fill gray. --ring and --link are the exception: they share
+  one deliberate blue hue (~265) as the interaction accent for focus rings
+  and links. `--accent-blue`/`--accent-blue-hover` carry that same hue too,
+  but scoped to a single consumer — Switch's checked track — not a general
+  token other components should reach for. `--destructive` stays its own
+  semantic red, unrelated to any of the above. Components reference these
+  token *names* only (never a hardcoded hue), so a consuming project that
+  already defines its own theme tokens (shadcn or otherwise) can still
+  override any of these outright.
   Light is the default theme; `.dark` is toggled via a class on <html>.
 */
 :root {
@@ -111,7 +116,8 @@
      float on (src/components/site/app-frame.tsx). Not used as a surface
      itself, only as the margin around rounded panels. The depth cue here
      comes from lightness alone (no hue/chroma difference from the rest of
-     the neutral ramp), consistent with the zero-chroma rule above. */
+     the neutral surface ramp — canvas/background/card/popover stay
+     structural gray even though --ring/--link don't anymore). */
   --canvas: oklch(0.91 0 0);
   --background: oklch(0.98 0 0);
   --foreground: oklch(0.18 0 0);
@@ -128,12 +134,18 @@
   --accent: oklch(0.955 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
+  /* Same 265 hue as --ring/--link, but scoped to a single consumer — Switch's
+     checked track (registry/trovecn/switch) — not a general-purpose token.
+     Bolder than a hover wash on purpose: a filled control needs to read as
+     "on," not just tinted. Kept identical across themes (not redefined in
+     .dark) since it reads fine unchanged against both a light and a dark
+     track surround. */
+  --accent-blue: oklch(0.693 0.161 265);
+  --accent-blue-hover: oklch(0.649 0.164 265);
   --border: oklch(0.89 0 0);
   --input: oklch(0.89 0 0);
-  --ring: oklch(0.556 0 0 / 40%);
-  /* No separate accent color — links are the same neutral foreground,
-     carried by underline/weight instead of hue. */
-  --link: oklch(0.205 0 0);
+  --ring: oklch(0.556 0.161 265 / 40%);
+  --link: oklch(0.5 0.18 265);
   --chart-1: oklch(0.4 0 0);
   --chart-2: oklch(0.5 0 0);
   --chart-3: oklch(0.6 0 0);
@@ -151,9 +163,13 @@
 }
 
 .dark {
-  /* Pure chroma-0 gray, same rule as light mode above — no warm/brand tint,
-     just lightness steps. card/popover step up from --canvas/--background
-     enough to register as distinct planes on lightness alone.
+  /* Surfaces stay pure chroma-0 gray, same as light mode above — just
+     lightness steps, no warm/brand tint. card/popover step up from
+     --canvas/--background enough to register as distinct planes on
+     lightness alone. (--ring/--link below carry the same 265 blue hue as
+     light mode, only relit for a dark surround; --accent-blue isn't
+     redefined here — its value reads fine unchanged against a dark
+     surround too.)
 
      `--canvas` deliberately isn't near-black (an earlier pass had it at L
      0.09): a step that reads as clearly "one plane down" in light mode gets
@@ -181,8 +197,8 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 15%);
   --input: oklch(1 0 0 / 18%);
-  --ring: oklch(0.72 0 0 / 45%);
-  --link: oklch(0.97 0 0);
+  --ring: oklch(0.72 0.14 265 / 45%);
+  --link: oklch(0.78 0.13 265);
   --chart-1: oklch(0.9 0 0);
   --chart-2: oklch(0.75 0 0);
   --chart-3: oklch(0.6 0 0);

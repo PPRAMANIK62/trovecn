@@ -43,31 +43,37 @@ Full component backlog lives in `docs/ideas.md`.
 
 ## Design tokens (src/app/globals.css)
 
-Fully neutral, zero-chroma palette — no accent color anywhere, including
-`--link`, active nav state, and focus rings. Deliberate: components in this
-registry are distributed as source into other codebases that already ship
-their own theme tokens, so a plain gray default (not a custom brand hue) is
-what stays compatible with whatever palette a consumer overrides these
-tokens with. `--destructive` is the sole exception — a semantic error state,
-not a brand accent. Light is the default theme; dark is toggled via a
-`.dark` class on `<html>` (see
+Structural tokens (surfaces, borders, `--primary`, `--accent`) stay
+zero-chroma gray — `--primary` is ink for the default button fill and
+`--accent` is a plain hover fill, neither is a brand color, so both stay
+neutral in both themes. `--ring` and `--link` are the exception: they
+deliberately share one blue hue (~265 in OKLCH) as the app's interaction
+accent for focus rings and links. `--accent-blue`/`--accent-blue-hover`
+carry that same hue too, but scoped to a single consumer — Switch's checked
+track — not a general-purpose token other components should reach for.
+`--destructive` is its own semantic red, unrelated to any of the above.
+Components are distributed as source into other codebases, so a consumer
+that wants zero accent hue can override `--ring`/`--link`/`--accent-blue`
+back to gray, same as they'd override any other token here. Light is the
+default theme; dark is toggled via a `.dark` class on `<html>` (see
 `ThemeToggle`, `src/components/site/theme-toggle.tsx`) — always reach for
 the CSS variables below via Tailwind's `bg-*`/`text-*`/`border-*` utilities,
 never hardcode hex/rgb, so both themes stay correct automatically.
 
-| Token                                  | Role                                                                                                                                                                                                                        |
-| -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--background`                         | page background                                                                                                                                                                                                             |
-| `--foreground`                         | primary text                                                                                                                                                                                                                |
-| `--card` / `--card-foreground`         | panel surface one step off background (code blocks, install command pill)                                                                                                                                                   |
-| `--popover` / `--popover-foreground`   | floating surfaces (menus, command palette)                                                                                                                                                                                  |
-| `--primary` / `--primary-foreground`   | near-black/near-white — default button fill. Not a "brand color," just ink.                                                                                                                                                 |
-| `--link`                               | same neutral as `--foreground` — no accent hue. Active sidebar item, inline links, and focus rings are carried by underline/weight instead of color. Exposed as `text-link` / `border-link` / `bg-link` via `--color-link`. |
-| `--accent` / `--accent-foreground`     | hover fill for ghost / nav items                                                                                                                                                                                            |
-| `--secondary`, `--muted` + foregrounds | neutral gray panels and secondary text                                                                                                                                                                                      |
-| `--border` / `--input`                 | hairline gray borders — thin lines, not boxy chrome                                                                                                                                                                         |
-| `--ring`                               | focus ring — neutral gray, not tinted                                                                                                                                                                                       |
-| `--radius`                             | `0.5rem` base — modest corners, not sharp/brutalist and not bubbly                                                                                                                                                          |
+| Token                                   | Role                                                                                                                                                            |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--background`                          | page background                                                                                                                                                 |
+| `--foreground`                          | primary text                                                                                                                                                    |
+| `--card` / `--card-foreground`          | panel surface one step off background (code blocks, install command pill)                                                                                       |
+| `--popover` / `--popover-foreground`    | floating surfaces (menus, command palette)                                                                                                                      |
+| `--primary` / `--primary-foreground`    | near-black/near-white — default button fill. Not a "brand color," just ink.                                                                                     |
+| `--link`                                | blue interaction-accent hue. Inline links; active sidebar item still leans on underline/weight, not just color. Exposed as `text-link`/`border-link`/`bg-link`. |
+| `--accent` / `--accent-foreground`      | neutral gray hover fill — ghost / nav items, expanded accordion items, menu highlight                                                                           |
+| `--accent-blue` / `--accent-blue-hover` | the same blue hue as `--ring`/`--link`, bolder, for Switch's checked track only — a filled control, not a hover wash, so it needs more saturation               |
+| `--secondary`, `--muted` + foregrounds  | neutral gray panels and secondary text                                                                                                                          |
+| `--border` / `--input`                  | hairline gray borders — thin lines, not boxy chrome                                                                                                             |
+| `--ring`                                | focus ring — same blue interaction-accent hue as `--link`                                                                                                       |
+| `--radius`                              | `0.5rem` base — modest corners, not sharp/brutalist and not bubbly                                                                                              |
 
 Fonts (wired in `layout.tsx` / `globals.css`):
 
