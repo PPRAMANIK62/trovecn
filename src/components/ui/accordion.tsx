@@ -71,10 +71,10 @@ function useAccordionItemContext() {
 
 // ─── Accordion ───────────────────────────────────────────────────────────────
 // Every item shares one container: a background pill morphs between the item
-// nearest the cursor and the currently open item(s) — the "proximity hover"
-// principle (docs/design-system.md) applied to an accordion stack. Applies
-// uniformly whether the accordion holds one item or many — a primitive looks
-// and moves identically no matter which pattern embeds it.
+// nearest the cursor and the currently open item(s) — "proximity hover"
+// applied to an accordion stack. Applies uniformly whether the accordion
+// holds one item or many — it looks and moves identically no matter which
+// pattern embeds it.
 
 type AccordionSingleProps = {
   type?: "single";
@@ -430,7 +430,7 @@ const AccordionTrigger = forwardRef<HTMLButtonElement, AccordionTriggerProps>(
         >
           {/* Ghost-span: an invisible copy at the heaviest weight reserves
               the width so the visible copy's weight can animate without
-              reflowing the row (docs/design-system.md "Ghost-span"). */}
+              reflowing the row. */}
           <span className="col-start-1 row-start-1 grid flex-1 text-left text-body">
             <span
               className="invisible col-start-1 row-start-1"

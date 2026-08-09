@@ -116,8 +116,7 @@ function Tabs({
 
 // ─── TabsList ────────────────────────────────────────────────────────────────
 // Owns the sliding "selected" pill and the proximity hover pill — the same
-// measured-rect pattern Accordion's item-highlight and DocsSidebar's nav pill
-// already use (docs/design-system.md "Proximity hover"), applied along the x
+// measured-rect pattern Accordion's item-highlight uses, applied along the x
 // axis since tabs lay out horizontally.
 
 function TabsList({ children, className, ...props }: TabsPrimitive.List.Props) {
@@ -301,9 +300,9 @@ function TabsTrigger({
     >
       {/* Ghost-span: an invisible copy at the heaviest weight reserves the
           width so the visible copy's weight can animate without reflowing
-          the tab (docs/design-system.md "Ghost-span"). Each stacked copy is
-          its own flex row (not the outer Tab) so an icon + label child pair
-          still lays out side by side within each copy. */}
+          the tab. Each stacked copy is its own flex row (not the outer Tab)
+          so an icon + label child pair still lays out side by side within
+          each copy. */}
       <span className="col-start-1 row-start-1 grid text-control">
         <span
           className="invisible col-start-1 row-start-1 inline-flex items-center gap-1.5"

@@ -1,7 +1,7 @@
 /**
- * Geist Sans weight tokens for `fontVariationSettings` — see
- * docs/design-system.md "Ghost-span for animated font-weight". Geist is a
- * variable font (loaded without a fixed `weight` in layout.tsx, so
+ * Geist Sans weight tokens for `fontVariationSettings`, used to animate a
+ * "ghost-span" element's font-weight without reflowing its layout. Geist is
+ * a variable font (loaded without a fixed `weight` in layout.tsx, so
  * next/font/google serves the full `wght` axis) but has no `opsz` axis, so
  * unlike some variable fonts there's no optical-size compensation to pair
  * each weight with.

@@ -1,14 +1,11 @@
 "use client";
 
 /**
- * Hand-built on `@base-ui/react/combobox` rather than scaffolded via
- * `npx shadcn add combobox` (docs/primitives.md workflow) — the registry's
- * stock combobox pulls in a generic Input/Textarea/InputGroup and
- * *overwrites* src/components/ui/button.tsx, dropping the house `elevated`
- * variant and `2xs` size other primitives already depend on. Base UI ships
- * every part this needs directly (Input, InputGroup, Icon, Clear, Item,
- * ItemIndicator, Empty, Group), so the wrapper below follows the same
- * data-slot/cva/cn conventions as every other primitive in this file instead.
+ * Hand-built on `@base-ui/react/combobox` rather than a generic input +
+ * popover composition — Base UI ships every part this needs directly
+ * (Input, InputGroup, Icon, Clear, Item, ItemIndicator, Empty, Group), so
+ * the wrapper below follows the same data-slot/cva/cn conventions as the
+ * other primitives in this file.
  */
 import {
   createContext,
@@ -32,14 +29,13 @@ import {
 } from "@/hooks/use-proximity-hover";
 
 /**
- * ComboboxList owns one useProximityHover instance (docs/design-system.md
- * "Proximity hover") — the same measured-rect wash Accordion/Tabs/Menu use.
- * Unlike Menu's items (auto-indexed from a static children tree),
- * ComboboxItem sits under a `children: (item, index) => ReactNode` render
- * prop Base UI itself calls per filtered item — that index is exactly what
- * proximity hover needs, so ComboboxItem takes it as an explicit `index`
- * prop instead of re-deriving it, same as AccordionItem's documented
- * override path.
+ * ComboboxList owns one useProximityHover instance — the same measured-rect
+ * hover wash Accordion/Tabs/Menu use: a background pill that morphs to
+ * track whichever item is nearest the cursor. Unlike Menu's items
+ * (auto-indexed from a static children tree), ComboboxItem sits under a
+ * `children: (item, index) => ReactNode` render prop Base UI itself calls
+ * per filtered item — that index is exactly what proximity hover needs, so
+ * ComboboxItem takes it as an explicit `index` prop instead of re-deriving it.
  */
 interface ComboboxProximityContextValue {
   registerItem: (index: number, element: HTMLElement | null) => void;

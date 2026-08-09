@@ -84,11 +84,11 @@ interface UseProximityHoverReturn {
 const measurementAttempts = 3;
 
 /**
- * Drives "proximity hover" (docs/design-system.md): in an interactive
- * list/grid, highlight the item nearest the cursor before the user clicks,
- * rather than only lighting up on direct :hover. Consumers register their
- * item elements by index and get back the nearest index plus its rect, to
- * position a moving highlight behind the list.
+ * Drives "proximity hover": in an interactive list/grid, highlight the item
+ * nearest the cursor before the user clicks, rather than only lighting up
+ * on direct :hover. Consumers register their item elements by index and get
+ * back the nearest index plus its rect, to position a moving highlight
+ * behind the list.
  */
 export function useProximityHover<T extends HTMLElement>(
   containerRef: RefObject<T | null>,

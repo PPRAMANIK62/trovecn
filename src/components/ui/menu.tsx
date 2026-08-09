@@ -26,12 +26,11 @@ import {
 
 // ─── Proximity hover ─────────────────────────────────────────────────────────
 // Every MenuContent/MenuSubContent popup owns one useProximityHover instance
-// (docs/design-system.md "Proximity hover") — the same measured-rect wash
-// Accordion/Tabs/DocsSidebar use, scoped to that popup's own items so a
-// submenu's pill never reaches into its parent's. Base UI's own
-// `data-highlighted` (keyboard nav and pointer hover both set it) still
-// drives each row's text color, same split Accordion uses between its
-// pill-owns-background and item-owns-text-color.
+// — the same measured-rect hover wash Accordion/Tabs use, scoped to that
+// popup's own items so a submenu's pill never reaches into its parent's.
+// Base UI's own `data-highlighted` (keyboard nav and pointer hover both set
+// it) still drives each row's text color, same split Accordion uses between
+// its pill-owns-background and item-owns-text-color.
 
 interface MenuProximityContextValue {
   registerItem: (index: number, element: HTMLElement | null) => void;

@@ -1,8 +1,7 @@
 import type { Transition } from "framer-motion";
 
 /**
- * Motion tokens — see docs/design-system.md "Motion & interaction
- * principles". Three tiers, each an enter spring paired with a faster,
+ * Motion tokens. Three tiers, each an enter spring paired with a faster,
  * bounce-free exit tween. Never hand-write a duration/transition inline —
  * import the tier that matches how big the thing moving is.
  */

@@ -17,7 +17,7 @@ import { spring } from "@/lib/springs";
  *
  * Checked track uses `--accent-blue`/`--accent-blue-hover` (globals.css) —
  * the same blue hue `--ring`/`--link` use elsewhere, but scoped to this one
- * filled control rather than this repo's neutral `--primary`. `--accent`
+ * filled control rather than the neutral `--primary` token. `--accent`
  * itself stays neutral gray; this blue is deliberately not a general-purpose
  * token other components reach for.
  * The thumb stays a fixed light color regardless of checked state (same as
