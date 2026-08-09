@@ -8,7 +8,17 @@ import { button } from "../../registry/trovecn/button/meta";
 import { dialog } from "../../registry/trovecn/dialog/meta";
 import { popover } from "../../registry/trovecn/popover/meta";
 import { sheet } from "../../registry/trovecn/sheet/meta";
+import { switch as switchItem } from "../../registry/trovecn/switch/meta";
 import { tabs } from "../../registry/trovecn/tabs/meta";
 import { tooltip } from "../../registry/trovecn/tooltip/meta";
 
-export const registry: RegistryItem[] = [accordion, button, dialog, popover, sheet, tabs, tooltip];
+export const registry: RegistryItem[] = [
+  accordion,
+  button,
+  dialog,
+  popover,
+  sheet,
+  switchItem,
+  tabs,
+  tooltip,
+];

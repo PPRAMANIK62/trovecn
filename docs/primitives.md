@@ -38,7 +38,12 @@ downstream patterns depend on it.
       UI's dedicated Drawer primitive at some point
 - [ ] Menu (dropdown) — mega-menu, sidebar row actions
 - [ ] Combobox / Autocomplete — command palette search-as-you-type
-- [ ] Switch — pricing toggle
+- [x] Switch — registered in `registry.json` and on the docs site. Squishy,
+      draggable thumb (hover-stretch, press-squish, drag-to-toggle) adapted
+      from fluidfunctionalism.com's Base UI switch (MIT,
+      github.com/mickadesign/fluid-functionalism) onto this repo's neutral
+      palette and `sm`/`default` sizes, replacing the CLI scaffold's plain
+      CSS `transition-transform` slide
 
 ### Overlays & menus
 
