@@ -46,7 +46,9 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
       <Panel scroll={false} className="relative min-w-0 flex-1 overflow-hidden">
         <div className="absolute inset-0 overflow-y-auto overscroll-contain pt-14">
           <DocsPageTransition>
-            <div className="mx-auto max-w-3xl px-20 pt-14 pb-24 lg:pt-10">{children}</div>
+            <div className="mx-auto max-w-3xl px-5 pt-14 pb-24 sm:px-10 lg:px-20 lg:pt-10">
+              {children}
+            </div>
           </DocsPageTransition>
         </div>
         <nav className="absolute inset-x-0 top-0 z-10 flex h-14 items-center justify-between gap-4 border-b border-border bg-background/85 px-6 backdrop-blur-md">
