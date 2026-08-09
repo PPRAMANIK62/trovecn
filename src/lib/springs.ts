@@ -1,4 +1,4 @@
-import type { Transition } from "framer-motion";
+import type { Transition } from "motion/react";
 
 /**
  * Motion tokens. Three tiers, each an enter spring paired with a faster,

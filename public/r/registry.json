@@ -21,7 +21,7 @@
       "title": "Springs",
       "description": "Three-tier spring/tween motion tokens — fast, moderate, slow.",
       "dependencies": [
-        "framer-motion"
+        "motion"
       ],
       "files": [
         {
@@ -64,7 +64,7 @@
       "title": "Accordion",
       "description": "Collapsible accordion with spring-animated height and chevron, and proximity hover across every row.",
       "dependencies": [
-        "framer-motion",
+        "motion",
         "@base-ui/react",
         "lucide-react"
       ],
@@ -101,12 +101,34 @@
       ]
     },
     {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "description": "Base UI combobox — a text input filtered against a list as you type.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "use-proximity-hover"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/combobox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "dialog",
       "type": "registry:ui",
       "title": "Dialog",
       "description": "Centered modal with a spring-scaled popup and fading backdrop.",
       "dependencies": [
-        "framer-motion",
+        "motion",
         "@base-ui/react",
         "lucide-react"
       ],
@@ -123,12 +145,34 @@
       ]
     },
     {
+      "name": "menu",
+      "type": "registry:ui",
+      "title": "Menu",
+      "description": "Base UI menu with submenus, checkbox/radio items, and a spring-driven popup.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "use-proximity-hover"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "popover",
       "type": "registry:ui",
       "title": "Popover",
       "description": "Anchored floating panel that grows out of its trigger, scaling from Base UI's transform-origin.",
       "dependencies": [
-        "framer-motion",
+        "motion",
         "@base-ui/react"
       ],
       "registryDependencies": [
@@ -161,12 +205,32 @@
       ]
     },
     {
+      "name": "switch",
+      "type": "registry:ui",
+      "title": "Switch",
+      "description": "Base UI switch with a squishy, draggable, spring-driven thumb.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "tabs",
       "type": "registry:ui",
       "title": "Tabs",
       "description": "Tab list with a spring-driven sliding indicator and proximity hover across every tab.",
       "dependencies": [
-        "framer-motion",
+        "motion",
         "@base-ui/react"
       ],
       "registryDependencies": [
@@ -188,7 +252,7 @@
       "title": "Tooltip",
       "description": "Fast, fading label that slides in from the trigger's side.",
       "dependencies": [
-        "framer-motion",
+        "motion",
         "@base-ui/react"
       ],
       "registryDependencies": [

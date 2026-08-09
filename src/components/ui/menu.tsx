@@ -13,7 +13,7 @@ import {
   type ReactNode,
 } from "react";
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { CheckIcon, ChevronRightIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";

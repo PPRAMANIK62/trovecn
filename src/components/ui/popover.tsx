@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { Popover as PopoverPrimitive } from "@base-ui/react/popover";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/springs";

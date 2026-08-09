@@ -9,7 +9,7 @@ export const tabs: RegistryItem = {
   description:
     "Tab list with a spring-driven sliding indicator and proximity hover across every tab — the item nearest the cursor previews with a subtle wash before it's clicked.",
   category: "Primitives",
-  dependencies: ["framer-motion", "@base-ui/react"],
+  dependencies: ["motion", "@base-ui/react"],
   file: "src/components/ui/tabs.tsx",
   examples: [
     {

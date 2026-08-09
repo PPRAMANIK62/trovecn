@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { MotionConfig } from "framer-motion";
+import { MotionConfig } from "motion/react";
 import "./globals.css";
 
 import { themeInitScript } from "@/lib/theme-script";

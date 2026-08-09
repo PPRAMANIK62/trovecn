@@ -9,7 +9,7 @@ export const combobox: RegistryItem = {
   description:
     "Base UI combobox — a text input filtered against a list as you type, with a spring-driven popup matched to the input's width. The search-as-you-type engine behind a command palette.",
   category: "Primitives",
-  dependencies: ["@base-ui/react", "framer-motion", "lucide-react"],
+  dependencies: ["@base-ui/react", "motion", "lucide-react"],
   file: "src/components/ui/combobox.tsx",
   examples: [
     {

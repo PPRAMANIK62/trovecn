@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Switch as SwitchPrimitive } from "@base-ui/react/switch";
-import { motion, useMotionValue, animate } from "framer-motion";
+import { motion, useMotionValue, animate } from "motion/react";
 
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/springs";

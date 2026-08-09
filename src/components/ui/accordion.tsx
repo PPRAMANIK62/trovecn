@@ -17,7 +17,7 @@ import {
   type ReactNode,
   type HTMLAttributes,
 } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { Accordion as AccordionPrimitive } from "@base-ui/react/accordion";
 import { ChevronRight } from "lucide-react";
 
@@ -522,7 +522,7 @@ const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(
       if (contentHeight !== null) needsSnap.current = false;
     }, [contentHeight]);
 
-    // Whether the framer-motion height exit animation has fully finished.
+    // Whether the motion height exit animation has fully finished.
     // Base UI's Panel would apply `hidden` the moment a controlled item
     // closes, which is `display: none` and would freeze the exit animation
     // mid-flight — so `hidden` is taken over below and only applied once the
@@ -537,7 +537,7 @@ const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(
     // Rendered through `<Panel keepMounted>` so the panel element persists
     // through the exit animation and the trigger ↔ panel ARIA contract stays
     // intact (role="region", aria-labelledby, the id Trigger's
-    // aria-controls points to). The framer-motion height animation lives one
+    // aria-controls points to). The motion height animation lives one
     // level down inside the persistent panel element.
     return (
       <AccordionPrimitive.Panel

@@ -14,7 +14,7 @@ import {
   type ReactElement,
 } from "react";
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/springs";

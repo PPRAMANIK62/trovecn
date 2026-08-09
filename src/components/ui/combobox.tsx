@@ -17,7 +17,7 @@ import {
   type ReactNode,
 } from "react";
 import { Combobox as ComboboxPrimitive } from "@base-ui/react/combobox";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { CheckIcon, ChevronDownIcon, SearchIcon, XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";

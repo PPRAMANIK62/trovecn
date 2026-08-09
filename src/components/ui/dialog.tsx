@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -30,7 +30,7 @@ function DialogPortal({ ...props }: DialogPrimitive.Portal.Props) {
  * `className` so the backdrop can read `state.transitionStatus` — Base UI
  * keeps the element mounted through a "ending" status and only removes it
  * once it detects the animation on it has finished, so handing that status
- * to framer-motion (instead of a CSS transition) is enough to get a correct
+ * to motion (instead of a CSS transition) is enough to get a correct
  * exit with no manual mount-tracking, unlike Accordion's Panel (which
  * doesn't defer removal the same way).
  */

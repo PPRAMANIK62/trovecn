@@ -5,7 +5,7 @@ export const dialog: RegistryManifestItem = {
   type: "registry:ui",
   title: "Dialog",
   description: "Centered modal with a spring-scaled popup and fading backdrop.",
-  dependencies: ["framer-motion", "@base-ui/react", "lucide-react"],
+  dependencies: ["motion", "@base-ui/react", "lucide-react"],
   registryDependencies: ["utils", "springs", "button"],
   files: [{ path: "src/components/ui/dialog.tsx", type: "registry:ui" }],
 };

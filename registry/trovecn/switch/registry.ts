@@ -5,7 +5,7 @@ const switchItem: RegistryManifestItem = {
   type: "registry:ui",
   title: "Switch",
   description: "Base UI switch with a squishy, draggable, spring-driven thumb.",
-  dependencies: ["@base-ui/react", "framer-motion"],
+  dependencies: ["@base-ui/react", "motion"],
   registryDependencies: ["utils", "springs"],
   files: [{ path: "src/components/ui/switch.tsx", type: "registry:ui" }],
 };

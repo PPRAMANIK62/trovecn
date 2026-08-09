@@ -5,6 +5,6 @@ export const springs: RegistryManifestItem = {
   type: "registry:lib",
   title: "Springs",
   description: "Three-tier spring/tween motion tokens — fast, moderate, slow.",
-  dependencies: ["framer-motion"],
+  dependencies: ["motion"],
   files: [{ path: "src/lib/springs.ts", type: "registry:lib" }],
 };
