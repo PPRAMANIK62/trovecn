@@ -19,11 +19,7 @@ import { CheckIcon, ChevronRightIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/springs";
-import {
-  useProximityHover,
-  proximityHoverWashClassName,
-  proximityHoverWashOpacity,
-} from "@/hooks/use-proximity-hover";
+import { useProximityHover, proximityHoverWashClassName } from "@/hooks/use-proximity-hover";
 
 // ─── Proximity hover ─────────────────────────────────────────────────────────
 // Every MenuContent/MenuSubContent popup owns one useProximityHover instance
@@ -169,20 +165,17 @@ function MenuContent({
                         proximityHoverWashClassName,
                       )}
                       initial={{
-                        opacity: 0,
                         top: activeRect.top,
                         left: activeRect.left,
                         width: activeRect.width,
                         height: activeRect.height,
                       }}
                       animate={{
-                        opacity: proximityHoverWashOpacity,
                         top: activeRect.top,
                         left: activeRect.left,
                         width: activeRect.width,
                         height: activeRect.height,
                       }}
-                      exit={{ opacity: 0, transition: spring.fast.exit }}
                       transition={spring.fast.enter}
                     />
                   )}
