@@ -10,6 +10,7 @@ const switchItem: RegistryItem = {
     "Base UI switch with a squishy, draggable thumb — it stretches on hover, squishes on press, and can be dragged (not just clicked) to the other side. The on/off control behind pricing toggles and settings rows.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react"],
+  registryDependencies: ["utils", "springs"],
   file: "src/components/ui/switch.tsx",
   examples: [
     {

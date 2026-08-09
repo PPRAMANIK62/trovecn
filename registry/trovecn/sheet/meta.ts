@@ -10,6 +10,7 @@ export const sheet: RegistryItem = {
     "Edge-anchored panel built on the Dialog primitive — slides in flush against a viewport edge with a fading backdrop, unlike Dialog's detached floating plane.",
   category: "Primitives",
   dependencies: ["@base-ui/react"],
+  registryDependencies: ["utils"],
   file: "src/components/ui/sheet.tsx",
   examples: [
     {

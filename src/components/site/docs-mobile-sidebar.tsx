@@ -15,6 +15,7 @@ const groups = getComponentsByCategory();
 
 const pinned = [
   { label: "Introduction", href: "/docs" },
+  { label: "Installation", href: "/docs/installation" },
   { label: "Components", href: "/docs/components" },
 ];
 

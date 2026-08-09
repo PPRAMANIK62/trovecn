@@ -1,8 +1,8 @@
 import { codeToHtml } from "shiki";
 
-export function highlightTsx(code: string) {
+export function highlightCode(code: string, lang: "tsx" | "bash" = "tsx") {
   return codeToHtml(code, {
-    lang: "tsx",
+    lang,
     themes: { light: "github-light", dark: "github-dark" },
   });
 }

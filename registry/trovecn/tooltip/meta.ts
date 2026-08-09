@@ -10,6 +10,7 @@ export const tooltip: RegistryItem = {
     "Fast, fading label for icon buttons and truncated text — slides a few pixels in from the trigger's side on top of the fade.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react"],
+  registryDependencies: ["utils", "springs", "font-weight"],
   file: "src/components/ui/tooltip.tsx",
   examples: [
     {

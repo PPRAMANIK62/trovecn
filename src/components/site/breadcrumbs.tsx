@@ -19,6 +19,10 @@ function useCrumbs(): Crumb[] {
     return [{ label: "Docs", href: "/docs" }, { label: "Components" }];
   }
 
+  if (pathname === "/docs/installation") {
+    return [{ label: "Docs", href: "/docs" }, { label: "Installation" }];
+  }
+
   const slug = pathname.match(/^\/docs\/components\/(.+)$/)?.[1];
   if (slug) {
     const item = getComponent(slug);

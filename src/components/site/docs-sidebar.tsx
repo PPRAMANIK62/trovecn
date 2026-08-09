@@ -9,16 +9,18 @@ import { SidebarNavLink, SidebarHoverPill } from "@/components/site/sidebar-nav-
 
 const groups = getComponentsByCategory();
 
+const pinned = [
+  { label: "Introduction", href: "/docs" },
+  { label: "Installation", href: "/docs/installation" },
+  { label: "Components", href: "/docs/components" },
+];
+
 export function DocsSidebar() {
   const pathname = usePathname();
   const populatedGroups = groups.filter((group) => group.items.length > 0);
   const containerRef = useRef<HTMLDivElement>(null);
   const { activeIndex, itemRects, sessionRef, handlers, registerItem } =
     useProximityHover(containerRef);
-
-  if (populatedGroups.length === 0) {
-    return <p className="text-minor text-muted-foreground">No components yet — check back soon.</p>;
-  }
 
   let index = -1;
 
@@ -35,30 +37,52 @@ export function DocsSidebar() {
           activeRect={activeIndex !== null ? itemRects[activeIndex] : null}
           sessionKey={sessionRef.current}
         />
-        {populatedGroups.map((group) => (
-          <div key={group.category}>
-            <p className="text-label uppercase text-muted-foreground">{group.category}</p>
-            <ul className="mt-2.5 flex flex-col gap-0.5">
-              {group.items.map((item) => {
-                index += 1;
-                const itemIndex = index;
-                const href = `/docs/components/${item.slug}`;
-                return (
-                  <li key={item.slug}>
-                    <SidebarNavLink
-                      href={href}
-                      index={itemIndex}
-                      active={pathname === href}
-                      registerItem={registerItem}
-                    >
-                      {item.title}
-                    </SidebarNavLink>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+        <ul className="flex flex-col gap-0.5">
+          {pinned.map((item) => {
+            index += 1;
+            const itemIndex = index;
+            return (
+              <li key={item.href}>
+                <SidebarNavLink
+                  href={item.href}
+                  index={itemIndex}
+                  active={pathname === item.href}
+                  registerItem={registerItem}
+                >
+                  {item.label}
+                </SidebarNavLink>
+              </li>
+            );
+          })}
+        </ul>
+        {populatedGroups.length === 0 ? (
+          <p className="text-muted-foreground">No components yet — check back soon.</p>
+        ) : (
+          populatedGroups.map((group) => (
+            <div key={group.category}>
+              <p className="text-label uppercase text-muted-foreground">{group.category}</p>
+              <ul className="mt-2.5 flex flex-col gap-0.5">
+                {group.items.map((item) => {
+                  index += 1;
+                  const itemIndex = index;
+                  const href = `/docs/components/${item.slug}`;
+                  return (
+                    <li key={item.slug}>
+                      <SidebarNavLink
+                        href={href}
+                        index={itemIndex}
+                        active={pathname === href}
+                        registerItem={registerItem}
+                      >
+                        {item.title}
+                      </SidebarNavLink>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))
+        )}
       </div>
     </nav>
   );

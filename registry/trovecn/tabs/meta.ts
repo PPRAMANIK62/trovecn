@@ -10,6 +10,7 @@ export const tabs: RegistryItem = {
     "Tab list with a spring-driven sliding indicator and proximity hover across every tab — the item nearest the cursor previews with a subtle wash before it's clicked.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react"],
+  registryDependencies: ["utils", "springs", "font-weight", "use-proximity-hover"],
   file: "src/components/ui/tabs.tsx",
   examples: [
     {

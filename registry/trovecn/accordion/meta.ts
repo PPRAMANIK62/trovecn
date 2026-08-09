@@ -11,6 +11,7 @@ export const accordion: RegistryItem = {
     "Collapsible sections with a spring-animated chevron, height transition, and proximity hover across every row.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react", "lucide-react"],
+  registryDependencies: ["utils", "springs", "font-weight", "use-proximity-hover"],
   file: "src/components/ui/accordion.tsx",
   examples: [
     {

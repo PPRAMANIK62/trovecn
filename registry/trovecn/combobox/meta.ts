@@ -10,6 +10,7 @@ export const combobox: RegistryItem = {
     "Base UI combobox — a text input filtered against a list as you type, with a spring-driven popup matched to the input's width. The search-as-you-type engine behind a command palette.",
   category: "Primitives",
   dependencies: ["@base-ui/react", "motion", "lucide-react"],
+  registryDependencies: ["utils", "springs", "use-proximity-hover"],
   file: "src/components/ui/combobox.tsx",
   examples: [
     {

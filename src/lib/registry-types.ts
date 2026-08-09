@@ -35,8 +35,11 @@ export interface RegistryItem {
   title: string;
   description: string;
   category: Category;
+  /** npm packages this component's source imports — rendered as the page's install command. */
   dependencies: string[];
-  /** Path (repo-relative) to the primitive that ships through `npx shadcn add`. */
+  /** Other registry items (shared lib/hook files, or other components) this one's source imports — mirrors registry.ts's field of the same name so the docs page can point at what else needs copying. */
+  registryDependencies?: string[];
+  /** Path (repo-relative) to the primitive shown in the page's Source section. */
   file: string;
   examples: ComponentExample[];
   api: ApiSection[];

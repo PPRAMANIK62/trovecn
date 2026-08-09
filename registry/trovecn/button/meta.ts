@@ -10,6 +10,7 @@ export const button: RegistryItem = {
     "Base UI button with variant and size styling via class-variance-authority — the trigger every other primitive renders through `render`.",
   category: "Primitives",
   dependencies: ["@base-ui/react", "class-variance-authority"],
+  registryDependencies: ["utils"],
   file: "src/components/ui/button.tsx",
   examples: [
     {

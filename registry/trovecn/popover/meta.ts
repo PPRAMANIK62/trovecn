@@ -10,6 +10,7 @@ export const popover: RegistryItem = {
     "Anchored floating panel that grows out of its trigger — non-modal, positioned on any side, scaling from the exact point Base UI anchors it to.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react"],
+  registryDependencies: ["utils", "springs"],
   file: "src/components/ui/popover.tsx",
   examples: [
     {

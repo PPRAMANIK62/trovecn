@@ -10,6 +10,7 @@ export const menu: RegistryItem = {
     "Base UI menu with submenus, checkbox/radio items, and a spring-driven popup — the dropdown behind mega-menus and sidebar row actions.",
   category: "Primitives",
   dependencies: ["@base-ui/react", "motion", "lucide-react"],
+  registryDependencies: ["utils", "springs", "use-proximity-hover"],
   file: "src/components/ui/menu.tsx",
   examples: [
     {

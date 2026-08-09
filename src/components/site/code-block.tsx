@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { highlightTsx } from "@/lib/highlight";
+import { highlightCode } from "@/lib/highlight";
 import { CopyButton } from "@/components/site/copy-button";
 import { CodeScroll } from "@/components/site/code-scroll";
 
@@ -7,6 +7,8 @@ interface CodeBlockProps {
   code: string;
   /** Shown in the footer's meta label, e.g. an example's file basename ("standalone"). */
   label?: string;
+  /** Syntax to highlight as — "bash" for install commands, "tsx" (default) for everything else. */
+  lang?: "tsx" | "bash";
   className?: string;
 }
 
@@ -17,8 +19,8 @@ interface CodeBlockProps {
  * they carry the same physicality — switching tabs shouldn't read as
  * dropping onto a flatter, bordered box.
  */
-export async function CodeBlock({ code, label, className }: CodeBlockProps) {
-  const html = await highlightTsx(code);
+export async function CodeBlock({ code, label, lang = "tsx", className }: CodeBlockProps) {
+  const html = await highlightCode(code, lang);
   const lineCount = code.split("\n").length;
 
   return (
