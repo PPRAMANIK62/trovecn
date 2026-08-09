@@ -7,7 +7,13 @@ import { Menu } from "lucide-react";
 import { getComponentsByCategory } from "@/lib/components-registry";
 import { useProximityHover } from "@/hooks/use-proximity-hover";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Brand } from "@/components/site/brand";
 import { SidebarNavLink, SidebarHoverPill } from "@/components/site/sidebar-nav-link";
 
@@ -39,8 +45,8 @@ export function DocsMobileSidebar() {
   let index = -1;
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger
+    <Drawer open={open} onOpenChange={setOpen}>
+      <DrawerTrigger
         render={
           <Button variant="elevated" size="sm" className="text-2xs">
             <Menu className="size-2.5" />
@@ -48,11 +54,11 @@ export function DocsMobileSidebar() {
           </Button>
         }
       />
-      <SheetContent side="left" aria-describedby={undefined}>
-        <SheetHeader>
+      <DrawerContent side="left" aria-describedby={undefined}>
+        <DrawerHeader>
           <Brand />
-          <SheetTitle className="sr-only">Components navigation</SheetTitle>
-        </SheetHeader>
+          <DrawerTitle className="sr-only">Components navigation</DrawerTitle>
+        </DrawerHeader>
         <nav className="text-minor">
           <div
             ref={containerRef}
@@ -118,7 +124,7 @@ export function DocsMobileSidebar() {
             )}
           </div>
         </nav>
-      </SheetContent>
-    </Sheet>
+      </DrawerContent>
+    </Drawer>
   );
 }

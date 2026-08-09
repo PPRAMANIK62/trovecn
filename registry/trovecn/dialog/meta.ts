@@ -7,7 +7,7 @@ export const dialog: RegistryItem = {
   slug: "dialog",
   title: "Dialog",
   description:
-    "Centered modal with a spring-scaled popup and fading backdrop — a detached floating plane, not an edge-attached panel like Sheet.",
+    "Centered modal with a spring-scaled popup and fading backdrop — a detached floating plane, not an edge-attached panel like Drawer.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react", "lucide-react"],
   registryDependencies: ["utils", "springs", "button"],

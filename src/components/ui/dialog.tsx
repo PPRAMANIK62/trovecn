@@ -56,9 +56,9 @@ function DialogOverlay({ className, ...props }: DialogPrimitive.Backdrop.Props) 
 }
 
 /**
- * Centered, fully-rounded surface — unlike Sheet (which sits flush against a
- * viewport edge), a dialog is a detached floating plane, so it gets the
- * `--popover` step and `shadow-panel` on every side rather than Sheet's
+ * Centered, fully-rounded surface — unlike Drawer (which sits flush against
+ * a viewport edge), a dialog is a detached floating plane, so it gets the
+ * `--popover` step and `shadow-panel` on every side rather than Drawer's
  * edge-attached treatment.
  */
 function DialogContent({

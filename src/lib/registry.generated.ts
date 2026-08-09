@@ -7,9 +7,9 @@ import { accordion } from "../../registry/trovecn/accordion/meta";
 import { button } from "../../registry/trovecn/button/meta";
 import { combobox } from "../../registry/trovecn/combobox/meta";
 import { dialog } from "../../registry/trovecn/dialog/meta";
+import { drawer } from "../../registry/trovecn/drawer/meta";
 import { menu } from "../../registry/trovecn/menu/meta";
 import { popover } from "../../registry/trovecn/popover/meta";
-import { sheet } from "../../registry/trovecn/sheet/meta";
 import { switch as switchItem } from "../../registry/trovecn/switch/meta";
 import { tabs } from "../../registry/trovecn/tabs/meta";
 import { tooltip } from "../../registry/trovecn/tooltip/meta";
@@ -19,9 +19,9 @@ export const registry: RegistryItem[] = [
   button,
   combobox,
   dialog,
+  drawer,
   menu,
   popover,
-  sheet,
   switchItem,
   tabs,
   tooltip,

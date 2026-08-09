@@ -43,6 +43,8 @@ export interface RegistryItem {
   file: string;
   examples: ComponentExample[];
   api: ApiSection[];
+  /** Flags the sidebar row with a "new" dot. Hand-set and hand-cleared — not date-derived — so it stays a deliberate, temporary callout rather than permanently accreting across every past release. */
+  isNew?: boolean;
 }
 
 export type RegistryItemType = "registry:ui" | "registry:hook" | "registry:lib";
