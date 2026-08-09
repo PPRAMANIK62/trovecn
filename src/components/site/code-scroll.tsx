@@ -95,10 +95,11 @@ export function CodeScroll({ html, lineCount, className }: CodeScrollProps) {
               variant="elevated"
               size="xs"
               onClick={() => setExpanded((e) => !e)}
-              // elevated's dark:bg-input/30 is meant for chrome sitting on
-              // plain background — translucent enough here to let the code
-              // text underneath show through. Force it fully opaque.
-              className="rounded-full bg-card dark:bg-card"
+              // elevated's dark:bg-input/30 (and dark:hover:bg-input/50) is
+              // meant for chrome sitting on plain background — translucent
+              // enough here to let the code text underneath show through,
+              // including on hover. Force it fully opaque in both states.
+              className="rounded-full bg-card hover:bg-card dark:bg-card dark:hover:bg-card"
             >
               {expanded ? (
                 <>
