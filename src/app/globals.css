@@ -254,6 +254,32 @@
     inset 0 1px 0 oklch(1 0 0 / 10%);
 }
 
+/* Same layered shadow as .shadow-panel, plus a crisp 1px edge — for
+   `--popover` surfaces that anchor to and often visually sit on top of
+   another surface (Popover, Menu, Combobox). --popover and --card are the
+   identical L1 white in light mode, so there's no lightness gap to carry
+   the "this is a distinct plane" read the way app-frame's panels lean on;
+   without an edge the ambient shadow alone doesn't register on white-on-
+   white. This doesn't reopen the app-frame ring precedent above — that
+   rejection was about a large *persistent* card reading as flatly "boxed"
+   in dark mode. These are small, *transient* overlays, where even Vercel's
+   own system reaches for a firmer edge specifically because they're
+   transient, not persistent. */
+.shadow-popover {
+  box-shadow:
+    0 0 0 1px oklch(0 0 0 / 8%),
+    0 1px 2px oklch(0 0 0 / 5%),
+    0 12px 32px oklch(0 0 0 / 6%),
+    inset 0 1px 0 oklch(1 0 0 / 60%);
+}
+.dark .shadow-popover {
+  box-shadow:
+    0 0 0 1px oklch(1 0 0 / 8%),
+    0 1px 2px oklch(0 0 0 / 45%),
+    0 16px 40px oklch(0 0 0 / 45%),
+    inset 0 1px 0 oklch(1 0 0 / 10%);
+}
+
 /* Same shadow-over-border bevel as .shadow-panel, scaled down for small
    controls (the Button "elevated" variant) instead of a full panel-sized
    blur — a close 1px shadow plus the inset top highlight, no ring. */

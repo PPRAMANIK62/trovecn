@@ -49,7 +49,7 @@ function PopoverContent({
                 {...(popupProps as Record<string, unknown>)}
                 {...(props as Record<string, unknown>)}
                 className={cn(
-                  "w-72 origin-(--transform-origin) rounded-lg bg-popover p-3 text-body text-popover-foreground shadow-panel outline-none",
+                  "w-72 origin-(--transform-origin) rounded-lg bg-popover p-3 text-body text-popover-foreground shadow-popover outline-none",
                   className,
                 )}
                 initial={{ opacity: 0, scale: 0.96 }}
