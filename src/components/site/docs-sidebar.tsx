@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 
 import { getComponentsByCategory } from "@/lib/components-registry";
 import { useProximityHover } from "@/hooks/use-proximity-hover";
-import { SidebarNavLink, SidebarHoverPill } from "@/components/site/sidebar-nav-link";
+import { ProximityHoverPill } from "@/components/ui/proximity-hover-pill";
+import { SidebarNavLink, SidebarNewDot } from "@/components/site/sidebar-nav-link";
 
 const groups = getComponentsByCategory();
 
@@ -33,7 +34,7 @@ export function DocsSidebar() {
         onMouseEnter={handlers.onMouseEnter}
         onMouseLeave={handlers.onMouseLeave}
       >
-        <SidebarHoverPill
+        <ProximityHoverPill
           activeRect={activeIndex !== null ? itemRects[activeIndex] : null}
           sessionKey={sessionRef.current}
         />
@@ -75,6 +76,7 @@ export function DocsSidebar() {
                         registerItem={registerItem}
                       >
                         {item.title}
+                        {item.isNew && <SidebarNewDot />}
                       </SidebarNavLink>
                     </li>
                   );

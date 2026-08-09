@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 
 import { getComponent } from "@/lib/components-registry";
+import { setDocsNavDirection } from "@/lib/docs-nav-direction";
 
 interface Crumb {
   label: string;
@@ -48,7 +49,8 @@ export function Breadcrumbs() {
           {crumb.href ? (
             <Link
               href={crumb.href}
-              className="truncate text-muted-foreground transition-colors hover:text-link"
+              onClick={() => setDocsNavDirection("back")}
+              className="truncate text-muted-foreground transition-colors duration-fast hover:text-link"
             >
               {crumb.label}
             </Link>

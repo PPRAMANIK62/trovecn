@@ -33,9 +33,6 @@ downstream patterns depend on it.
       Base UI's own `Tabs.Indicator`, so it gets a real `spring.moderate`
       indicator, a proximity hover preview pill, and ghost-span label weight
 - [x] Button — registered in `registry.json` and on the docs site
-- [x] Sheet — registered in `registry.json` and on the docs site, built
-      on the Dialog primitive, edge-anchored — consider re-basing on Base
-      UI's dedicated Drawer primitive at some point
 - [x] Menu (dropdown) — registered in `registry.json` and on the docs site.
       Submenus, checkbox/radio items; each popup (including every submenu,
       independently) owns a `useProximityHover` pill sliding behind its rows,
@@ -64,13 +61,45 @@ downstream patterns depend on it.
 
 ### Overlays & menus
 
-- [ ] Context Menu — right-click actions
-- [ ] Menubar — app-shell top menu
-- [ ] Navigation Menu — mega-menu nav with preview panels
-- [ ] Preview Card (hover card) — link/user previews
+- [x] Context Menu — registered in `registry.json` and on the docs site.
+      Same popup, motion, and `useProximityHover` pill as the dropdown Menu,
+      anchored at the pointer instead of a trigger element — Base UI's
+      `ContextMenu` handles the click-point virtual anchor and touch
+      long-press internally, so this file only re-applies the house motion
+      layer, same as every other Menu-family primitive
+- [x] Menubar — registered in `registry.json` and on the docs site. Every
+      top-level menu is the dropdown Menu primitive nested in Base UI's
+      `Menubar` container, which wires the macOS/Windows gated hover-switch
+      behavior in natively — no dropdown-menu.tsx duplicate, just aliases
+      onto `menu.tsx`
+- [x] Navigation Menu — registered in `registry.json` and on the docs site.
+      One shared, resizing `Viewport` crossfades between whichever
+      top-level item is active (Base UI's own architecture, not a Radix or
+      fluidfunctionalism precedent — neither ships this shape), retuned
+      from the stock 350ms/208px slide down to this repo's `spring.moderate`
+      velocity and a few-px directional travel; the top-level trigger row
+      gets the same `useProximityHover` wash every other interactive list
+      here uses
+- [x] Preview Card (hover card) — registered in `registry.json` and on the
+      docs site. Same popup shape/motion as Tooltip (`spring.fast`, slide +
+      fade), 700ms/300ms open/close delay instead of Tooltip's 200/300 —
+      richer content shouldn't commit on every incidental pass-over
 - [ ] Toast — transient notifications
-- [ ] Drawer — dedicated gesture-driven edge panel (could replace the
-      hand-rolled Sheet above)
+- [x] Drawer — registered in `registry.json` and on the docs site. Edge-
+      anchored, built on Base UI's `Dialog` rather than its dedicated
+      `Drawer` (same call fluidfunctionalism's `mobile-drawer.tsx` made,
+      for the same reason — Drawer's own CSS-var swipe choreography fights
+      framer-motion's transform ownership), framer-motion end to end on
+      `spring.moderate`. Top/bottom sides get real drag-to-dismiss ported
+      from vaul — velocity-first/distance-second release, rubber-band
+      resistance past the open position via Framer's native per-edge
+      `dragElastic` — confined to a handle so it never hijacks clicks on
+      content inside; left/right stay scripted-only. First primitive in the
+      repo with real drag/gesture physics. Supersedes and replaces the
+      earlier hand-rolled Sheet primitive (strictly more capable: same
+      edge-anchored shape, plus real spring tokens and gesture dismissal),
+      which has been removed — `DocsMobileSidebar` and all former Sheet
+      examples now run on Drawer
 
 ### Selection inputs
 

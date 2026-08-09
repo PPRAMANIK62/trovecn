@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { AppFrame, Panel } from "@/components/site/app-frame";
 import { DocsSidebar } from "@/components/site/docs-sidebar";
 import { DocsMobileSidebar } from "@/components/site/docs-mobile-sidebar";
+import { DocsPageTransition } from "@/components/site/docs-page-transition";
 import { Brand } from "@/components/site/brand";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { ThemeToggle } from "@/components/site/theme-toggle";
@@ -44,7 +45,9 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
       </Panel>
       <Panel scroll={false} className="relative min-w-0 flex-1 overflow-hidden">
         <div className="absolute inset-0 overflow-y-auto overscroll-contain pt-14">
-          <div className="mx-auto max-w-3xl px-20 pt-14 pb-24 lg:pt-10">{children}</div>
+          <DocsPageTransition>
+            <div className="mx-auto max-w-3xl px-20 pt-14 pb-24 lg:pt-10">{children}</div>
+          </DocsPageTransition>
         </div>
         <nav className="absolute inset-x-0 top-0 z-10 flex h-14 items-center justify-between gap-4 border-b border-border bg-background/85 px-6 backdrop-blur-md">
           <div className="flex min-w-0 items-center gap-3">

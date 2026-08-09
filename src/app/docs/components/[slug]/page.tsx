@@ -3,7 +3,6 @@ import { join } from "node:path";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import {
   getAdjacentComponents,
@@ -13,7 +12,9 @@ import {
 } from "@/lib/components-registry";
 import { ApiTable } from "@/components/site/api-table";
 import { CodeBlock } from "@/components/site/code-block";
+import { ComponentPager } from "@/components/site/component-pager";
 import { ComponentPreview } from "@/components/site/component-preview";
+import { ExampleList, ExampleListItem } from "@/components/site/example-list";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface PageProps {
@@ -69,42 +70,13 @@ export default async function ComponentPage({ params }: PageProps) {
           </p>
           <h1 className="mt-3 text-title text-foreground">{item.title}</h1>
         </div>
-        {(previous || next) && (
-          <div className="mt-1 flex shrink-0 items-center gap-1">
-            {previous ? (
-              <Link
-                href={`/docs/components/${previous.slug}`}
-                aria-label={`Previous: ${previous.title}`}
-                className="flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <ArrowLeft className="size-4" />
-              </Link>
-            ) : (
-              <span className="flex size-7 items-center justify-center text-muted-foreground/30">
-                <ArrowLeft className="size-4" />
-              </span>
-            )}
-            {next ? (
-              <Link
-                href={`/docs/components/${next.slug}`}
-                aria-label={`Next: ${next.title}`}
-                className="flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-              >
-                <ArrowRight className="size-4" />
-              </Link>
-            ) : (
-              <span className="flex size-7 items-center justify-center text-muted-foreground/30">
-                <ArrowRight className="size-4" />
-              </span>
-            )}
-          </div>
-        )}
+        <ComponentPager previous={previous} next={next} />
       </div>
       <p className="mt-2.5 max-w-xl text-body leading-relaxed text-muted-foreground">
         {item.description}
       </p>
 
-      <div className="mt-10 flex flex-col gap-12">
+      <ExampleList>
         {item.examples.map((example) => {
           const Demo = example.Demo;
           const source = readSource(example.file);
@@ -114,7 +86,7 @@ export default async function ComponentPage({ params }: PageProps) {
               .pop()
               ?.replace(/\.tsx$/, "") ?? example.title;
           return (
-            <section key={example.title}>
+            <ExampleListItem key={example.title}>
               <h2 className="text-control font-medium text-foreground">{example.title}</h2>
               <p className="mt-1.5 text-caption text-muted-foreground">{example.description}</p>
 
@@ -132,10 +104,10 @@ export default async function ComponentPage({ params }: PageProps) {
                   <CodeBlock code={source} label={label} />
                 </TabsContent>
               </Tabs>
-            </section>
+            </ExampleListItem>
           );
         })}
-      </div>
+      </ExampleList>
 
       <section className="mt-16">
         <h2 className="text-control font-medium text-foreground">Install</h2>

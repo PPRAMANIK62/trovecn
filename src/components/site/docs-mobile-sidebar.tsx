@@ -15,7 +15,8 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Brand } from "@/components/site/brand";
-import { SidebarNavLink, SidebarHoverPill } from "@/components/site/sidebar-nav-link";
+import { ProximityHoverPill } from "@/components/ui/proximity-hover-pill";
+import { SidebarNavLink, SidebarNewDot } from "@/components/site/sidebar-nav-link";
 
 const groups = getComponentsByCategory();
 
@@ -67,7 +68,7 @@ export function DocsMobileSidebar() {
             onMouseEnter={handlers.onMouseEnter}
             onMouseLeave={handlers.onMouseLeave}
           >
-            <SidebarHoverPill
+            <ProximityHoverPill
               activeRect={activeIndex !== null ? itemRects[activeIndex] : null}
               sessionKey={sessionRef.current}
             />
@@ -114,6 +115,7 @@ export function DocsMobileSidebar() {
                             onClick={() => setOpen(false)}
                           >
                             {item.title}
+                            {item.isNew && <SidebarNewDot />}
                           </SidebarNavLink>
                         </li>
                       );
