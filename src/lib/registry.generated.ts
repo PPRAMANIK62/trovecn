@@ -5,6 +5,7 @@ import type { RegistryItem } from "./registry-types";
 
 import { accordion } from "../../registry/trovecn/accordion/meta";
 import { button } from "../../registry/trovecn/button/meta";
+import { combobox } from "../../registry/trovecn/combobox/meta";
 import { dialog } from "../../registry/trovecn/dialog/meta";
 import { menu } from "../../registry/trovecn/menu/meta";
 import { popover } from "../../registry/trovecn/popover/meta";
@@ -16,6 +17,7 @@ import { tooltip } from "../../registry/trovecn/tooltip/meta";
 export const registry: RegistryItem[] = [
   accordion,
   button,
+  combobox,
   dialog,
   menu,
   popover,

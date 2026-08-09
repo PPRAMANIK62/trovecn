@@ -44,7 +44,17 @@ downstream patterns depend on it.
       UI's own `data-highlighted` still drives per-row text/icon color
       (muted → foreground), split the same way Accordion separates its pill
       (background) from its trigger (text color)
-- [ ] Combobox / Autocomplete — command palette search-as-you-type
+- [x] Combobox / Autocomplete — registered in `registry.json` and on the
+      docs site. Hand-built directly on `@base-ui/react/combobox` instead of
+      `npx shadcn add combobox` — the stock scaffold overwrites Button and
+      drops the house `elevated`/`2xs` variants; see the comment atop
+      `combobox.tsx`. Popup matches the input's width (`w-(--anchor-width)`),
+      unlike Menu's content-sized popup — a combobox's results are "for this
+      field," a menu's actions aren't. ComboboxList owns the same
+      `useProximityHover` pill Menu's popups do; ComboboxItem takes its index
+      as an explicit prop (the flat case gets it free from Base UI's own
+      `(item, index) =>` render callback, the grouped case threads a running
+      counter across groups — see the "Grouped" example)
 - [x] Switch — registered in `registry.json` and on the docs site. Squishy,
       draggable thumb (hover-stretch, press-squish, drag-to-toggle) adapted
       from fluidfunctionalism.com's Base UI switch (MIT,
