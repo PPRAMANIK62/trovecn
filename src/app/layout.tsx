@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { MotionConfig } from "motion/react";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 import { themeInitScript } from "@/lib/theme-script";
@@ -54,6 +55,7 @@ export default function RootLayout({
       </head>
       <body className="h-dvh overflow-hidden bg-canvas text-foreground">
         <MotionConfig reducedMotion="user">{children}</MotionConfig>
+        <Analytics />
       </body>
     </html>
   );
