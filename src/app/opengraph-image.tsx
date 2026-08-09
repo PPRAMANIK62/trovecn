@@ -100,7 +100,7 @@ export default async function Image() {
           trovecn.dev
         </div>
         <div style={{ display: "flex", fontFamily: "Geist Mono", fontSize: 20, color: "#adadad" }}>
-          npx shadcn add
+          copy-paste source
         </div>
       </div>
     </div>,
