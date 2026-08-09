@@ -15,10 +15,27 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const title = "trove/cn — a collected component registry";
+const description =
+  "A curated registry of premium UI patterns, observed in the wild and rebuilt for installation via shadcn.";
+
 export const metadata: Metadata = {
-  title: "trove/cn — a collected component registry",
-  description:
-    "A curated registry of premium UI patterns, observed in the wild and rebuilt for installation via shadcn.",
+  metadataBase: new URL("https://trovecn.dev"),
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    url: "https://trovecn.dev",
+    siteName: "trove/cn",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+    creator: "@ppramanik62",
+  },
 };
 
 export default function RootLayout({
