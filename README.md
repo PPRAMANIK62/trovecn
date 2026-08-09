@@ -15,7 +15,7 @@ npx shadcn add https://trovecn.dev/r/blur-navbar.json
 - [Next.js](https://nextjs.org) (App Router) + React 19 + TypeScript
 - [Tailwind CSS v4](https://tailwindcss.com)
 - [shadcn](https://ui.shadcn.com) CLI, built on [Base UI](https://base-ui.com) primitives
-- [Framer Motion](https://www.framer.com/motion/) for animation
+- [Motion](https://motion.dev) for animation
 - [Shiki](https://shiki.style) for syntax-highlighted code blocks
 
 See [`docs/design-system.md`](docs/design-system.md) for the visual language
