@@ -36,7 +36,14 @@ downstream patterns depend on it.
 - [x] Sheet — registered in `registry.json` and on the docs site, built
       on the Dialog primitive, edge-anchored — consider re-basing on Base
       UI's dedicated Drawer primitive at some point
-- [ ] Menu (dropdown) — mega-menu, sidebar row actions
+- [x] Menu (dropdown) — registered in `registry.json` and on the docs site.
+      Submenus, checkbox/radio items; each popup (including every submenu,
+      independently) owns a `useProximityHover` pill sliding behind its rows,
+      auto-indexed via a recursive child walk that reaches into
+      MenuGroup/MenuRadioGroup — same wash every other consumer uses. Base
+      UI's own `data-highlighted` still drives per-row text/icon color
+      (muted → foreground), split the same way Accordion separates its pill
+      (background) from its trigger (text color)
 - [ ] Combobox / Autocomplete — command palette search-as-you-type
 - [x] Switch — registered in `registry.json` and on the docs site. Squishy,
       draggable thumb (hover-stretch, press-squish, drag-to-toggle) adapted
