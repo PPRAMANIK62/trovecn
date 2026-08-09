@@ -6,10 +6,14 @@ import type { RegistryItem } from "./registry-types";
 import { accordion } from "../../registry/trovecn/accordion/meta";
 import { button } from "../../registry/trovecn/button/meta";
 import { combobox } from "../../registry/trovecn/combobox/meta";
+import { contextMenu } from "../../registry/trovecn/context-menu/meta";
 import { dialog } from "../../registry/trovecn/dialog/meta";
 import { drawer } from "../../registry/trovecn/drawer/meta";
 import { menu } from "../../registry/trovecn/menu/meta";
+import { menubar } from "../../registry/trovecn/menubar/meta";
+import { navigationMenu } from "../../registry/trovecn/navigation-menu/meta";
 import { popover } from "../../registry/trovecn/popover/meta";
+import { previewCard } from "../../registry/trovecn/preview-card/meta";
 import { switch as switchItem } from "../../registry/trovecn/switch/meta";
 import { tabs } from "../../registry/trovecn/tabs/meta";
 import { tooltip } from "../../registry/trovecn/tooltip/meta";
@@ -18,10 +22,14 @@ export const registry: RegistryItem[] = [
   accordion,
   button,
   combobox,
+  contextMenu,
   dialog,
   drawer,
   menu,
+  menubar,
+  navigationMenu,
   popover,
+  previewCard,
   switchItem,
   tabs,
   tooltip,
