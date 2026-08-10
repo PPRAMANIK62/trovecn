@@ -1,9 +1,16 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion, type Variants } from "motion/react";
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { CheckboxGroup, CheckboxGroupItem } from "@/components/ui/checkbox";
 import { getComponent } from "@/lib/components-registry";
 import { spring } from "@/lib/springs";
 
@@ -17,9 +24,55 @@ const FEATURED = [
   { slug: "switch", example: "Settings row" },
   { slug: "tabs", example: "Icons" },
   { slug: "accordion", example: "Single expand" },
+  { slug: "checkbox-group", example: "Basic" },
   { slug: "tooltip", example: "Placement" },
   { slug: "combobox", example: "Standalone" },
 ] as const;
+
+/** The landing page is a comparison surface, not a second docs page. These
+ * compact variants preserve the signature interaction while fitting a shared
+ * preview viewport; the complete examples stay on their component pages. */
+function CompactAccordionPreview() {
+  return (
+    <Accordion type="single" defaultValue="motion" className="w-full max-w-sm">
+      <AccordionItem value="motion">
+        <AccordionTrigger>Motion principles</AccordionTrigger>
+        <AccordionContent>Surfaces make room before their contents arrive.</AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="keyboard">
+        <AccordionTrigger>Keyboard support</AccordionTrigger>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+
+const compactTasks = [
+  { name: "research", label: "Research the flow" },
+  { name: "prototype", label: "Prototype the interaction" },
+  { name: "review", label: "Review with design" },
+  { name: "ship", label: "Ship the polish" },
+];
+
+function CompactCheckboxGroupPreview() {
+  const [value, setValue] = useState<string[]>(["research", "review", "ship"]);
+
+  return (
+    <div className="w-full max-w-sm">
+      <CheckboxGroup value={value} onValueChange={setValue}>
+        {compactTasks.map((task) => (
+          <CheckboxGroupItem key={task.name} name={task.name}>
+            {task.label}
+          </CheckboxGroupItem>
+        ))}
+      </CheckboxGroup>
+    </div>
+  );
+}
+
+const landingDemos: Partial<Record<(typeof FEATURED)[number]["slug"], () => ReactNode>> = {
+  accordion: CompactAccordionPreview,
+  "checkbox-group": CompactCheckboxGroupPreview,
+};
 
 /**
  * Same container/item stagger shape as ExampleList (docs/design-system.md
@@ -34,15 +87,12 @@ function ShowcaseGrid({ children }: { children: ReactNode }) {
   const container: Variants = {
     hidden: {},
     visible: {
-      transition: reduceMotion ? undefined : { staggerChildren: 0.06 },
+      transition: reduceMotion ? undefined : { staggerChildren: 0.08 },
     },
   };
 
   return (
     <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
       variants={container}
       className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
     >
@@ -70,14 +120,14 @@ function LandingTile({
   const registryItem = getComponent(slug);
   const demo = registryItem?.examples.find((e) => e.title === example);
   if (!registryItem || !demo) return null;
-  const Demo = demo.Demo;
+  const Demo = landingDemos[slug] ?? demo.Demo;
 
   const item: Variants = {
-    hidden: reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 },
+    hidden: reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: reduceMotion ? { duration: 0 } : spring.quick.enter,
+      transition: reduceMotion ? { duration: 0 } : spring.moderate.enter,
     },
   };
 
@@ -90,7 +140,7 @@ function LandingTile({
           control (e.g. Tabs) and visibly distort that control's own layout
           animation. Only the caption below is the navigation affordance. */}
       <div className="rounded-xl bg-card p-[5px] shadow-card">
-        <div className="flex min-h-56 items-center justify-center rounded-lg bg-background p-6 shadow-well">
+        <div className="flex h-64 items-center justify-center overflow-hidden rounded-lg bg-background p-6 shadow-well">
           <Demo />
         </div>
       </div>
@@ -108,15 +158,39 @@ function LandingTile({
 }
 
 export function LandingShowcase() {
+  const reduceMotion = useReducedMotion();
+  const section: Variants = {
+    hidden: {},
+    visible: {
+      transition: reduceMotion ? undefined : { delayChildren: 0.04, staggerChildren: 0.1 },
+    },
+  };
+  const header: Variants = {
+    hidden: reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: reduceMotion ? { duration: 0 } : spring.moderate.enter,
+    },
+  };
+
   return (
-    <section className="mx-auto max-w-6xl px-6 pb-20 pt-6 sm:pt-8">
-      <p className="text-label uppercase text-muted-foreground">Live previews</p>
-      <h2 className="mt-2 text-title text-foreground">See it before you install it.</h2>
+    <motion.section
+      variants={section}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      className="mx-auto max-w-6xl px-6 pb-20 pt-6 sm:pt-8"
+    >
+      <motion.div variants={header}>
+        <p className="text-label uppercase text-muted-foreground">Live previews</p>
+        <h2 className="mt-2 text-title text-foreground">See it before you install it.</h2>
+      </motion.div>
       <ShowcaseGrid>
         {FEATURED.map((f) => (
           <LandingTile key={f.slug} slug={f.slug} example={f.example} />
         ))}
       </ShowcaseGrid>
-    </section>
+    </motion.section>
   );
 }
