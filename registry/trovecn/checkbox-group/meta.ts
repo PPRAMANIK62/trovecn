@@ -6,8 +6,7 @@ import CheckboxGroupSettingsExample from "./examples/settings";
 const checkboxGroupItem: RegistryItem = {
   slug: "checkbox-group",
   title: "Checkbox Group",
-  description:
-    "A multi-select list of Base UI checkboxes with proximity hover across every row, plus a merge/split selection background: contiguous checked rows render as one continuous block that springs to include a newly-checked neighbor and splits apart when one is unchecked, instead of N separately highlighted rows.",
+  description: "A multi-select checkbox list with connected selection states.",
   category: "Primitives",
   dependencies: ["@base-ui/react", "motion"],
   registryDependencies: ["utils", "springs", "use-proximity-hover", "use-merge-split"],

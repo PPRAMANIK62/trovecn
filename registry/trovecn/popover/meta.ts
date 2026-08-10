@@ -6,8 +6,7 @@ import PopoverPlacementExample from "./examples/placement";
 export const popover: RegistryItem = {
   slug: "popover",
   title: "Popover",
-  description:
-    "Anchored floating panel that enters from its trigger — non-modal, positioned on any side with a small placement-aware offset.",
+  description: "A non-modal floating panel anchored to a trigger.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react"],
   registryDependencies: ["utils", "springs"],

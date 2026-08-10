@@ -6,8 +6,7 @@ import CheckboxBasicExample from "./examples/basic";
 const checkboxItem: RegistryItem = {
   slug: "checkbox",
   title: "Checkbox",
-  description:
-    "Base UI checkbox with a hand-drawn checkmark that draws itself on and off — a bespoke pathLength tween rather than an icon swap. Standalone and single-item: a terms-agreement box, one settings toggle rendered as a checkbox. For a multi-select list with proximity hover and a merged selection background, see Checkbox Group.",
+  description: "An animated checkbox for standalone form choices.",
   category: "Primitives",
   dependencies: ["@base-ui/react", "motion"],
   registryDependencies: ["utils", "springs"],

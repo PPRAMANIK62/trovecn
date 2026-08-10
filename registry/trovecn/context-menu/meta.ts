@@ -6,8 +6,7 @@ import ContextMenuSubmenuExample from "./examples/submenu";
 export const contextMenu: RegistryItem = {
   slug: "context-menu",
   title: "Context Menu",
-  description:
-    "Right-click actions — the same popup, motion, and proximity-hover pill as the dropdown Menu, anchored at the pointer instead of a trigger element. Submenus, checkbox/radio items, shortcuts, all inherited for free.",
+  description: "A pointer-anchored action menu with nested and selectable items.",
   category: "Primitives",
   dependencies: ["@base-ui/react", "motion", "lucide-react"],
   registryDependencies: ["utils", "springs", "use-proximity-hover"],

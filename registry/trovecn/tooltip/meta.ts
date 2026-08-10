@@ -6,8 +6,7 @@ import TooltipPlacementExample from "./examples/placement";
 export const tooltip: RegistryItem = {
   slug: "tooltip",
   title: "Tooltip",
-  description:
-    "Fast, fading label for icon buttons and truncated text — slides a few pixels from its resolved trigger side on top of the fade.",
+  description: "A fast contextual label for icons and truncated text.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react"],
   registryDependencies: ["utils", "springs", "font-weight"],

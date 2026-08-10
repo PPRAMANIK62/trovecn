@@ -6,8 +6,7 @@ import DrawerSideExample from "./examples/side";
 export const drawer: RegistryItem = {
   slug: "drawer",
   title: "Drawer",
-  description:
-    "Edge-anchored panel with vaul-style drag-to-dismiss on top/bottom — velocity-first release, rubber-band resistance, confined to a handle. Left/right stay scripted-only.",
+  description: "An edge-attached panel with draggable vertical dismissal.",
   category: "Primitives",
   dependencies: ["@base-ui/react", "motion"],
   registryDependencies: ["utils", "springs"],

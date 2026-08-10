@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "popover",
   "title": "Popover",
-  "description": "Anchored floating panel that grows out of its trigger, scaling from Base UI's transform-origin.",
+  "description": "Anchored floating panel that enters from its trigger with a small placement-aware offset.",
   "dependencies": [
     "motion",
     "@base-ui/react"

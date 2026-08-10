@@ -6,8 +6,7 @@ import SwitchSettingsRowExample from "./examples/settings-row";
 const switchItem: RegistryItem = {
   slug: "switch",
   title: "Switch",
-  description:
-    "Base UI switch with a squishy, draggable thumb — it stretches on hover, squishes on press, and can be dragged (not just clicked) to the other side. The on/off control behind pricing toggles and settings rows.",
+  description: "A draggable on/off control for settings and preferences.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react"],
   registryDependencies: ["utils", "springs"],

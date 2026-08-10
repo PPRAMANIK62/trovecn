@@ -6,8 +6,7 @@ import NavigationMenuResizeExample from "./examples/resize";
 export const navigationMenu: RegistryItem = {
   slug: "navigation-menu",
   title: "Navigation Menu",
-  description:
-    "Mega-menu nav with preview panels. One shared viewport resizes and crossfades between whichever top-level item is active, instead of each item owning its own popup — the top-level trigger row gets the same proximity-hover wash every other interactive list in this registry uses.",
+  description: "A shared-viewport mega menu with preview panels.",
   category: "Primitives",
   dependencies: ["@base-ui/react", "motion", "lucide-react"],
   registryDependencies: ["utils", "use-proximity-hover"],

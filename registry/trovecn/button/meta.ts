@@ -6,8 +6,7 @@ import ButtonSizesExample from "./examples/sizes";
 export const button: RegistryItem = {
   slug: "button",
   title: "Button",
-  description:
-    "Base UI button with variant and size styling via class-variance-authority — the trigger every other primitive renders through `render`.",
+  description: "A styled Base UI button with variants and sizes.",
   category: "Primitives",
   dependencies: ["@base-ui/react", "class-variance-authority"],
   registryDependencies: ["utils"],

@@ -6,8 +6,7 @@ import ComboboxGroupsExample from "./examples/groups";
 export const combobox: RegistryItem = {
   slug: "combobox",
   title: "Combobox",
-  description:
-    "Base UI combobox — a text input filtered against a list as you type, with a spring-driven popup matched to the input's width. The search-as-you-type engine behind a command palette.",
+  description: "A searchable select with a width-matched floating list.",
   category: "Primitives",
   dependencies: ["@base-ui/react", "motion", "lucide-react"],
   registryDependencies: ["utils", "springs", "use-proximity-hover"],

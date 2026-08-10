@@ -6,8 +6,7 @@ import TabsIconsExample from "./examples/icons";
 export const tabs: RegistryItem = {
   slug: "tabs",
   title: "Tabs",
-  description:
-    "Tab list with a spring-driven sliding indicator, proximity hover, and a directional panel handoff — the item nearest the cursor previews with a subtle wash before it's clicked.",
+  description: "A tab list with an animated indicator and panel transitions.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react"],
   registryDependencies: ["utils", "springs", "font-weight", "use-proximity-hover"],

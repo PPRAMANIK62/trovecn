@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "tooltip",
   "title": "Tooltip",
-  "description": "Fast, fading label that slides in from the trigger's side.",
+  "description": "Fast, fading label with minimal collision-aware travel from its trigger.",
   "dependencies": [
     "motion",
     "@base-ui/react"

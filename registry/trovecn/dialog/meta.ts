@@ -6,8 +6,7 @@ import DialogWithFooterExample from "./examples/with-footer";
 export const dialog: RegistryItem = {
   slug: "dialog",
   title: "Dialog",
-  description:
-    "Centered modal with a spring-scaled popup and fading backdrop — a detached floating plane, not an edge-attached panel like Drawer.",
+  description: "A centered modal for focused, blocking interactions.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react", "lucide-react"],
   registryDependencies: ["utils", "springs", "button"],

@@ -7,8 +7,7 @@ import AccordionMultiExpandExample from "./examples/multi-expand";
 export const accordion: RegistryItem = {
   slug: "accordion",
   title: "Accordion",
-  description:
-    "Collapsible sections with a spring-animated chevron, height transition, and proximity hover across every row.",
+  description: "Collapsible sections with spring motion and proximity feedback.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react", "lucide-react"],
   registryDependencies: ["utils", "springs", "font-weight", "use-proximity-hover"],

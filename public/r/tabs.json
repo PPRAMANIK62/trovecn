@@ -2,7 +2,7 @@
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
   "name": "tabs",
   "title": "Tabs",
-  "description": "Tab list with a spring-driven sliding indicator and proximity hover across every tab.",
+  "description": "Tab list with a spring-driven sliding indicator, proximity hover, and a directional panel handoff.",
   "dependencies": [
     "motion",
     "@base-ui/react"

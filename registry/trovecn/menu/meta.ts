@@ -6,8 +6,7 @@ import MenuCheckboxesExample from "./examples/checkboxes";
 export const menu: RegistryItem = {
   slug: "menu",
   title: "Menu",
-  description:
-    "Base UI menu with submenus, checkbox/radio items, and a spring-driven popup — the dropdown behind mega-menus and sidebar row actions.",
+  description: "A dropdown menu with nested, radio, and checkbox items.",
   category: "Primitives",
   dependencies: ["@base-ui/react", "motion", "lucide-react"],
   registryDependencies: ["utils", "springs", "use-proximity-hover"],
