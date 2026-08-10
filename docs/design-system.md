@@ -20,7 +20,7 @@ separation between elevation levels, and a small number of signature details
 reused consistently (see "Visual language" below) — not from adding
 decoration.
 
-Full component backlog lives in `docs/ideas.md`.
+The component roadmap lives in `docs/ideas.md`.
 
 ## Stack
 
@@ -396,8 +396,8 @@ different tiers, not the same kind of thing at different maturity:
   plus whatever's specific to that one observed pattern; a pattern file
   should very rarely need to reach past a primitive into raw Base UI itself.
 
-See `docs/ideas.md` for the current primitive checklist and the reasoning
-for building it before the pattern backlog.
+See `docs/ideas.md` for the workflow-level component roadmap, and
+`docs/primitives.md` for the foundational primitive checklist.
 
 ## Component conventions
 
