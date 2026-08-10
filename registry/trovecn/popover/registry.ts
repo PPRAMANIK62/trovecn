@@ -5,7 +5,7 @@ export const popover: RegistryManifestItem = {
   type: "registry:ui",
   title: "Popover",
   description:
-    "Anchored floating panel that grows out of its trigger, scaling from Base UI's transform-origin.",
+    "Anchored floating panel that enters from its trigger with a small placement-aware offset.",
   dependencies: ["motion", "@base-ui/react"],
   registryDependencies: ["utils", "springs"],
   files: [{ path: "src/components/ui/popover.tsx", type: "registry:ui" }],

@@ -7,7 +7,7 @@ export const popover: RegistryItem = {
   slug: "popover",
   title: "Popover",
   description:
-    "Anchored floating panel that grows out of its trigger — non-modal, positioned on any side, scaling from the exact point Base UI anchors it to.",
+    "Anchored floating panel that enters from its trigger — non-modal, positioned on any side with a small placement-aware offset.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react"],
   registryDependencies: ["utils", "springs"],

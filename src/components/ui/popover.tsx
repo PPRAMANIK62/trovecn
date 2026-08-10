@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { Popover as PopoverPrimitive } from "@base-ui/react/popover";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/springs";
@@ -16,10 +16,9 @@ function PopoverTrigger({ ...props }: PopoverPrimitive.Trigger.Props) {
 }
 
 /**
- * Anchored, non-modal — no backdrop, unlike Dialog. Scales from
- * `--transform-origin` (the point Base UI's Positioner anchors it to, which
- * moves with `side`/`align`) rather than a fixed origin, so it always reads
- * as growing out of the trigger no matter which edge it lands on.
+ * Anchored, non-modal — no backdrop, unlike Dialog. It enters from a small
+ * trigger-facing offset on its resolved side, so collision handling never
+ * breaks the connection between the trigger and its floating surface.
  */
 function PopoverContent({
   className,
@@ -30,6 +29,8 @@ function PopoverContent({
   ...props
 }: PopoverPrimitive.Popup.Props &
   Pick<PopoverPrimitive.Positioner.Props, "align" | "alignOffset" | "side" | "sideOffset">) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Positioner
@@ -44,16 +45,26 @@ function PopoverContent({
           data-slot="popover-content"
           render={(popupProps, state) => {
             const exiting = state.transitionStatus === "ending";
+            const triggerOffset = reduceMotion
+              ? { x: 0, y: 0 }
+              : {
+                  x: state.side === "right" ? -4 : state.side === "left" ? 4 : 0,
+                  y: state.side === "bottom" ? -4 : state.side === "top" ? 4 : 0,
+                };
             return (
               <motion.div
                 {...(popupProps as Record<string, unknown>)}
                 {...(props as Record<string, unknown>)}
                 className={cn(
-                  "w-72 origin-(--transform-origin) rounded-lg bg-popover p-3 text-body text-popover-foreground shadow-popover outline-none",
+                  "w-72 rounded-lg bg-popover p-3 text-body text-popover-foreground shadow-popover outline-none",
                   className,
                 )}
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: exiting ? 0 : 1, scale: exiting ? 0.96 : 1 }}
+                initial={{ opacity: 0, ...triggerOffset }}
+                animate={{
+                  opacity: exiting ? 0 : 1,
+                  x: exiting ? triggerOffset.x : 0,
+                  y: exiting ? triggerOffset.y : 0,
+                }}
                 transition={exiting ? spring.moderate.exit : spring.moderate.enter}
               />
             );
