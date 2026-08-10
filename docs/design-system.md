@@ -123,11 +123,14 @@ Concrete rules, not vibes — these are what separates "restrained" from
 "looks unfinished":
 
 - **Left-align editorial content.** Headlines, paragraphs, and multi-line
-  copy are left-aligned, including on the marketing homepage. Centered
-  paragraph text is what makes a page read as a template someone filled in
-  rather than a page someone laid out. Full centering is reserved for
-  isolated single elements (a lone icon, a spinner) — never a headline or a
-  block of body copy.
+  copy are left-aligned. Centered paragraph text is what makes a page read
+  as a template someone filled in rather than a page someone laid out. Full
+  centering is reserved for isolated single elements (a lone icon, a
+  spinner) — never a headline or a block of body copy — with exactly one
+  deliberate exception: the homepage hero (see "Landing vs. docs alignment"
+  below). Nothing else gets this exception; a second centered block anywhere
+  else reopens the "looks like a template" problem this rule exists to
+  prevent.
 - **Surfaces must visibly step.** `--card` / `--popover` need to read as a
   distinct plane from `--background` at a glance, especially in dark mode —
   not a background that's 3% lighter with a border nobody notices. If you
@@ -146,6 +149,42 @@ Concrete rules, not vibes — these are what separates "restrained" from
   `Hero & Marketing · 03`. It signals a curated, ordered set rather than an
   arbitrary list — small effort, disproportionate effect on how intentional
   the collection feels.
+
+### Landing vs. docs alignment
+
+The homepage hero (badge, headline, one subhead line, CTA row — see
+`src/components/site/hero.tsx`) is centered as one composition; the
+component-preview grid below it (`src/components/site/landing-showcase.tsx`)
+is centered _as a block_ on the page (`mx-auto max-w-6xl`), but each tile's
+own title/caption stays left-aligned inside the tile, not centered text.
+Docs pages stay fully left-aligned editorial content, unchanged. The line is
+drawn at "one hero moment, centered, once" — a centered _paragraph_, a
+centered _list of captions_, or a second centered section anywhere on the
+site reopens the "looks like a template" problem the left-align rule above
+exists to prevent. When in doubt, left-align; centering needs to earn its
+place as a one-time marketing beat, not a default.
+
+### Preview-grid tile pattern
+
+`LandingTile` (inside `landing-showcase.tsx`) reuses `ComponentPreview`'s
+visual recipe — a lifted `shadow-card` frame around a recessed `shadow-well`
+stage — but drops its footer/replay-button strip and moves the caption
+below the tile instead. The two aren't the same component because they do
+different jobs: `ComponentPreview` is a _reference_ affordance on a
+component's own doc page (replay the demo, read the label, flip to Code);
+`LandingTile` links into `/docs/components/[slug]` too, but only the caption
+below the stage is the `<Link>` — there's no tile-wide overlay anchor. An
+earlier version covered the whole tile with an absolutely-positioned `<Link>`
+and tried to punch `pointer-events-auto` holes back through it for the demo's
+own interactive elements; that fought event bubbling and stacking contexts
+per primitive (Base UI's switch renders as `<span role="switch">` rather than
+a `<button>`, for one) and a click could still leak through to the overlay
+even after landing on the control underneath. transitions.dev, the reference
+this pattern is modeled on, doesn't wrap its cards in a link at all — each
+card is the destination, with its own small controls layered by z-index, not
+a navigation affordance. `LandingTile` follows that: the stage is normally
+interactive (no `pointer-events-none`, no z-index games), and the caption
+alone carries the click-through into the docs page.
 
 ## Motion & interaction principles
 
@@ -282,12 +321,12 @@ sits on (top-level nav/menubar triggers on `--background`, static chips and
 badges).
 
 **Elevation is a system, not a per-component judgment call.** This project
-already treats `--canvas` → `--background` → `--card` → `--popover` as
-successive planes ("Surfaces must visibly step," above). Treat that ladder
-as the formal elevation order: a component stacking on top of another
-surface (a dropdown inside a dialog, a tooltip inside a popover) steps up
-exactly one level from what it's layered on — never skip a level, never
-reuse the level underneath it.
+already treats `--background` → `--card` → `--popover` as successive planes
+("Surfaces must visibly step," above). Treat that ladder as the formal
+elevation order: a component stacking on top of another surface (a dropdown
+inside a dialog, a tooltip inside a popover) steps up exactly one level from
+what it's layered on — never skip a level, never reuse the level underneath
+it.
 
 **Ghost-span for animated font-weight.** State changes (selected / checked /
 active / open) that make text heavier will reflow the layout if animated on
@@ -339,6 +378,47 @@ two are intentionally not derived from each other.
 No "observed on"/"source site" attribution and no install-command section on
 the detail page — a component's real-world inspiration (if any) belongs in
 conversation/commit history, not in `RegistryItem` or the rendered page.
+
+## Shell architecture
+
+Landing and docs use two different shells, on purpose — they're different
+kinds of page, not two skins on one mechanism.
+
+**Landing** (`src/app/page.tsx`) is full-bleed, normal document scroll.
+`SiteHeader` (`src/components/site/site-header.tsx`) is a `sticky top-0`
+header — `border-b` + `bg-background/85 backdrop-blur-md` — with a
+`max-w-6xl` inner container. Content just starts below it in normal flow;
+no gradient-fade overlay is needed to mask content passing under the nav,
+because content never passes _under_ it — the header sits ahead of the
+content in document order, not layered on top of it.
+
+**Docs** (`src/app/docs/layout.tsx`) is a fixed, edge-to-edge 3-pane shell —
+sidebar | content | info card — each pane scrolling independently, at
+`lg`/`xl` breakpoints. Flush panes with plain `border` seams, no rounded
+corners, no canvas gutter, no floating/overlapping chrome — a deliberately
+different visual language from the removed `AppFrame` mechanism: flush
+panes reading as one continuous surface, split by hairline borders, is a
+different shape than rounded panels floating with margin around them (the
+thing that actually converged on a competing site's look). Below `lg`, the
+sidebar and info-card panes disappear entirely and
+the content pane becomes the whole shell, with its own compact top strip
+(`Brand` + `DocsMobileSidebar`'s drawer trigger) standing in for the
+sidebar's branding.
+
+Each pane is its own `flex flex-col` with a `shrink-0` header strip above a
+`flex-1 overflow-y-auto` scroll box — no absolute positioning, no backdrop
+blur, because no pane's content ever passes under another pane's chrome.
+`DocsSidebar` and `DocsPageTransition` are unchanged from before; both were
+always agnostic to what container scrolls them.
+
+**Right-rail info card** (`src/components/site/docs-info-card.tsx`,
+`xl:` and up): a single floating card, not a persistent nav surface — a
+GitHub link with a live star count (fetched server-side in
+`docs/layout.tsx`, `next: { revalidate: 3600 }`, `src/lib/site-config.ts`
+holds the repo/owner/X-profile constants) and a "Created by" credit. The
+theme toggle deliberately does _not_ live here — it's pinned in the content
+pane's own top strip at every breakpoint, so it isn't gated on whether the
+`xl:`-only info card happens to be visible.
 
 ## Two tiers: primitives, then patterns
 
@@ -441,16 +521,22 @@ label, title, description, Previous/Next nav) and wraps each example in
 examples themselves should not try to replicate this framing — just build
 the piece; the page shell is provided centrally.
 
-The Preview tab's stage uses `bg-canvas` — one step _below_ `--background`,
-the same relationship `AppFrame` uses between its gutter and `Panel`. Demo
-content that already sits on `--card`/`--popover` (most of the registry)
-pops against it automatically, for free. Don't second-guess this and add a
-`bg-card` wrapper div around a demo "to give it a background" — that
-recreates the exact bug this fixed: a card-toned box against a card-toned
-stage reads as one flat shape with a nearly-invisible seam, no matter how
-crisp the border is (this happened for real — the first `blur-navbar` and
-`scroll-text-reveal` demos each wrapped their own `overflow-y-auto` scroll
-container in `border-border bg-card`, identical to the stage they sat on).
+The Preview tab's stage uses `bg-background`, recessed one level down from
+the card's own `bg-card` frame via `shadow-well` — the frame steps _up_ to
+`--card`, the stage steps back _down_ to `--background`, so demo content
+that already sits on `--card`/`--popover` (most of the registry) pops
+against the recessed stage automatically, for free. Don't second-guess this
+and add a `bg-card` wrapper div around a demo "to give it a background" —
+that recreates the exact bug this fixed: a card-toned box against a
+card-toned stage reads as one flat shape with a nearly-invisible seam, no
+matter how crisp the border is (this happened for real — the first
+`blur-navbar` and `scroll-text-reveal` demos each wrapped their own
+`overflow-y-auto` scroll container in `border-border bg-card`, identical to
+the stage they sat on).
+
+`src/components/site/landing-showcase.tsx`'s `LandingTile` reuses this same
+frame/stage recipe for the homepage preview grid (see "Preview-grid tile
+pattern" above) — same elevation logic, no footer strip.
 
 If your demo needs its own bounded scroll container (see "Demoing
 scroll-driven effects" above), give _that_ container real elevation instead

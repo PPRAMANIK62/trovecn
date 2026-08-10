@@ -62,7 +62,7 @@ export default async function ComponentPage({ params }: PageProps) {
   const componentDeps = registryDeps.filter((d) => !(d in FOUNDATION_FILES));
 
   return (
-    <article className="max-w-3xl">
+    <article className="max-w-2xl">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="font-mono text-2xs font-medium text-link">

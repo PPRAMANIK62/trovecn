@@ -7,14 +7,9 @@ import { motion, useReducedMotion, type Variants } from "motion/react";
 import { GithubIcon } from "@/components/site/github-icon";
 import { Button } from "@/components/ui/button";
 import { spring } from "@/lib/springs";
+import { GITHUB_URL } from "@/lib/site-config";
 
-const GITHUB_URL = "https://github.com/PPRAMANIK62/trovecn";
-
-interface HeroProps {
-  componentCount: number;
-}
-
-export function Hero({ componentCount }: HeroProps) {
+export function Hero() {
   const reduceMotion = useReducedMotion();
 
   const container: Variants = {
@@ -38,29 +33,20 @@ export function Hero({ componentCount }: HeroProps) {
       initial="hidden"
       animate="visible"
       variants={container}
-      className="flex w-full flex-col px-6 py-16"
+      className="flex min-h-[48svh] w-full flex-col items-center justify-center px-6 py-10 text-center"
     >
-      <div className="flex max-w-2xl flex-col items-start text-left sm:mx-16 md:mx-32 lg:mx-56">
-        <motion.p variants={item} className="font-mono text-2xs text-muted-foreground">
-          <span className="text-link">{componentCount}</span> components, growing...
-        </motion.p>
-        <motion.h1 variants={item} className="mt-6 text-balance text-display text-foreground">
+      <div className="mx-auto flex max-w-2xl flex-col items-center">
+        <motion.h1 variants={item} className="text-balance text-display text-foreground">
           The small details that make interfaces feel premium.
         </motion.h1>
         <motion.p
           variants={item}
-          className="mt-6 text-body leading-[1.7] text-muted-foreground sm:text-lede"
+          className="mt-6 max-w-xl text-body leading-[1.7] text-muted-foreground sm:text-lede"
         >
-          The best interfaces share a quiet attention to craft — timing, spacing, restraint.
+          Interface patterns from Apple, Linear, and Vercel — studied for their craft, rebuilt as
+          plain React you own.
         </motion.p>
-        <motion.p
-          variants={item}
-          className="mt-4 text-body leading-[1.7] text-muted-foreground sm:text-lede"
-        >
-          trove/cn studies that craft in products like Apple, Linear, and Vercel, then ships it as
-          plain React source you own.
-        </motion.p>
-        <motion.div variants={item} className="mt-10 flex items-center gap-3">
+        <motion.div variants={item} className="mt-10 flex items-center justify-center gap-3">
           <Button render={<Link href="/docs" />} nativeButton={false} size="lg">
             Browse components
             <ArrowRight data-icon="inline-end" />

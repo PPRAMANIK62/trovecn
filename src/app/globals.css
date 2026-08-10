@@ -44,7 +44,6 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --color-canvas: var(--canvas);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -123,13 +122,6 @@
   Light is the default theme; `.dark` is toggled via a class on <html>.
 */
 :root {
-  /* One step deeper than --background — the gutter the app-frame panels
-     float on (src/components/site/app-frame.tsx). Not used as a surface
-     itself, only as the margin around rounded panels. The depth cue here
-     comes from lightness alone (no hue/chroma difference from the rest of
-     the neutral surface ramp — canvas/background/card/popover stay
-     structural gray even though --ring/--link don't anymore). */
-  --canvas: oklch(0.91 0 0);
   --background: oklch(0.98 0 0);
   --foreground: oklch(0.18 0 0);
   --card: oklch(1 0 0);
@@ -194,21 +186,16 @@
 .dark {
   /* Surfaces stay pure chroma-0 gray, same as light mode above — just
      lightness steps, no warm/brand tint. card/popover step up from
-     --canvas/--background enough to register as distinct planes on
-     lightness alone. (--ring/--link below carry the same 265 blue hue as
-     light mode, only relit for a dark surround; --accent-blue isn't
-     redefined here — its value reads fine unchanged against a dark
-     surround too.)
+     --background enough to register as distinct planes on lightness alone.
+     (--ring/--link below carry the same 265 blue hue as light mode, only
+     relit for a dark surround; --accent-blue isn't redefined here — its
+     value reads fine unchanged against a dark surround too.)
 
-     `--canvas` deliberately isn't near-black (an earlier pass had it at L
-     0.09): a step that reads as clearly "one plane down" in light mode gets
-     perceptually crushed once both sides of the comparison are already dark
-     — near-black next to dark-gray just reads as "more black," not as a
-     visible recess, no matter how correct the delta is on paper. Lightening
-     the whole ramp and widening the L gap between steps (~0.05 instead of
-     ~0.035) is what actually keeps the step visible at this end of the
-     lightness range. */
-  --canvas: oklch(0.15 0 0);
+     Lightness steps near the dark end of the ramp need a wider L gap than
+     the same steps near the light end (~0.05 here vs. ~0.02–0.03 in light
+     mode above) — a delta that reads as a clearly distinct plane in light
+     mode gets perceptually crushed once both sides of the comparison are
+     already dark, so the gap has to widen to stay visible at all. */
   --background: oklch(0.21 0 0);
   --foreground: oklch(0.97 0 0);
   --card: oklch(0.275 0 0);
@@ -261,14 +248,15 @@
   }
 }
 
-/* app-frame panels (src/components/site/app-frame.tsx): depth comes from a
-   soft drop shadow plus an inset top highlight (bevel) — no all-around
-   inset ring. An early pass added a faint 1px inset ring standing in for a
-   border, but at any opacity strong enough to register in dark mode it reads
-   as exactly the flat border this approach is meant to avoid — see
-   docs/design-system.md's "surfaces must visibly step" rule. The step is
-   carried instead by the --canvas/--background lightness gap (the panel
-   itself is a visibly lighter plane than the gutter it floats on) plus the
+/* Lifted-surface bevel: a soft drop shadow plus an inset top highlight, no
+   all-around inset ring. Used by Dialog's centered floating plane
+   (src/components/ui/dialog.tsx) and Drawer's edge-attached panel
+   (src/components/ui/drawer.tsx). An early pass added a faint 1px inset ring
+   standing in for a border, but at any opacity strong enough to register in
+   dark mode it reads as exactly the flat border this approach is meant to
+   avoid — see docs/design-system.md's "surfaces must visibly step" rule. The
+   step is carried instead by the `--popover`/`--background` lightness gap
+   against whatever surface the dialog/drawer is layered on, plus the
    shadow, so there's no ring needed to draw the edge. */
 .shadow-panel {
   box-shadow:
@@ -293,11 +281,11 @@
    `--popover` surfaces that anchor to and often visually sit on top of
    another surface (Popover, Menu, Combobox). --popover and --card are the
    identical L1 white in light mode, so there's no lightness gap to carry
-   the "this is a distinct plane" read the way app-frame's panels lean on;
-   without an edge the ambient shadow alone doesn't register on white-on-
-   white. This doesn't reopen the app-frame ring precedent above — that
-   rejection was about a large *persistent* card reading as flatly "boxed"
-   in dark mode. These are small, *transient* overlays, where even Vercel's
+   the "this is a distinct plane" read the way `.shadow-panel` above leans
+   on; without an edge the ambient shadow alone doesn't register on white-
+   on-white. This doesn't reopen the ring rejection above — that rejection
+   was about a large *persistent* surface reading as flatly "boxed" in dark
+   mode. These are small, *transient* overlays, where even Vercel's
    own system reaches for a firmer edge specifically because they're
    transient, not persistent. */
 .shadow-popover {

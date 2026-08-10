@@ -1,73 +1,83 @@
 import type { ReactNode } from "react";
 
-import { AppFrame, Panel } from "@/components/site/app-frame";
 import { DocsSidebar } from "@/components/site/docs-sidebar";
 import { DocsMobileSidebar } from "@/components/site/docs-mobile-sidebar";
 import { DocsPageTransition } from "@/components/site/docs-page-transition";
+import { DocsInfoCard } from "@/components/site/docs-info-card";
+import { ScrollFadeTop, ScrollFadeBottom } from "@/components/site/scroll-fade";
 import { Brand } from "@/components/site/brand";
 import { Breadcrumbs } from "@/components/site/breadcrumbs";
 import { ThemeToggle } from "@/components/site/theme-toggle";
+import { GITHUB_OWNER, GITHUB_REPO_NAME } from "@/lib/site-config";
+
+async function getStarCount(): Promise<number | null> {
+  try {
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO_NAME}`, {
+      next: { revalidate: 3600 },
+      headers: { Accept: "application/vnd.github+json" },
+    });
+    if (!res.ok) return null;
+    const data: { stargazers_count?: number } = await res.json();
+    return typeof data.stargazers_count === "number" ? data.stargazers_count : null;
+  } catch {
+    return null;
+  }
+}
 
 /**
- * Nav bars float over their scroll container instead of sitting above it in
- * flow — `position: absolute` on the nav, `position: absolute inset-0` on
- * the scroll box beneath it, `overflow-hidden` on the Panel to clip both to
- * its rounded corners. This is deliberately *not* `position: sticky`
- * (see the `scroll` prop doc comment on `Panel` in app-frame.tsx): sticky
- * pinned inside a scrolling box was tried before and wobbled during
- * macOS's rubber-band overscroll bounce, because sticky recalculates its
- * offset against a scroll position that briefly overshoots. An absolutely
- * positioned nav outside the scrolling box never recalculates anything on
- * scroll, so it can't wobble — it just sits there while content passes
- * underneath and blurs through it.
- *
- * The top and bottom edges each get a thin `pointer-events-none` overlay —
- * a div painted with the panel's own solid background color fading to
- * transparent, layered above the scrolling content via z-index — instead of
- * a `mask-image` on the content itself. A mask multiplies a card's own
- * box-shadow and rounded corners into the fade curve and the two alpha
- * gradients compound into a muddy dissolve; painting matching-color fog over
- * the content leaves its shape untouched and works the same whether what's
- * underneath is plain text or a stack of bordered cards.
+ * Fixed, edge-to-edge 3-pane shell at lg+/xl+ — sidebar | content | info
+ * card — each pane scrolling independently. Flush panes, no rounded
+ * corners, no canvas gutter (see docs/design-system.md "Shell
+ * architecture"). Below lg, collapses to a single scrolling content pane
+ * with its own compact top strip (Brand + mobile drawer trigger).
  */
-export default function DocsLayout({ children }: { children: ReactNode }) {
+export default async function DocsLayout({ children }: { children: ReactNode }) {
+  const starCount = await getStarCount();
+
   return (
-    <AppFrame>
-      <Panel scroll={false} className="relative hidden w-60 shrink-0 overflow-hidden lg:block">
-        <div className="absolute inset-0 overflow-y-auto overscroll-contain p-6 pt-20">
-          <DocsSidebar />
-        </div>
-        <nav className="absolute inset-x-0 top-0 z-10 flex h-14 items-center border-b border-border bg-background/85 px-6 backdrop-blur-md">
+    <div className="fixed inset-0 flex flex-col lg:flex-row">
+      <aside className="hidden shrink-0 flex-col border-r border-border lg:flex lg:w-64">
+        <div className="flex h-14 shrink-0 items-center border-b border-border px-6">
           <Brand />
-        </nav>
-        <div className="pointer-events-none absolute inset-x-0 top-14 z-10 h-8 bg-gradient-to-b from-background via-background/70 to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-gradient-to-t from-background via-background/70 to-transparent" />
-      </Panel>
-      <Panel scroll={false} className="relative min-w-0 flex-1 overflow-hidden">
-        <div className="absolute inset-0 overflow-y-auto overscroll-contain pt-14">
-          <DocsPageTransition>
-            <div className="mx-auto max-w-3xl px-5 pt-14 pb-24 sm:px-10 lg:px-20 lg:pt-10">
-              {children}
-            </div>
-          </DocsPageTransition>
         </div>
-        <nav className="absolute inset-x-0 top-0 z-10 flex h-14 items-center justify-between gap-4 border-b border-border bg-background/85 px-6 backdrop-blur-md">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="shrink-0 lg:hidden">
-              <Brand />
-            </div>
-            <div className="lg:hidden">
-              <DocsMobileSidebar />
-            </div>
-            <div className="hidden min-w-0 lg:block">
-              <Breadcrumbs />
-            </div>
+        <div className="relative flex-1 overflow-hidden">
+          <div className="absolute inset-0 overflow-y-auto overscroll-contain p-6">
+            <DocsSidebar />
+          </div>
+          <ScrollFadeTop />
+          <ScrollFadeBottom />
+        </div>
+      </aside>
+
+      <main className="flex min-w-0 flex-1 flex-col xl:border-r xl:border-border">
+        <div className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border px-6">
+          <div className="flex min-w-0 items-center gap-3 lg:hidden">
+            <Brand />
+            <DocsMobileSidebar />
+          </div>
+          <div className="hidden min-w-0 lg:block">
+            <Breadcrumbs />
           </div>
           <ThemeToggle />
-        </nav>
-        <div className="pointer-events-none absolute inset-x-0 top-14 z-10 h-8 bg-gradient-to-b from-background via-background/70 to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-gradient-to-t from-background via-background/70 to-transparent" />
-      </Panel>
-    </AppFrame>
+        </div>
+        <div className="relative flex-1 overflow-hidden">
+          <div className="absolute inset-0 overflow-y-auto overscroll-contain">
+            <DocsPageTransition>
+              <div className="mx-auto max-w-2xl px-6 py-10">{children}</div>
+            </DocsPageTransition>
+          </div>
+          <ScrollFadeTop />
+          <ScrollFadeBottom />
+        </div>
+      </main>
+
+      <aside className="relative hidden shrink-0 overflow-hidden xl:block xl:w-72">
+        <div className="absolute inset-0 overflow-y-auto p-6">
+          <DocsInfoCard starCount={starCount} />
+        </div>
+        <ScrollFadeTop />
+        <ScrollFadeBottom />
+      </aside>
+    </div>
   );
 }
