@@ -50,6 +50,20 @@ export interface MergeSplitBlock {
   initialRect?: { top: number; left: number; width: number; height: number };
 }
 
+export interface MergeSplitChange {
+  /** The one row whose checked state changed in this render. */
+  index: number;
+  rect: Rect;
+  checked: boolean;
+  /** Changes with the selection state so repeated toggles replay the local cue. */
+  key: string;
+}
+
+export interface MergeSplitResult {
+  blocks: MergeSplitBlock[];
+  change: MergeSplitChange | null;
+}
+
 interface Rect {
   top: number;
   left: number;
@@ -217,16 +231,35 @@ export function useMergeSplit(
   checkedIndices: readonly number[],
   itemRects: readonly ItemRect[],
   originIndex: number | null = null,
-): MergeSplitBlock[] {
+): MergeSplitResult {
   const prevRunsRef = useRef<RunRecord[]>([]);
   const checkedKey = useMemo(
     () => [...checkedIndices].toSorted((a, b) => a - b).join(","),
     [checkedIndices],
   );
 
-  const blocks = useMemo(() => {
+  const result = useMemo(() => {
     const newRuns = computeRuns(checkedIndices, itemRects);
-    return reconcile(newRuns, prevRunsRef.current, originIndex, itemRects);
+    const blocks = reconcile(newRuns, prevRunsRef.current, originIndex, itemRects);
+    const previousIndices = prevRunsRef.current.flatMap((run) => run.indices);
+    const changedIndices = [...new Set([...previousIndices, ...checkedIndices])].filter(
+      (index) => previousIndices.includes(index) !== checkedIndices.includes(index),
+    );
+    const index = changedIndices.length === 1 ? changedIndices[0] : null;
+    const rect = index === null ? undefined : itemRects[index];
+
+    return {
+      blocks,
+      change:
+        index === null || rect === undefined
+          ? null
+          : {
+              index,
+              rect,
+              checked: checkedIndices.includes(index),
+              key: `${checkedKey}:${index}`,
+            },
+    };
     // checkedKey/itemRects/originIndex are the real dependencies (checkedIndices is
     // content-compared via checkedKey since a fresh array reference is
     // expected on every render).
@@ -239,12 +272,12 @@ export function useMergeSplit(
   // key here, not computeRuns' extent-derived temporary key: the next
   // grow/shrink must continue the same Motion element rather than remount it.
   useEffect(() => {
-    prevRunsRef.current = blocks.map(({ key, indices, top, left, width, height }) => ({
+    prevRunsRef.current = result.blocks.map(({ key, indices, top, left, width, height }) => ({
       key,
       indices,
       rect: { top, left, width, height },
     }));
-  }, [blocks]);
+  }, [result.blocks]);
 
-  return blocks;
+  return result;
 }

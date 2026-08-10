@@ -255,7 +255,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value, namesTick]);
 
-    const blocks = useMergeSplit(checkedIndices, itemRects, activeIndex);
+    const { blocks, change } = useMergeSplit(checkedIndices, itemRects, activeIndex);
     const reduceMotion = useReducedMotion();
 
     const handleValueChange = useCallback(
@@ -322,47 +322,45 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
           className={cn("relative flex w-full flex-col gap-0.5", className)}
           {...rest}
         >
-          {/* Merged-selection background — its tint appears with the
-              selection itself; only the merge/split geometry follows. See
-              use-merge-split.ts. */}
-          {blocks.map((block) => {
-            const from = block.initialRect ?? block;
-            return (
+          {/* Merged-selection background updates to its final shape
+              immediately. The temporary overlay below supplies the local
+              absorption/release cue for the row that actually changed. */}
+          {blocks.map((block) => (
+            <div
+              key={block.key}
+              className="pointer-events-none absolute rounded-lg bg-accent/20 dark:bg-accent/12"
+              style={{
+                top: block.top,
+                left: block.left,
+                width: block.width,
+                height: block.height,
+              }}
+            />
+          ))}
+
+          <AnimatePresence initial={false}>
+            {change && (
               <motion.div
-                key={block.key}
+                key={change.key}
                 className="pointer-events-none absolute rounded-lg bg-accent/20 dark:bg-accent/12"
+                style={{
+                  top: change.rect.top,
+                  left: change.rect.left,
+                  width: change.rect.width,
+                  height: change.rect.height,
+                  transformOrigin: "center",
+                }}
                 initial={
                   reduceMotion
                     ? false
-                    : {
-                        top: from.top,
-                        left: from.left,
-                        width: from.width,
-                        height: from.height,
-                        opacity: 1,
-                      }
+                    : { opacity: change.checked ? 0 : 1, scaleY: change.checked ? 0.82 : 1 }
                 }
-                animate={{
-                  top: block.top,
-                  left: block.left,
-                  width: block.width,
-                  height: block.height,
-                  opacity: 1,
-                }}
-                transition={
-                  reduceMotion
-                    ? { duration: 0 }
-                    : {
-                        top: spring.moderate.enter,
-                        left: spring.moderate.enter,
-                        width: spring.moderate.enter,
-                        height: spring.moderate.enter,
-                        opacity: { duration: 0 },
-                      }
-                }
+                animate={{ opacity: 0, scaleY: change.checked ? 1 : 0.82 }}
+                exit={{ opacity: 0, transition: spring.fast.exit }}
+                transition={reduceMotion ? { duration: 0 } : spring.quick.enter}
               />
-            );
-          })}
+            )}
+          </AnimatePresence>
 
           {/* Hover pill — tracks the item nearest the cursor, same faint
               foreground-tinted wash every proximity-hover consumer uses,
