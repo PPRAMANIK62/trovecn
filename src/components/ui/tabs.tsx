@@ -342,7 +342,11 @@ function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
   return (
     <TabsPrimitive.Panel
       data-slot="tabs-content"
-      className={cn("col-start-1 row-start-2 outline-none", className)}
+      // min-w-0: grid items default to min-width:auto, so an unbreakable
+      // child (the code block's <pre>, which never wraps) pushes the
+      // implicit grid column — and with it this whole tab card — wider than
+      // its container instead of triggering the pre's own overflow-x.
+      className={cn("col-start-1 row-start-2 min-w-0 outline-none", className)}
       {...props}
     />
   );
