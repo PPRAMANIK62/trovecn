@@ -7,7 +7,7 @@ export const tooltip: RegistryItem = {
   slug: "tooltip",
   title: "Tooltip",
   description:
-    "Fast, fading label for icon buttons and truncated text — slides a few pixels in from the trigger's side on top of the fade.",
+    "Fast, fading label for icon buttons and truncated text — slides a few pixels from its resolved trigger side on top of the fade.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react"],
   registryDependencies: ["utils", "springs", "font-weight"],

@@ -1,7 +1,7 @@
 "use client";
 
 import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/springs";
@@ -24,11 +24,9 @@ function TooltipTrigger({ ...props }: TooltipPrimitive.Trigger.Props) {
   return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />;
 }
 
-/** A few pixels of slide toward the trigger, on top of the fade — same
- * "settles in from where it came from" cue as the accordion chevron's
- * rotate, scaled down to a tooltip's size. Logical `inline-start`/`inline-end`
- * sides (RTL) fall through to a plain fade — this project doesn't enable RTL
- * (see `components.json`), so they're an untested edge case, not a default. */
+/** A few pixels of slide toward the trigger, on top of the fade. Base UI's
+ * resolved side keeps that cue correct when collision handling flips the
+ * placement. */
 function slideOffset(side: NonNullable<TooltipPrimitive.Positioner.Props["side"]>) {
   switch (side) {
     case "top":
@@ -54,7 +52,7 @@ function TooltipContent({
   ...props
 }: TooltipPrimitive.Popup.Props &
   Pick<TooltipPrimitive.Positioner.Props, "align" | "alignOffset" | "side" | "sideOffset">) {
-  const offset = slideOffset(side);
+  const reduceMotion = useReducedMotion();
 
   return (
     <TooltipPrimitive.Portal>
@@ -70,6 +68,7 @@ function TooltipContent({
           data-slot="tooltip-content"
           render={(popupProps, state) => {
             const exiting = state.transitionStatus === "ending";
+            const offset = reduceMotion ? {} : slideOffset(state.side);
             return (
               <motion.div
                 {...(popupProps as Record<string, unknown>)}
