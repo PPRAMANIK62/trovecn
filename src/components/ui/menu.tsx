@@ -52,9 +52,11 @@ function useMenuItemRegistration(ref: React.RefObject<HTMLElement | null>, index
  * Auto-indexes MenuContent's children so callers never hand-thread an index
  * just for proximity hover — mirrors Accordion's indexedChildren, but as a
  * recursive walk (not a flat Children.map) since indexable rows can sit one
- * level down inside a MenuGroup/MenuRadioGroup. MenuSub's own children are
- * left alone: its trigger is indexed as a row in *this* popup, but its
- * SubContent is a separate popup with its own independent index space.
+ * level down inside a MenuGroup/MenuRadioGroup. MenuSub's trigger is indexed
+ * as a row in *this* popup, but Base UI requires it nested one level inside
+ * MenuSub (alongside the portaled SubContent), so that level is unwrapped
+ * here rather than recursed into — SubContent is a separate popup with its
+ * own independent index space and must be left alone.
  */
 function indexMenuChildren(children: ReactNode, counter: { current: number }): ReactNode {
   return Children.map(children, (child) => {
@@ -63,6 +65,19 @@ function indexMenuChildren(children: ReactNode, counter: { current: number }): R
       const groupProps = child.props as { children?: ReactNode };
       return cloneElement(child as ReactElement<{ children?: ReactNode }>, {
         children: indexMenuChildren(groupProps.children, counter),
+      });
+    }
+    if (child.type === MenuSub) {
+      const subProps = child.props as { children?: ReactNode };
+      return cloneElement(child as ReactElement<{ children?: ReactNode }>, {
+        children: Children.map(subProps.children, (subChild) => {
+          if (isValidElement(subChild) && subChild.type === MenuSubTrigger) {
+            return cloneElement(subChild as ReactElement<MenuIndexProp>, {
+              _index: counter.current++,
+            });
+          }
+          return subChild;
+        }),
       });
     }
     if (

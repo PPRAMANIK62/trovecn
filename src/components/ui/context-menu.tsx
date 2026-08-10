@@ -63,6 +63,24 @@ function indexContextMenuChildren(children: ReactNode, counter: { current: numbe
         children: indexContextMenuChildren(groupProps.children, counter),
       });
     }
+    // ContextMenuSub's trigger is indexed as a row in *this* popup, but Base
+    // UI requires it nested one level inside ContextMenuSub (alongside the
+    // portaled SubContent), so that level is unwrapped here rather than
+    // recursed into — SubContent is a separate popup with its own
+    // independent index space and must be left alone.
+    if (child.type === ContextMenuSub) {
+      const subProps = child.props as { children?: ReactNode };
+      return cloneElement(child as ReactElement<{ children?: ReactNode }>, {
+        children: Children.map(subProps.children, (subChild) => {
+          if (isValidElement(subChild) && subChild.type === ContextMenuSubTrigger) {
+            return cloneElement(subChild as ReactElement<ContextMenuIndexProp>, {
+              _index: counter.current++,
+            });
+          }
+          return subChild;
+        }),
+      });
+    }
     if (
       child.type === ContextMenuItem ||
       child.type === ContextMenuCheckboxItem ||
