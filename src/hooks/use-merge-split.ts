@@ -24,11 +24,10 @@ import type { ItemRect } from "@/hooks/use-proximity-hover";
  * split into two — the newly split-off piece is handed the old shared
  * run's rect as `initialRect`, so consumers can start its spring from there
  * instead of popping in already at its own smaller size. Merged-away runs
- * simply drop out of the returned array — the consumer (`CheckboxGroup`)
- * wraps blocks in `AnimatePresence` (same pattern as `accordion.tsx`'s
- * expanded-item background layer) so the absorbed block plays its own exit
- * fade in place while the surviving run's block springs outward to cover it,
- * which reads as a clean merge with no visible gap.
+ * simply drop out of the returned array while the surviving block springs
+ * outward to cover them. Reconciliation also guarantees unique output keys:
+ * a split can otherwise reuse a prior run's geometry-derived key for both
+ * pieces in the same render.
  */
 
 export interface MergeSplitBlock {
@@ -99,8 +98,22 @@ function computeRuns(
   return runs;
 }
 
+function claimUniqueKey(preferredKey: string, claimedKeys: Set<string>) {
+  if (!claimedKeys.has(preferredKey)) {
+    claimedKeys.add(preferredKey);
+    return preferredKey;
+  }
+
+  let suffix = 2;
+  while (claimedKeys.has(`${preferredKey}:${suffix}`)) suffix += 1;
+  const key = `${preferredKey}:${suffix}`;
+  claimedKeys.add(key);
+  return key;
+}
+
 function reconcile(newRuns: RunRecord[], prevRuns: RunRecord[]): MergeSplitBlock[] {
   const claimedPrimaryKeys = new Set<string>();
+  const outputKeys = new Set<string>();
 
   return newRuns.map((run) => {
     const runIndexSet = new Set(run.indices);
@@ -108,7 +121,7 @@ function reconcile(newRuns: RunRecord[], prevRuns: RunRecord[]): MergeSplitBlock
 
     if (overlapping.length === 0) {
       // No relationship to any previous run — a brand new isolated block.
-      return { key: run.key, indices: run.indices, ...run.rect };
+      return { key: claimUniqueKey(run.key, outputKeys), indices: run.indices, ...run.rect };
     }
 
     // Prefer the previous run with the most shared indices as the
@@ -121,8 +134,9 @@ function reconcile(newRuns: RunRecord[], prevRuns: RunRecord[]): MergeSplitBlock
       if (candidate.indices.length > primary.indices.length) primary = candidate;
     }
 
-    if (!claimedPrimaryKeys.has(primary.key)) {
+    if (!claimedPrimaryKeys.has(primary.key) && !outputKeys.has(primary.key)) {
       claimedPrimaryKeys.add(primary.key);
+      outputKeys.add(primary.key);
       return { key: primary.key, indices: run.indices, ...run.rect };
     }
 
@@ -130,7 +144,12 @@ function reconcile(newRuns: RunRecord[], prevRuns: RunRecord[]): MergeSplitBlock
     // previous run's indices now span two-plus new runs — a split. This run
     // is the secondary piece peeling off, so start it from the old shared
     // rect rather than popping in already at its own smaller size.
-    return { key: run.key, indices: run.indices, ...run.rect, initialRect: primary.rect };
+    return {
+      key: claimUniqueKey(run.key, outputKeys),
+      indices: run.indices,
+      ...run.rect,
+      initialRect: primary.rect,
+    };
   });
 }
 

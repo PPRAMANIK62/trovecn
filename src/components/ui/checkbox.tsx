@@ -21,7 +21,7 @@ import { CheckboxGroup as CheckboxGroupPrimitive } from "@base-ui/react/checkbox
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 
 import { cn } from "@/lib/utils";
-import { spring, easeOutStrong } from "@/lib/springs";
+import { spring } from "@/lib/springs";
 import { ProximityHoverPill } from "@/components/ui/proximity-hover-pill";
 import { useProximityHover } from "@/hooks/use-proximity-hover";
 import { useMergeSplit } from "@/hooks/use-merge-split";
@@ -46,9 +46,9 @@ import { useMergeSplit } from "@/hooks/use-merge-split";
  * `checkbox-group` as real modules, which is what lets this file offer both
  * shapes as first-class exports instead of picking one.
  *
- * The checkmark draw-on is a bespoke `pathLength` tween (not a spring) using
- * a hand-built SVG path rather than a prebuilt icon — a `lucide-react` icon's
- * internal `<path>` isn't reachable for `pathLength` animation.
+ * The checkmark draw-on uses a hand-built SVG path rather than a prebuilt
+ * icon — a `lucide-react` icon's internal `<path>` isn't reachable for
+ * `pathLength` animation.
  */
 
 // SSR-safe layout effect isn't needed here — no measurement happens on the
@@ -94,6 +94,16 @@ const Checkbox = forwardRef<HTMLElement, CheckboxProps>(
       hasMountedRef.current = true;
     }, []);
 
+    const reduceMotion = useReducedMotion();
+    // The fill changes first; only then does the mark begin drawing. This
+    // makes the mark read as the finish of a checked state rather than a
+    // simultaneous competing cue. Keep the initial checked render static.
+    const markEnterTransition =
+      reduceMotion || !hasMountedRef.current
+        ? { duration: 0 }
+        : { ...spring.quick.enter, delay: 0.06 };
+    const markExitTransition = reduceMotion ? { duration: 0 } : spring.fast.exit;
+
     return (
       <CheckboxPrimitive.Root
         ref={ref}
@@ -103,7 +113,7 @@ const Checkbox = forwardRef<HTMLElement, CheckboxProps>(
         indeterminate={indeterminate}
         onCheckedChange={applyChecked}
         className={cn(
-          "relative flex size-4 shrink-0 items-center justify-center rounded-[5px] border border-input bg-transparent outline-none transition-colors hover:border-foreground/40 focus-visible:ring-3 focus-visible:ring-ring/50 data-checked:border-primary data-checked:bg-primary data-checked:hover:bg-primary/90 data-indeterminate:border-primary data-indeterminate:bg-primary data-disabled:cursor-not-allowed data-disabled:opacity-50 data-disabled:hover:border-input aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+          "relative flex size-4 shrink-0 items-center justify-center rounded-[5px] border border-input bg-transparent outline-none transition-colors duration-fast hover:border-foreground/40 focus-visible:ring-3 focus-visible:ring-ring/50 data-checked:border-primary data-checked:bg-primary data-checked:hover:bg-primary/90 data-indeterminate:border-primary data-indeterminate:bg-primary data-disabled:cursor-not-allowed data-disabled:opacity-50 data-disabled:hover:border-input aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
           className,
         )}
         {...props}
@@ -128,8 +138,8 @@ const Checkbox = forwardRef<HTMLElement, CheckboxProps>(
                 <motion.path
                   d="M5 12H19"
                   initial={{ pathLength: hasMountedRef.current ? 0 : 1 }}
-                  animate={{ pathLength: 1, transition: { duration: 0.08, ease: easeOutStrong } }}
-                  exit={{ pathLength: 0, transition: { duration: 0.04, ease: easeOutStrong } }}
+                  animate={{ pathLength: 1, transition: markEnterTransition }}
+                  exit={{ pathLength: 0, transition: markExitTransition }}
                 />
               </motion.svg>
             ) : (
@@ -154,9 +164,9 @@ const Checkbox = forwardRef<HTMLElement, CheckboxProps>(
                     initial={{ pathLength: hasMountedRef.current ? 0 : 1 }}
                     animate={{
                       pathLength: 1,
-                      transition: { duration: 0.08, ease: easeOutStrong },
+                      transition: markEnterTransition,
                     }}
-                    exit={{ pathLength: 0, transition: { duration: 0.04, ease: easeOutStrong } }}
+                    exit={{ pathLength: 0, transition: markExitTransition }}
                   />
                 </motion.svg>
               )
@@ -312,40 +322,47 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
           className={cn("relative flex w-full flex-col gap-0.5", className)}
           {...rest}
         >
-          {/* Merged-selection background — one block per contiguous run of
-              checked rows, springing to cover new members on merge and
-              apart on split. See use-merge-split.ts. */}
-          <AnimatePresence>
-            {blocks.map((block) => {
-              const from = block.initialRect ?? block;
-              return (
-                <motion.div
-                  key={block.key}
-                  className="pointer-events-none absolute rounded-lg bg-accent/20 dark:bg-accent/12"
-                  initial={
-                    reduceMotion
-                      ? false
-                      : {
-                          top: from.top,
-                          left: from.left,
-                          width: from.width,
-                          height: from.height,
-                          opacity: 0,
-                        }
-                  }
-                  animate={{
-                    top: block.top,
-                    left: block.left,
-                    width: block.width,
-                    height: block.height,
-                    opacity: 1,
-                  }}
-                  exit={{ opacity: 0, transition: spring.moderate.exit }}
-                  transition={reduceMotion ? { duration: 0 } : spring.moderate.enter}
-                />
-              );
-            })}
-          </AnimatePresence>
+          {/* Merged-selection background — its tint appears with the
+              selection itself; only the merge/split geometry follows. See
+              use-merge-split.ts. */}
+          {blocks.map((block) => {
+            const from = block.initialRect ?? block;
+            return (
+              <motion.div
+                key={block.key}
+                className="pointer-events-none absolute rounded-lg bg-accent/20 dark:bg-accent/12"
+                initial={
+                  reduceMotion
+                    ? false
+                    : {
+                        top: from.top,
+                        left: from.left,
+                        width: from.width,
+                        height: from.height,
+                        opacity: 1,
+                      }
+                }
+                animate={{
+                  top: block.top,
+                  left: block.left,
+                  width: block.width,
+                  height: block.height,
+                  opacity: 1,
+                }}
+                transition={
+                  reduceMotion
+                    ? { duration: 0 }
+                    : {
+                        top: spring.moderate.enter,
+                        left: spring.moderate.enter,
+                        width: spring.moderate.enter,
+                        height: spring.moderate.enter,
+                        opacity: { duration: 0 },
+                      }
+                }
+              />
+            );
+          })}
 
           {/* Hover pill — tracks the item nearest the cursor, same faint
               foreground-tinted wash every proximity-hover consumer uses,
