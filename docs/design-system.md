@@ -188,15 +188,42 @@ alone carries the click-through into the docs page.
 
 ## Motion & interaction principles
 
-Motion and interaction are functional, not decorative. Supersedes the old
-"deliberate and weighted, 0.4–0.8s, avoid springs" guidance — the whole
-premise inverts to fast, spring-based, information-carrying motion.
+Motion is part of a component's behaviour, not decoration. It should make an
+action, state change, or spatial relationship easier to understand. Choose
+the component's motion story before choosing a token.
 
-**Motion as information.** An animation exists only to make a state change
-legible — something opened, something is now selected, focus moved
-somewhere, or _where you are in the app just changed_. If a transition
-doesn't clarify one of those, cut it. This is the test every other rule
-below serves.
+### Motion playbook
+
+Before writing a transition, answer these questions in the component header
+comment or PR description:
+
+1. **What changed?** Name the event: input was received, a surface opened,
+   content was replaced, or an object changed footprint.
+2. **What stays anchored?** Keep the user's point of reference still; move a
+   new surface from its trigger or spatial origin.
+3. **What moves first?** A surface makes room before its label appears. Old
+   content leaves before new content claims the same space.
+4. **How often is this seen?** Repeated feedback is nearly instant. Larger,
+   rarer spatial changes can take a deliberate beat.
+5. **What remains with reduced motion?** Preserve opacity, colour, and the
+   final state; remove travel, scale, parallax, and bounce.
+
+If the answer is only "to make it feel nicer," do not animate it.
+
+### Quality recipes
+
+| Situation         | Choreography                                                                                           | Avoid                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| Press feedback    | Acknowledge input immediately with a tiny scale or depth change.                                       | Large compression, delayed rebound, or animating every child.            |
+| Tooltip / popover | Fade and travel a few pixels from the trigger side; the surface arrives as one stable plane.           | A generic bounce or a long reveal that delays reading.                   |
+| Menu / select     | The popup arrives quickly; the selected-row highlight follows continuously.                            | Making pointer tracking feel like a discrete, lagging animation.         |
+| Dialog / drawer   | Fade the backdrop, then introduce the surface from its spatial origin; dismiss faster than it entered. | A modal that simply scales from nowhere, or a sluggish reverse entrance. |
+| Content swap      | Let outgoing content leave faster; bring its replacement in a few pixels from the direction of change. | Page-like travel for tabs, filters, or frequent swaps.                   |
+| Expand / collapse | Preserve the surface's identity as its footprint changes, then reveal supporting content.              | Text appearing before its containing surface has made room.              |
+
+Use one focal movement per component. Child motion supports that movement; it
+does not compete with it. Gesture-triggered motion must be interruptible:
+reversing a hover, close, or drag continues from its current position.
 
 **Spring tokens (`@/lib/springs`).** Four tiers, each an enter spring paired
 with a faster, bounce-free exit tween:
@@ -227,42 +254,6 @@ landing), the animation should adapt from its current position and velocity,
 not restart or snap. This is what spring physics buys over fixed-duration
 tweens — use it deliberately, not as an aesthetic default.
 
-**Motion communicates space, not just state.** A transition should answer
-"where did this come from, and where did I just go" — not only "something
-changed." Concretely:
-
-- Navigating deeper into the docs (sidebar → a component's page) and
-  navigating back use _opposite_ directions — vertically, not horizontally:
-  forward rises up into place, back drops down into place, matching "content
-  sliding up communicates arrival, sliding down communicates departure."
-  Implemented with this repo's own Motion/spring system —
-  `DocsPageTransition` (`@/components/site/docs-page-transition`), an
-  `AnimatePresence` keyed on `usePathname()`, using `spring.slow` (the
-  content pane is the single biggest moving surface in the app) and a small
-  `±24px` offset read from `@/lib/docs-nav-direction`, a plain module-level
-  value set by whichever nav element (`SidebarNavLink`, `Breadcrumbs`,
-  `ComponentPager`) was actually clicked. React's native `<ViewTransition>` /
-  `experimental.viewTransition` was tried first and matches the framework's
-  own documented pattern exactly, but empirically never invoked the browser
-  API for `<Link>` navigation in this Next/React combination — confirmed by
-  polling `:active-view-transition` across a full second on every tested
-  nav path, both before and after a required config-reload restart. Not
-  pursued further; the Motion version is guaranteed to run since it's the
-  same mechanism every other animation in this app already relies on.
-  Because `DocsPageTransition` only wraps `{children}`, the sidebar/nav bars
-  outside it are untouched automatically — no anchoring step needed the way
-  the native API would have required.
-- Within a single page, a content swap that stays in the same container
-  (tab panels, filtered results) crossfades in place — it never borrows the
-  directional slide, which is reserved for genuine navigation.
-- Shared-element continuity (the same object visually persisting across a
-  navigation, e.g. a sidebar label morphing into a page heading) was also
-  tried via `<ViewTransition name="...">` and reverted — it doesn't work
-  with a 1:1 name match when the "before" element lives in persistent chrome
-  that never unmounts, since both ends are then mounted simultaneously (see
-  `plans/015-shared-element-component-identity.md`). Not reattempted with
-  Motion; treat this as an open problem rather than settled guidance.
-
 **Delight is rationed, not sprinkled evenly.** Motion intensity should track
 how often a user sees it, not how good it could theoretically look:
 
@@ -292,41 +283,6 @@ mechanism `MotionConfig` doesn't reach — directional slides get their own
 `prefers-reduced-motion` rule that drops `animation-duration` to `0s` on
 `::view-transition-*` pseudo-elements, same reasoning as `toast.tsx`'s
 standalone reduced-motion rule for its non-Motion transitions.
-
-**Proximity hover.** In interactive lists/grids/nav (sidebar items, table
-rows, card grids), highlight the item nearest the cursor before the user
-clicks — it previews where an action will land and reduces targeting
-errors. A subtle, non-decorative polish move, not a new visual language.
-Implemented once, in `useProximityHover` (`@/hooks/use-proximity-hover`) —
-every consumer (Accordion, Tabs, DocsSidebar, DocsMobileSidebar) wires that
-hook up to the same wash, exported from the same module as
-`proximityHoverWashClassName` / `proximityHoverWashOpacity`. Import those
-rather than re-typing `bg-hover` and an opacity by hand: the wash is a
-transient "nearest, not yet selected" preview, and at full layer-opacity it
-lands close enough to a persistent selected/expanded state (`bg-active`, or
-a similarly light neutral token like `bg-card` on non-popover surfaces) to
-read as the same color, especially in dark mode — the capped opacity is
-what keeps it subordinate.
-
-**Interactive-state overlays vs. surface tokens.** `--hover`/`--active`
-(`bg-hover`/`bg-active`, `src/app/globals.css`) are foreground-tinted washes
-for hover/selected/expanded states — not surfaces. Reach for them instead of
-`bg-muted`/`bg-accent` for anything that must stay legible regardless of
-which elevation rung (`--background`, `--card`, `--popover`) it's painted
-on: a flat token like `--muted` is tuned against the surface its main
-consumers sit on (`--background`) and can land within ~0.03 L of
-`--popover` in dark mode — close enough to disappear. `--muted`/`--accent`
-stay correct wherever a component is calibrated for the surface it actually
-sits on (top-level nav/menubar triggers on `--background`, static chips and
-badges).
-
-**Elevation is a system, not a per-component judgment call.** This project
-already treats `--background` → `--card` → `--popover` as successive planes
-("Surfaces must visibly step," above). Treat that ladder as the formal
-elevation order: a component stacking on top of another surface (a dropdown
-inside a dialog, a tooltip inside a popover) steps up exactly one level from
-what it's layered on — never skip a level, never reuse the level underneath
-it.
 
 **Ghost-span for animated font-weight.** State changes (selected / checked /
 active / open) that make text heavier will reflow the layout if animated on
@@ -464,6 +420,21 @@ registry/trovecn/<kebab-name>/<kebab-name>.tsx        — the component itself
   them rather than adding new packages. If a component genuinely needs a
   new dependency, note it clearly at the top of the file instead of
   installing it yourself.
+
+### Motion review checklist
+
+Before considering an interactive component complete:
+
+- [ ] Name the component's motion purpose and use the Motion playbook above
+      to choose its choreography before choosing a spring token.
+- [ ] Define the entry, active-state, exit, and interruption behaviour. A
+      fast repeated interaction should feel nearly instant.
+- [ ] Keep one focal movement; sequence supporting elements instead of
+      starting every child animation at once.
+- [ ] Test reduced motion: useful opacity/colour feedback remains, while
+      travel, scale, layout movement, and bounce are removed where needed.
+- [ ] Replay the demo several times. Judge whether the motion clarifies the
+      interaction and settles cleanly, not merely whether it runs.
 
 ### Component pages: named examples, not one generic demo
 

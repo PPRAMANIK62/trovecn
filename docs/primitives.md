@@ -103,11 +103,55 @@ downstream patterns depend on it.
 
 ### Selection inputs
 
-- [ ] Select
-- [ ] Checkbox / CheckboxGroup
-- [ ] Radio / RadioGroup
-- [ ] Toggle / ToggleGroup
-- [ ] Slider
+Sourced from `docs/research/selection-inputs-motion-research.md` — the same
+"find real precedent, cite it, adapt the values" pass as the overlay/menu
+research, this time against fluidfunctionalism.com's own `checkbox-group`,
+`radio-group`, `select`, and `slider` source (Radix/Ariakit/React Aria
+Components cross-checked for prior art Base UI's docs don't cover).
+
+- [x] Select — registered in `registry.json` and on the docs site. Two
+      distinct tiers per the research: popup open/close and the selected-row
+      background both on `spring.moderate` (a discrete open, not continuous
+      pointer-tracked motion, so one tier up from Combobox's `spring.fast`
+      hover pill), a 300ms selection-acknowledgment delay holding the popup
+      open on item-press so the checkmark draw is actually seen, and a
+      bespoke `pathLength` checkmark draw-on (0.08s/0.04s tween on
+      `easeOutStrong`, not a spring — a stroke draw doesn't tolerate
+      overshoot the way a scale does)
+- [x] Checkbox / CheckboxGroup — registered in `registry.json` and on the
+      docs site, as two items sharing one file (`checkbox.tsx`): a standalone
+      `Checkbox` for lone use, and `CheckboxGroup`/`CheckboxGroupItem`
+      layering proximity hover plus a new shared `useMergeSplit` hook
+      (`src/hooks/use-merge-split.ts`) on top — contiguous checked rows merge
+      into one spring-tracked background block and split apart again on
+      `spring.moderate`, the literal precedent this repo's own
+      `spring.moderate` doc comment ("selection merge/split") already named
+- [x] Radio / RadioGroup — registered in `registry.json` and on the docs
+      site. No merge/split needed (a radio group's 0-or-1 selection
+      invariant means there's never more than one contiguous run) — a single
+      continuously-tracked selected background on `spring.moderate`, ported
+      from this repo's own `Tabs` indicator technique rather than
+      fluidfunctionalism's, plus a genuine spring-based dot scale-in
+      (`spring.fast`) unlike Checkbox's tween-based draw
+- [x] Toggle / ToggleGroup — registered in `registry.json` and on the docs
+      site, as two files matching Base UI's own separate `toggle`/
+      `toggle-group` packages. Standalone `Toggle`'s pressed-state fill is a
+      plain CSS transition, deliberately not a spring, per Rauno Freiberg's
+      "toggles should immediately take effect" guidance. `ToggleGroup`'s
+      single-select mode reuses `Tabs`' moving-indicator recipe; multi-select
+      mode gives each pressed item an independent persistent tint rather
+      than CheckboxGroup's merge/split geometry — a deliberate scope call,
+      not an oversight
+- [x] Slider — registered in `registry.json` and on the docs site. Confirmed
+      by direct inspection that fluidfunctionalism's own Slider does **not**
+      share Switch's hover-stretch/press-squish thumb physics (that
+      technique is Switch-specific), so this repo's Slider doesn't invent
+      one either — thumb stays fixed-size, `spring.moderate` on
+      click-to-position/release-to-snap, no spring at all while actively
+      dragging (`useMotionValue.set()` direct, same "don't animate mid-drag"
+      rule Switch already establishes), and the track fill is derived via
+      `useTransform` off the same motion value driving the thumb so it can
+      never desync mid-spring
 
 ### Form structure
 
