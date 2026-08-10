@@ -19,37 +19,12 @@ import { cn } from "@/lib/utils";
 import { ProximityHoverPill } from "@/components/ui/proximity-hover-pill";
 import { useProximityHover, type ItemRect } from "@/hooks/use-proximity-hover";
 
-/**
- * The mega-menu case: one shared `Viewport` resizes/crossfades in place to
- * become whichever top-level item's content is active, rather than each
- * item owning its own popup — the one component in this backlog where Base
- * UI's own architecture (not a Radix or fluidfunctionalism precedent) is
- * the thing worth adopting, since neither ships this shape
- * (docs/research/overlay-menu-motion-research.md — "Navigation Menu").
- * Base UI computes the resize itself via CSS custom properties
- * (`--positioner-width/height`, `--popup-width/height`) written onto the
- * Positioner/Popup as the active item changes — the same category of
- * internal choreography Toast's stacking math uses
- * (`src/components/ui/toast.tsx`), so this file transitions those
- * properties with CSS rather than fighting them with framer-motion, and
- * only retunes the stock scaffold's timing (350ms) down to this repo's
- * `spring.moderate` velocity and its slide distance (a Radix-scale 208px)
- * down to a few-px "settles in from where it came from" travel. Base UI's
- * `data-activation-direction` drives that directional entry, so content
- * always arrives from the side matching the user's traversal.
- */
 const viewportTransition =
   "transition-[top,left,right,bottom,width,height] delay-50 duration-200 ease-out data-ending-style:delay-0 data-ending-style:duration-150 data-instant:transition-none";
 const popupTransition =
   "transition-[opacity,transform,width,height] delay-50 duration-200 ease-out data-ending-style:delay-0 data-ending-style:duration-150";
 const contentTransition =
   "transition-[opacity,transform] duration-200 ease-out data-ending-style:duration-150";
-
-// ─── Proximity hover (top-level trigger row) ─────────────────────────────────
-// Same transient "nearest item" wash Tabs/Accordion/DocsSidebar use, scoped
-// to the row of top-level triggers — this is exactly the "interactive
-// list/grid of items" case docs/design-system.md's proximity-hover rule
-// names.
 
 interface NavigationMenuProximityContextValue {
   registerItem: (index: number, element: HTMLElement | null) => void;
@@ -103,11 +78,6 @@ function NavigationMenuList({ className, children, ...props }: NavigationMenuPri
   }, [measureItems, children]);
 
   const activeRect: ItemRect | null = activeIndex !== null ? itemRects[activeIndex] : null;
-  // Without this, `{ registerItem }` is a fresh object every render, so
-  // every NavigationMenuItem's registration effect (keyed on this context
-  // value) re-fires every render, bumps useProximityHover's registerTick,
-  // and re-renders this list — an infinite loop caught as "Maximum update
-  // depth exceeded." `registerItem` itself is already a stable useCallback.
   const proximityContextValue = useMemo(() => ({ registerItem }), [registerItem]);
 
   return (
@@ -179,8 +149,6 @@ function NavigationMenuTrigger({
   );
 }
 
-/** A 4px directional entry + a cross-fade. Base UI supplies the activation
- * direction from the relative positions of the old and new triggers. */
 function NavigationMenuContent({ className, ...props }: NavigationMenuPrimitive.Content.Props) {
   return (
     <NavigationMenuPrimitive.Content
@@ -200,9 +168,6 @@ function NavigationMenuContent({ className, ...props }: NavigationMenuPrimitive.
   );
 }
 
-/** Shared, resizing popup — see this file's top docstring. `before:` bridges
- * the gap between the trigger row and the popup so moving the pointer down
- * into the content doesn't read as "left the menu." */
 function NavigationMenuPositioner({
   className,
   side = "bottom",

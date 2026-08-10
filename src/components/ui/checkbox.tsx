@@ -26,36 +26,6 @@ import { ProximityHoverPill } from "@/components/ui/proximity-hover-pill";
 import { useProximityHover } from "@/hooks/use-proximity-hover";
 import { useMergeSplit } from "@/hooks/use-merge-split";
 
-/**
- * Two pieces, one file — mirrors how `accordion.tsx` bundles
- * `Accordion`/`AccordionItem`/`AccordionTrigger`/`AccordionContent` together:
- *
- * - `Checkbox` — standalone, single-item. Wraps Base UI's `Checkbox.Root`/
- *   `Checkbox.Indicator` directly for lone use (a terms-agreement box, one
- *   settings toggle rendered as a checkbox). No group machinery.
- * - `CheckboxGroup`/`CheckboxGroupItem` — the multi-row list primitive.
- *   `CheckboxGroup` owns one `useProximityHover` instance (the hover pill,
- *   same recipe as `accordion.tsx`) plus `useMergeSplit` (the selection
- *   background: contiguous checked rows render as one merged block instead
- *   of N separately highlighted rows — see `@/hooks/use-merge-split`).
- *   `CheckboxGroupItem` is a row wrapping `Checkbox` with
- *   `data-proximity-index`, same shape as `AccordionItem`.
- *
- * Neither Radix nor Ariakit ships a first-class CheckboxGroup (their
- * Checkbox is single-item only); Base UI does ship both `checkbox` and
- * `checkbox-group` as real modules, which is what lets this file offer both
- * shapes as first-class exports instead of picking one.
- *
- * The checkmark draw-on uses a hand-built SVG path rather than a prebuilt
- * icon — a `lucide-react` icon's internal `<path>` isn't reachable for
- * `pathLength` animation.
- */
-
-// SSR-safe layout effect isn't needed here — no measurement happens on the
-// checkmark path itself, only on proximity-hover's own item rects.
-
-// ─── Checkbox (standalone) ───────────────────────────────────────────────────
-
 type CheckboxProps = Omit<CheckboxPrimitive.Root.Props, "inputRef">;
 
 const Checkbox = forwardRef<HTMLElement, CheckboxProps>(
@@ -71,9 +41,6 @@ const Checkbox = forwardRef<HTMLElement, CheckboxProps>(
     },
     ref,
   ) => {
-    // Always controlled from our own side (mirrors switch.tsx) so the
-    // checkmark's draw-on/off can key directly off a plain boolean instead
-    // of reaching into Base UI's internal field/group state.
     const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked ?? false);
     const checked = checkedProp ?? uncontrolledChecked;
 
@@ -85,19 +52,12 @@ const Checkbox = forwardRef<HTMLElement, CheckboxProps>(
       onCheckedChange?.(next, eventDetails);
     };
 
-    // Gates the checkmark's initial draw-on: an already-checked item must
-    // not visibly draw itself in on first paint, only when it's actually
-    // (un)checked afterward — same hasMountedRef gate switch.tsx uses for
-    // its thumb spring.
     const hasMountedRef = useRef(false);
     useEffect(() => {
       hasMountedRef.current = true;
     }, []);
 
     const reduceMotion = useReducedMotion();
-    // The fill changes first; only then does the mark begin drawing. This
-    // makes the mark read as the finish of a checked state rather than a
-    // simultaneous competing cue. Keep the initial checked render static.
     const markEnterTransition =
       reduceMotion || !hasMountedRef.current
         ? { duration: 0 }
@@ -196,16 +156,6 @@ function useCheckboxGroupContext() {
   if (!ctx) throw new Error("CheckboxGroupItem must be used within a CheckboxGroup");
   return ctx;
 }
-
-// ─── CheckboxGroup ───────────────────────────────────────────────────────────
-// Owns one useProximityHover instance (the hover pill — same recipe as
-// accordion.tsx) plus useMergeSplit (the persistent merged-selection
-// background). Base UI's own CheckboxGroup context isn't exported publicly,
-// so this component tracks the group's `value` itself (mirrors switch.tsx's
-// controlled/uncontrolled pattern) and maintains its own index → name map
-// (registered by CheckboxGroupItem, same shape as Accordion's
-// registerItem/registerFullItem pair) purely to compute which row indices
-// are currently checked for useMergeSplit.
 
 type CheckboxGroupProps = Omit<CheckboxGroupPrimitive.Props, "children"> & {
   children: ReactNode;

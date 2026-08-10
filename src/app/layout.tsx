@@ -18,8 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 const title = "trove/cn — a collected component registry";
-const description =
-  "A curated registry of premium UI patterns, observed in the wild and rebuilt for installation via shadcn.";
+const description = "A curated registry of premium UI patterns, ready to install.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://trovecn.dev"),

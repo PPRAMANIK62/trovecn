@@ -29,11 +29,6 @@ import { ProximityHoverPill } from "@/components/ui/proximity-hover-pill";
 import { ProximityRow } from "./proximity-row";
 import { DrawerNavContent } from "./nav-content";
 
-/**
- * A "what's new" banner — richer than a single status line (an icon chip,
- * heading, and description) but still shallow, since top drawers are the
- * one side that shouldn't try to fill the viewport height.
- */
 function TopDemo() {
   return (
     <div className="flex items-start gap-3 p-6">
@@ -43,7 +38,7 @@ function TopDemo() {
       <div className="min-w-0 flex-1">
         <p className="text-control font-medium text-foreground">New: Drawer primitive</p>
         <p className="mt-0.5 text-caption text-muted-foreground">
-          Edge-anchored panels with real drag-to-dismiss, ported from vaul.
+          Edge-anchored panels with real drag-to-dismiss.
         </p>
       </div>
       <div className="flex shrink-0 items-center gap-2">
@@ -56,9 +51,6 @@ function TopDemo() {
   );
 }
 
-/** A labeled row pairing a description with a Switch — settings toggles
- * aren't navigation targets, so these sit outside the proximity-hover
- * container the Account rows below share. */
 function SettingsToggleRow({
   label,
   description,
@@ -86,12 +78,6 @@ const accountRows: { icon: ComponentType<{ className?: string }>; label: string 
   { icon: CreditCardIcon, label: "Billing" },
 ];
 
-/**
- * A real settings panel — toggle preferences up top (Switch, not
- * navigation), an Account section of chevron rows sharing one
- * proximity-hover pill below, and a sign-out footer, the same three-part
- * shape as most product settings drawers (Linear, Vercel, Notion).
- */
 function RightDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { activeIndex, itemRects, sessionRef, handlers, registerItem } =
@@ -157,14 +143,6 @@ function RightDemo() {
   );
 }
 
-/**
- * Icon-row action drawer — a vertical list reads as too sparse across a
- * bottom drawer's full viewport width, so this mirrors the iOS/Android
- * share-sheet layout instead: a link preview up top (what's being shared),
- * then actions arranged in a row with proximity hover resolved along the
- * x-axis. This is also the one side with a real draggable handle — drag it
- * down, or flick it, to dismiss.
- */
 function BottomDemo() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { activeIndex, itemRects, sessionRef, handlers, registerItem } = useProximityHover(

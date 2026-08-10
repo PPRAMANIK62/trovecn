@@ -36,19 +36,6 @@ const sections = [
   },
 ];
 
-/**
- * Nav-style link list — the classic left drawer / app-shell sidebar pattern
- * (grouped sections + a pinned account footer, the same shape
- * `ui.shadcn.com/blocks/sidebar`'s "sidebar with user footer" block and most
- * real app shells settle on — Linear, Vercel, Notion). Shared by the
- * standalone and side demos, so a left-anchored drawer always shows the
- * same content. Reuses the exact header/list/row/pill spacing and color
- * treatment `DocsMobileSidebar` already establishes at this same `w-64`
- * drawer width, rather than inventing a parallel set of values. One
- * `useProximityHover` container spans both sections — the running `index`
- * counter continues across the section boundary rather than resetting, so
- * the hover pill can travel between them.
- */
 export function DrawerNavContent() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { activeIndex, itemRects, sessionRef, handlers, registerItem } =

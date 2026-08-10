@@ -82,8 +82,7 @@ export default async function Image() {
             maxWidth: 860,
           }}
         >
-          A registry of interface patterns from Apple, Linear, Stripe, and Vercel — rebuilt and
-          shipped as source you own.
+          A registry of polished interface patterns, shipped as source you own.
         </div>
       </div>
 

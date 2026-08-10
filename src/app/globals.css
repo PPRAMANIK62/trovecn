@@ -285,7 +285,7 @@
    on; without an edge the ambient shadow alone doesn't register on white-
    on-white. This doesn't reopen the ring rejection above — that rejection
    was about a large *persistent* surface reading as flatly "boxed" in dark
-   mode. These are small, *transient* overlays, where even Vercel's
+   mode. These are small, *transient* overlays, where
    own system reaches for a firmer edge specifically because they're
    transient, not persistent. */
 .shadow-popover {

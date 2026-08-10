@@ -7,26 +7,6 @@ import { motion, useMotionValue, useReducedMotion, animate } from "motion/react"
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/springs";
 
-/**
- * Squishy, draggable thumb — ported from fluidfunctionalism.com's Base UI
- * switch (MIT, github.com/mickadesign/fluid-functionalism/blob/main/
- * registry/base/switch.tsx): the thumb stretches wider on hover, squishes
- * wider-and-shorter on press, and can be dragged (not just clicked) to the
- * other side. `default` reproduces their track/thumb geometry (34×20 track,
- * 16px thumb, 2px offset) exactly; `sm` scales it down by the same ratio.
- *
- * Checked track uses `--accent-blue`/`--accent-blue-hover` (globals.css) —
- * the same blue hue `--ring`/`--link` use elsewhere, but scoped to this one
- * filled control rather than the neutral `--primary` token. `--accent`
- * itself stays neutral gray; this blue is deliberately not a general-purpose
- * token other components reach for.
- * The thumb stays a fixed light color regardless of checked state (same as
- * fluidfunctionalism.com's source, `bg-white shadow-sm`) instead of
- * swapping to a semantic token: swapping was tried and reverted, since in
- * dark mode `--primary-foreground` (the would-be checked-state token) lands
- * almost exactly on `--background` and the thumb disappears into the page.
- */
-
 const SIZES = {
   default: { track: 34, height: 20, thumb: 16 },
   sm: { track: 24, height: 14, thumb: 12 },
@@ -48,16 +28,10 @@ function Switch({
   const { track, height, thumb } = SIZES[size];
   const offset = (height - thumb) / 2;
   const travel = track - thumb - offset * 2;
-  // Squish deltas scale with the thumb so "sm" stretches proportionally
-  // the same amount their source's fixed 2/4/4px deltas do at thumb=16.
   const hoverExtend = (2 * thumb) / 16;
   const pressExtend = (4 * thumb) / 16;
   const pressShrink = (4 * thumb) / 16;
 
-  // Always controlled from Base UI's side (mirrors tabs.tsx) so a drag-
-  // completed toggle can be applied directly — see handlePointerUp below —
-  // without racing the native click Base UI's own click handling also fires
-  // after a pointer-down+up pair.
   const [uncontrolledChecked, setUncontrolledChecked] = useState(defaultChecked ?? false);
   const checked = checkedProp ?? uncontrolledChecked;
 
@@ -69,10 +43,6 @@ function Switch({
   const [hovered, setHovered] = useState(false);
   const [pressed, setPressed] = useState(false);
   const dragging = useRef(false);
-  // Guards the native click Base UI still fires after pointerup, whether or
-  // not the gesture actually dragged — set for the duration of a drag so
-  // that click doesn't re-apply (or reverse) what handlePointerUp already
-  // decided, then cleared on the next frame for the next real click.
   const suppressNextClick = useRef(false);
   const dragStart = useRef<{ clientX: number; originX: number } | null>(null);
 
@@ -96,7 +66,6 @@ function Switch({
     }
     const controls = animate(motionX, thumbX, spring.moderate.enter);
     return () => controls.stop();
-    // motionX is a stable framer ref; re-running only on thumbX changes is intentional.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [thumbX]);
 
@@ -185,10 +154,6 @@ function Switch({
     >
       <motion.span
         data-slot="switch-thumb"
-        // -top-px/-left-px cancels the track's `border-transparent`: an
-        // absolutely positioned child's 0,0 sits at the parent's *padding*
-        // box, so without this the thumb reads 1px low and 1px right of
-        // where offset/travel above assume it starts.
         className="pointer-events-none absolute -top-px -left-px block rounded-full bg-background shadow-sm dark:bg-foreground"
         style={{ x: motionX }}
         animate={{ y: thumbY, width: thumbWidth, height: thumbHeight }}

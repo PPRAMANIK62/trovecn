@@ -1,12 +1,5 @@
 "use client";
 
-/**
- * Hand-built on `@base-ui/react/combobox` rather than a generic input +
- * popover composition — Base UI ships every part this needs directly
- * (Input, InputGroup, Icon, Clear, Item, ItemIndicator, Empty, Group), so
- * the wrapper below follows the same data-slot/cva/cn conventions as the
- * other primitives in this file.
- */
 import {
   createContext,
   useCallback,
@@ -29,15 +22,6 @@ import {
   proximityHoverWashOpacity,
 } from "@/hooks/use-proximity-hover";
 
-/**
- * ComboboxList owns one useProximityHover instance — the same measured-rect
- * hover wash Accordion/Tabs/Menu use: a background pill that morphs to
- * track whichever item is nearest the cursor. Unlike Menu's items
- * (auto-indexed from a static children tree), ComboboxItem sits under a
- * `children: (item, index) => ReactNode` render prop Base UI itself calls
- * per filtered item — that index is exactly what proximity hover needs, so
- * ComboboxItem takes it as an explicit `index` prop instead of re-deriving it.
- */
 interface ComboboxProximityContextValue {
   registerItem: (index: number, element: HTMLElement | null) => void;
 }
@@ -50,7 +34,6 @@ function Combobox<Value, Multiple extends boolean | undefined = false>({
   return <ComboboxPrimitive.Root data-slot="combobox" {...props} />;
 }
 
-/** The bordered shell around the input — same `border-input` field treatment as a plain text input, so a combobox reads as "a text field," not a button. */
 function ComboboxInputGroup({ className, ...props }: ComboboxPrimitive.InputGroup.Props) {
   return (
     <ComboboxPrimitive.InputGroup
@@ -77,15 +60,6 @@ function ComboboxInput({ className, ...props }: ComboboxPrimitive.Input.Props) {
   );
 }
 
-/**
- * Static "type to filter" affordance, muted, always at rest — not a Base UI
- * `Combobox.Icon` (that part is the trigger-style chevron/state indicator,
- * already used by ComboboxIcon below; stacking a second instance next to it
- * would double up on that part's own aria/state wiring for no reason). Plain
- * decorative markup instead, same convention cmdk/shadcn's Command uses: a
- * fixed, muted search glyph in the input row so the field reads as "type to
- * filter" before a user ever focuses it, not as a plain select trigger.
- */
 function ComboboxSearchIcon({ className, ...props }: React.ComponentProps<"span">) {
   return (
     <span

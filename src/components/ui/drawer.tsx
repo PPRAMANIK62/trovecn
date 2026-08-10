@@ -17,33 +17,8 @@ import { spring } from "@/lib/springs";
 
 type Side = "top" | "right" | "bottom" | "left";
 
-/**
- * Edge-anchored panel, built on Base UI's `Dialog` rather than Base UI's own
- * dedicated Drawer primitive — fluidfunctionalism's `mobile-drawer.tsx` made
- * this exact call deliberately (see its header comment): Drawer's
- * swipe-to-dismiss writes inline `transform`/CSS-var choreography onto its
- * Popup that fights framer-motion's own transform ownership on the same
- * element (docs/research/overlay-menu-motion-research.md — "Drawer"). This
- * supersedes the repo's earlier hand-rolled Sheet primitive (same
- * edge-anchored shape and CSS classes, now framer-motion-driven end to end
- * on `spring.slow` — this repo's tier table lists "side panels" under it,
- * and a full-width edge slide reads as the larger surface next to Dialog,
- * not the small-expansion company `moderate` otherwise keeps) and, for the
- * top/bottom sides, drag-to-dismiss physics
- * ported from vaul (Emil Kowalski): velocity-first/distance-second release
- * logic (a flick past 400px/s closes regardless of distance dragged;
- * otherwise it takes ≥25% of the panel's own height) and rubber-band
- * resistance dragging past the open position, via Framer's native per-edge
- * `dragElastic` rather than vaul's hand-rolled log-damping formula — same
- * rubber-band feel, no new physics code. Dragging is confined to an
- * explicit handle (`dragControls` + `dragListener={false}`) rather than the
- * whole panel, so it doesn't hijack clicks/scroll on content inside —
- * left/right sides skip dragging entirely and stay scripted-only, the less
- * common case for a flick gesture.
- */
-
-const VELOCITY_THRESHOLD = 400; // px/s — vaul's 0.4 px/ms
-const CLOSE_THRESHOLD_RATIO = 0.25; // vaul's CLOSE_THRESHOLD
+const VELOCITY_THRESHOLD = 400;
+const CLOSE_THRESHOLD_RATIO = 0.25;
 const FALLBACK_SIZE = 400;
 
 interface DrawerContextValue {
@@ -104,7 +79,6 @@ function DrawerContent({
   ...props
 }: DrawerPrimitive.Popup.Props & {
   side?: Side;
-  /** Draggable grab bar. Only meaningful (and only rendered) for top/bottom — see this file's docstring for why left/right stay scripted-only. */
   showHandle?: boolean;
 }) {
   const ctx = useContext(DrawerContext);
@@ -114,7 +88,7 @@ function DrawerContent({
 
   const axis: "x" | "y" = side === "left" || side === "right" ? "x" : "y";
   const sign = side === "bottom" || side === "right" ? 1 : -1;
-  const draggable = axis === "y"; // top/bottom only, see docstring
+  const draggable = axis === "y";
   const dimension = size ?? FALLBACK_SIZE;
   const closedOffset = sign * dimension;
 

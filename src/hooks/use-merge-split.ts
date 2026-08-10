@@ -4,58 +4,20 @@ import { useEffect, useMemo, useRef } from "react";
 
 import type { ItemRect } from "@/hooks/use-proximity-hover";
 
-/**
- * Groups the currently-checked rows of a proximity-hover list into
- * contiguous "runs" (checked indices `[1,2,4,5,6]` → runs `[[1,2],[4,5,6]]`)
- * and reports one background-block rect per run, spanning from the top of
- * the run's first item to the bottom of its last — so contiguous checked
- * rows read as one continuous selection block instead of N separately
- * highlighted rows. Reuses `useProximityHover`'s own `itemRects` measurement
- * plumbing rather than measuring anything itself.
- *
- * The technique (not the file) is ported from fluidfunctionalism.com's
- * `useMergeSplitBlocks` (MIT, `registry/default/hooks/use-merge-split.tsx`)
- * — reimplemented here from a written description of the behavior (no
- * network access to the original source), and deliberately simpler than
- * their exact "instant zero-shift swap on commit" micro-choreography: a run
- * keeps its identity (and springs to its new extent) across renders where it
- * shares at least one checked index with a run from the previous commit;
- * when a run instead needs a *fresh* identity — because a single run just
- * split into two — the newly split-off piece is handed the old shared
- * run's rect as `initialRect`, so consumers can start its spring from there
- * instead of popping in already at its own smaller size. Merged-away runs
- * simply drop out of the returned array while the surviving block springs
- * outward to cover them. When a hovered row bridges or splits selected runs,
- * it becomes the origin so geometry completes in both directions from the
- * clicked row. Reconciliation also guarantees unique output keys: a split
- * can otherwise reuse a prior run's geometry-derived key for both pieces in
- * the same render.
- */
-
 export interface MergeSplitBlock {
-  /** Stable identity across renders — reused by a run's continuation
-   *  (growing/shrinking in place) so Framer Motion animates it instead of
-   *  remounting; changes only when a run has no relationship to a run from
-   *  the previous commit. */
   key: string;
-  /** The checked indices this block currently spans. */
   indices: number[];
   top: number;
   left: number;
   width: number;
   height: number;
-  /** Present only on the commit a run is first split off from a larger
-   *  shared block — the old, larger rect it should spring apart *from*
-   *  instead of mounting fresh already at its own smaller extent. */
   initialRect?: { top: number; left: number; width: number; height: number };
 }
 
 export interface MergeSplitChange {
-  /** The one row whose checked state changed in this render. */
   index: number;
   rect: Rect;
   checked: boolean;
-  /** Changes with the selection state so repeated toggles replay the local cue. */
   key: string;
 }
 

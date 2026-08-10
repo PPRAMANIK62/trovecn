@@ -22,21 +22,6 @@ import { cn } from "@/lib/utils";
 import { spring } from "@/lib/springs";
 import { useProximityHover, proximityHoverWashClassName } from "@/hooks/use-proximity-hover";
 
-/**
- * Same popup, same motion, same proximity-hover pill as the dropdown Menu
- * (`src/components/ui/menu.tsx`) — a context menu is that primitive anchored
- * at the pointer instead of a trigger element, not a different visual
- * language. Base UI's ContextMenu positions itself at the click point (and
- * gates a long-press open behind touch pointers) internally, the same
- * virtual-anchor-at-pointer technique Radix's ContextMenu uses (see
- * docs/research/overlay-menu-motion-research.md — "Context Menu"), so
- * nothing below re-derives that; this file only re-applies the house motion
- * layer on top, same as every other primitive here does to its own Base UI
- * binding.
- */
-
-// ─── Proximity hover ─────────────────────────────────────────────────────────
-
 interface ContextMenuProximityContextValue {
   registerItem: (index: number, element: HTMLElement | null) => void;
 }

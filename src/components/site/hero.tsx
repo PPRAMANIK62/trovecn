@@ -43,8 +43,7 @@ export function Hero() {
           variants={item}
           className="mt-6 max-w-xl text-body leading-[1.7] text-muted-foreground sm:text-lede"
         >
-          Interface patterns from Apple, Linear, and Vercel — studied for their craft, rebuilt as
-          plain React you own.
+          Crafted interface patterns, rebuilt as plain React you own.
         </motion.p>
         <motion.div variants={item} className="mt-10 flex items-center justify-center gap-3">
           <Button render={<Link href="/docs" />} nativeButton={false} size="lg">
