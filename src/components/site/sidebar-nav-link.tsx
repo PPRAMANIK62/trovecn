@@ -4,7 +4,6 @@ import { useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
-import { setDocsNavDirection } from "@/lib/docs-nav-direction";
 
 /**
  * Shared by DocsSidebar and DocsMobileSidebar: a nav pill that registers
@@ -38,7 +37,6 @@ export function SidebarNavLink({
       ref={ref}
       href={href}
       onClick={() => {
-        setDocsNavDirection("forward");
         onClick?.();
       }}
       className={cn(

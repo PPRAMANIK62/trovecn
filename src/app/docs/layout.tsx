@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 
 import { DocsSidebar } from "@/components/site/docs-sidebar";
 import { DocsMobileSidebar } from "@/components/site/docs-mobile-sidebar";
-import { DocsPageTransition } from "@/components/site/docs-page-transition";
 import { DocsInfoCard } from "@/components/site/docs-info-card";
 import { ScrollFadeTop, ScrollFadeBottom } from "@/components/site/scroll-fade";
 import { Brand } from "@/components/site/brand";
@@ -62,9 +61,7 @@ export default async function DocsLayout({ children }: { children: ReactNode }) 
         </div>
         <div className="relative flex-1 overflow-hidden">
           <div className="absolute inset-0 overflow-y-auto overscroll-contain">
-            <DocsPageTransition>
-              <div className="mx-auto max-w-2xl px-6 py-10">{children}</div>
-            </DocsPageTransition>
+            <div className="mx-auto max-w-2xl px-6 py-10">{children}</div>
           </div>
           <ScrollFadeTop />
           <ScrollFadeBottom />
