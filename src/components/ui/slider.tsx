@@ -159,6 +159,7 @@ function Slider({
               leftPercent={leftPercents[index] ?? leftPercent0}
               isActiveDrag={dragging && activeIndex === index}
               disabled={disabled}
+              reduceMotion={reduceMotion}
               formatValue={formatValue}
               ariaLabel={thumbLabels?.[index]}
               className={thumbClassName}
@@ -178,6 +179,7 @@ function SliderThumb({
   leftPercent,
   isActiveDrag,
   disabled,
+  reduceMotion,
   formatValue,
   ariaLabel,
   className,
@@ -187,6 +189,7 @@ function SliderThumb({
   leftPercent: MotionValue<string>;
   isActiveDrag: boolean;
   disabled?: boolean;
+  reduceMotion: boolean | null;
   formatValue: (value: number) => string;
   ariaLabel?: string;
   className?: string;
@@ -205,6 +208,7 @@ function SliderThumb({
   }, [hovered]);
 
   const tooltipOpen = !disabled && (hoverOpen || focused || isActiveDrag);
+  const tooltipOffset = reduceMotion ? 0 : 4;
 
   return (
     <SliderPrimitive.Thumb
@@ -237,9 +241,9 @@ function SliderThumb({
               {tooltipOpen ? (
                 <motion.span
                   className="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-foreground px-1.5 py-0.5 text-micro text-background"
-                  initial={{ opacity: 0, y: 4 }}
+                  initial={{ opacity: 0, y: tooltipOffset }}
                   animate={{ opacity: 1, y: 0, transition: spring.fast.enter }}
-                  exit={{ opacity: 0, y: 4, transition: spring.fast.exit }}
+                  exit={{ opacity: 0, transition: spring.fast.exit }}
                 >
                   {formatValue(value)}
                 </motion.span>

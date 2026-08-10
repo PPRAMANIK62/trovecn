@@ -7,7 +7,7 @@ const sliderItem: RegistryItem = {
   slug: "slider",
   title: "Slider",
   description:
-    "Base UI slider with a spring-driven thumb — 1:1 direct tracking while dragging, a spring settle on release or track-press, and a delayed hover-value tooltip. The value-precision counterpart to Switch: no hover-stretch or press-squish, just a fixed-size thumb and a fill that reads straight off the same motion value driving it.",
+    "Base UI slider with a spring-driven thumb — 1:1 direct tracking while dragging, a spring settle on release or track-press, and a thumb-anchored value label that fades away cleanly. The value-precision counterpart to Switch: no hover-stretch or press-squish, just a fixed-size thumb and a fill that reads straight off the same motion value driving it.",
   category: "Primitives",
   dependencies: ["motion", "@base-ui/react"],
   registryDependencies: ["utils", "springs"],
