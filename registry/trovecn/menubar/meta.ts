@@ -9,7 +9,6 @@ export const menubar: RegistryItem = {
   description:
     "App-shell top menu. Every top-level menu is the dropdown Menu primitive nested in Base UI's Menubar container, which wires the macOS/Windows hover-switch behavior in for free — hovering a sibling trigger only opens it once another menu in the bar is already open.",
   category: "Primitives",
-  isNew: true,
   dependencies: ["@base-ui/react", "motion", "lucide-react"],
   registryDependencies: ["utils", "springs", "use-proximity-hover", "menu"],
   file: "src/components/ui/menubar.tsx",

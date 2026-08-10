@@ -7,10 +7,13 @@ import type { Easing, Transition } from "motion/react";
  * it fires.
  */
 
-/** Strong ease-out, matching this repo's `AUDIT.md` guidance that built-in
+/** Strong ease-out, matching this repo's `docs/design-system.md` guidance that built-in
  *  easing keywords are too weak for deliberate UI motion. Used on every
- *  tier's exit tween. Motion's array form of `cubic-bezier(0.23, 1, 0.32, 1)`. */
-const easeOutStrong: Easing = [0.23, 1, 0.32, 1];
+ *  tier's exit tween. Motion's array form of `cubic-bezier(0.23, 1, 0.32, 1)`.
+ *  Exported so a component with its own bespoke, non-tier tween (e.g. a
+ *  checkmark `pathLength` draw) can reuse the same curve instead of a bare
+ *  easing keyword. */
+export const easeOutStrong: Easing = [0.23, 1, 0.32, 1];
 
 interface SpringTier {
   /** Enter transition — spring, responds naturally to interruption. */

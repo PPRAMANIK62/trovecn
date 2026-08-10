@@ -60,10 +60,10 @@ export function DocsMobileSidebar() {
           <Brand />
           <DrawerTitle className="sr-only">Components navigation</DrawerTitle>
         </DrawerHeader>
-        <nav className="text-minor">
+        <nav className="min-h-0 flex-1 overflow-hidden text-minor">
           <div
             ref={containerRef}
-            className="relative flex flex-col gap-6 overflow-y-auto overscroll-contain px-8 py-6"
+            className="relative flex h-full flex-col gap-6 overflow-y-auto overscroll-contain px-8 py-6"
             onMouseMove={handlers.onMouseMove}
             onMouseEnter={handlers.onMouseEnter}
             onMouseLeave={handlers.onMouseLeave}

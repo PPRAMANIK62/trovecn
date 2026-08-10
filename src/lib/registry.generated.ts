@@ -5,6 +5,8 @@ import type { RegistryItem } from "./registry-types";
 
 import { accordion } from "../../registry/trovecn/accordion/meta";
 import { button } from "../../registry/trovecn/button/meta";
+import { checkbox } from "../../registry/trovecn/checkbox/meta";
+import { checkboxGroup } from "../../registry/trovecn/checkbox-group/meta";
 import { combobox } from "../../registry/trovecn/combobox/meta";
 import { contextMenu } from "../../registry/trovecn/context-menu/meta";
 import { dialog } from "../../registry/trovecn/dialog/meta";
@@ -14,13 +16,20 @@ import { menubar } from "../../registry/trovecn/menubar/meta";
 import { navigationMenu } from "../../registry/trovecn/navigation-menu/meta";
 import { popover } from "../../registry/trovecn/popover/meta";
 import { previewCard } from "../../registry/trovecn/preview-card/meta";
+import { radioGroup } from "../../registry/trovecn/radio-group/meta";
+import { select } from "../../registry/trovecn/select/meta";
+import { slider } from "../../registry/trovecn/slider/meta";
 import { switch as switchItem } from "../../registry/trovecn/switch/meta";
 import { tabs } from "../../registry/trovecn/tabs/meta";
+import { toggle } from "../../registry/trovecn/toggle/meta";
+import { toggleGroup } from "../../registry/trovecn/toggle-group/meta";
 import { tooltip } from "../../registry/trovecn/tooltip/meta";
 
 export const registry: RegistryItem[] = [
   accordion,
   button,
+  checkbox,
+  checkboxGroup,
   combobox,
   contextMenu,
   dialog,
@@ -30,7 +39,12 @@ export const registry: RegistryItem[] = [
   navigationMenu,
   popover,
   previewCard,
+  radioGroup,
+  select,
+  slider,
   switchItem,
   tabs,
+  toggle,
+  toggleGroup,
   tooltip,
 ];

@@ -47,6 +47,18 @@
       ]
     },
     {
+      "name": "use-merge-split",
+      "type": "registry:hook",
+      "title": "useMergeSplit",
+      "description": "Groups a checked-item list's contiguous rows into runs and reports one spring-animated background block per run, so adjacent selections read as one continuous shape that merges and splits instead of separate highlighted rows.",
+      "files": [
+        {
+          "path": "src/hooks/use-merge-split.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "use-proximity-hover",
       "type": "registry:hook",
       "title": "useProximityHover",
@@ -96,6 +108,48 @@
       "files": [
         {
           "path": "src/components/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "Base UI checkbox with a hand-drawn checkmark that draws on and off.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "checkbox-group",
+      "type": "registry:ui",
+      "title": "Checkbox Group",
+      "description": "A multi-select list of Base UI checkboxes with proximity hover across every row and a merge/split background that reads contiguous checked rows as one continuous block.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "use-proximity-hover",
+        "use-merge-split"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/checkbox.tsx",
           "type": "registry:ui"
         }
       ]
@@ -293,6 +347,69 @@
       ]
     },
     {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "Radio Group",
+      "description": "Base UI radio group with a spring-driven selected background and proximity hover across every row.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "use-proximity-hover"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "Base UI select with a spring-driven popup, a sliding selected-row highlight, and a checkmark that draws itself in.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "use-proximity-hover"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/select.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "description": "Base UI slider with a spring-driven thumb — direct 1:1 tracking while dragging, a spring settle on release or track-press, and a delayed hover tooltip. Supports single-value and two-thumb range use out of the box.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/slider.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "switch",
       "type": "registry:ui",
       "title": "Switch",
@@ -330,6 +447,45 @@
       "files": [
         {
           "path": "src/components/ui/tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle",
+      "type": "registry:ui",
+      "title": "Toggle",
+      "description": "Base UI two-state button — a favorite/star button, a toolbar formatting control.",
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/toggle.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle-group",
+      "type": "registry:ui",
+      "title": "Toggle Group",
+      "description": "A row of linked Base UI Toggles — single-select segmented control with a sliding indicator, or independent multi-select.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "use-proximity-hover"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/toggle-group.tsx",
           "type": "registry:ui"
         }
       ]

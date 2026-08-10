@@ -9,7 +9,6 @@ export const drawer: RegistryItem = {
   description:
     "Edge-anchored panel with vaul-style drag-to-dismiss on top/bottom — velocity-first release, rubber-band resistance, confined to a handle. Left/right stay scripted-only.",
   category: "Primitives",
-  isNew: true,
   dependencies: ["@base-ui/react", "motion"],
   registryDependencies: ["utils", "springs"],
   file: "src/components/ui/drawer.tsx",

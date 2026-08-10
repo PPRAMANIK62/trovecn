@@ -9,7 +9,6 @@ export const contextMenu: RegistryItem = {
   description:
     "Right-click actions — the same popup, motion, and proximity-hover pill as the dropdown Menu, anchored at the pointer instead of a trigger element. Submenus, checkbox/radio items, shortcuts, all inherited for free.",
   category: "Primitives",
-  isNew: true,
   dependencies: ["@base-ui/react", "motion", "lucide-react"],
   registryDependencies: ["utils", "springs", "use-proximity-hover"],
   file: "src/components/ui/context-menu.tsx",

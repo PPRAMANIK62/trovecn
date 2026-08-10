@@ -9,7 +9,6 @@ export const previewCard: RegistryItem = {
   description:
     "A floating preview panel triggered on hover — link previews, profile cards, anything worth a longer look than a Tooltip's one-word label. Opens on a 700ms delay instead of Tooltip's 200ms, since richer content shouldn't commit on every incidental pass-over.",
   category: "Primitives",
-  isNew: true,
   dependencies: ["motion", "@base-ui/react"],
   registryDependencies: ["utils", "springs"],
   file: "src/components/ui/preview-card.tsx",

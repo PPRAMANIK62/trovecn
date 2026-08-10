@@ -9,7 +9,6 @@ export const navigationMenu: RegistryItem = {
   description:
     "Mega-menu nav with preview panels. One shared viewport resizes and crossfades between whichever top-level item is active, instead of each item owning its own popup — the top-level trigger row gets the same proximity-hover wash every other interactive list in this registry uses.",
   category: "Primitives",
-  isNew: true,
   dependencies: ["@base-ui/react", "motion", "lucide-react"],
   registryDependencies: ["utils", "use-proximity-hover"],
   file: "src/components/ui/navigation-menu.tsx",

@@ -47,6 +47,18 @@
       ]
     },
     {
+      "name": "use-merge-split",
+      "type": "registry:hook",
+      "title": "useMergeSplit",
+      "description": "Groups a checked-item list's contiguous rows into runs and reports one spring-animated background block per run, so adjacent selections read as one continuous shape that merges and splits instead of separate highlighted rows.",
+      "files": [
+        {
+          "path": "src/hooks/use-merge-split.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "use-proximity-hover",
       "type": "registry:hook",
       "title": "useProximityHover",
@@ -101,6 +113,48 @@
       ]
     },
     {
+      "name": "checkbox",
+      "type": "registry:ui",
+      "title": "Checkbox",
+      "description": "Base UI checkbox with a hand-drawn checkmark that draws on and off.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "checkbox-group",
+      "type": "registry:ui",
+      "title": "Checkbox Group",
+      "description": "A multi-select list of Base UI checkboxes with proximity hover across every row and a merge/split background that reads contiguous checked rows as one continuous block.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "use-proximity-hover",
+        "use-merge-split"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "combobox",
       "type": "registry:ui",
       "title": "Combobox",
@@ -118,6 +172,28 @@
       "files": [
         {
           "path": "src/components/ui/combobox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "context-menu",
+      "type": "registry:ui",
+      "title": "Context Menu",
+      "description": "Right-click menu — Base UI's Menu popup anchored at the pointer.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "use-proximity-hover"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/context-menu.tsx",
           "type": "registry:ui"
         }
       ]
@@ -145,6 +221,26 @@
       ]
     },
     {
+      "name": "drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "description": "Edge-anchored panel with real drag-to-dismiss on top/bottom, vaul-style release physics.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/drawer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "menu",
       "type": "registry:ui",
       "title": "Menu",
@@ -162,6 +258,50 @@
       "files": [
         {
           "path": "src/components/ui/menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "menubar",
+      "type": "registry:ui",
+      "title": "Menubar",
+      "description": "App-shell top menu — a row of dropdown Menus with macOS-style hover switching.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "use-proximity-hover",
+        "menu"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/menubar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "navigation-menu",
+      "type": "registry:ui",
+      "title": "Navigation Menu",
+      "description": "Mega-menu nav with a shared viewport that resizes between preview panels.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "use-proximity-hover"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/navigation-menu.tsx",
           "type": "registry:ui"
         }
       ]
@@ -187,19 +327,84 @@
       ]
     },
     {
-      "name": "sheet",
+      "name": "preview-card",
       "type": "registry:ui",
-      "title": "Sheet",
-      "description": "Edge-anchored panel built on the Dialog primitive, sliding in from any side with a fading backdrop.",
+      "title": "Preview Card",
+      "description": "A floating preview panel that opens on a longer hover delay than Tooltip.",
       "dependencies": [
-        "@base-ui/react"
+        "@base-ui/react",
+        "motion"
       ],
       "registryDependencies": [
-        "utils"
+        "utils",
+        "springs"
       ],
       "files": [
         {
-          "path": "src/components/ui/sheet.tsx",
+          "path": "src/components/ui/preview-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "Radio Group",
+      "description": "Base UI radio group with a spring-driven selected background and proximity hover across every row.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "use-proximity-hover"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "Base UI select with a spring-driven popup, a sliding selected-row highlight, and a checkmark that draws itself in.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "use-proximity-hover"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/select.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "description": "Base UI slider with a spring-driven thumb — direct 1:1 tracking while dragging, a spring settle on release or track-press, and a delayed hover tooltip. Supports single-value and two-thumb range use out of the box.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/slider.tsx",
           "type": "registry:ui"
         }
       ]
@@ -242,6 +447,45 @@
       "files": [
         {
           "path": "src/components/ui/tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle",
+      "type": "registry:ui",
+      "title": "Toggle",
+      "description": "Base UI two-state button — a favorite/star button, a toolbar formatting control.",
+      "dependencies": [
+        "@base-ui/react"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/toggle.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle-group",
+      "type": "registry:ui",
+      "title": "Toggle Group",
+      "description": "A row of linked Base UI Toggles — single-select segmented control with a sliding indicator, or independent multi-select.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs",
+        "use-proximity-hover"
+      ],
+      "files": [
+        {
+          "path": "src/components/ui/toggle-group.tsx",
           "type": "registry:ui"
         }
       ]

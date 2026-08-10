@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "toggle",
+  "title": "Toggle",
+  "description": "Base UI two-state button — a favorite/star button, a toolbar formatting control.",
+  "dependencies": [
+    "@base-ui/react"
+  ],
+  "registryDependencies": [
+    "utils"
+  ],
+  "files": [
+    {
+      "path": "src/components/ui/toggle.tsx",
+      "content": "\"use client\";\n\nimport { Toggle as TogglePrimitive } from \"@base-ui/react/toggle\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\n\nimport { cn } from \"@/lib/utils\";\n\n/**\n * Standalone two-state button — a toolbar bold/italic toggle, a\n * favorite/star button, anything that flips on/off on its own, not as part\n * of a `ToggleGroup`. Base UI's `Toggle` directly (`pressed`/`defaultPressed`\n * /`onPressedChange`), with `cva` size variants matching this repo's other\n * compact controls (see `button.tsx`'s size steps) — this file doesn't reuse\n * `buttonVariants` itself since a toggle's persistent pressed fill is its own\n * visual language, not a button variant.\n *\n * Per `docs/research/selection-inputs-motion-research.md` (Toggle/\n * ToggleGroup section): a toggle's pressed-state fill is deliberately NOT a\n * `spring.*` moment — Rauno Freiberg's guidance is that toggles should take\n * effect immediately rather than play a confirmation animation, so the fill\n * below is a plain CSS `transition-colors`. The press-scale is the same\n * story: a plain CSS `active:` utility, not a Motion spring, and a subtle\n * 0.97 rather than a dramatic 1→0.8-style squash (Rauno again). Toggle does\n * NOT share code with `switch.tsx` — confirmed by the same research doc as\n * an architecturally distinct control (button vs. thumb-on-track), so this\n * file doesn't reach for Switch's hover-stretch/press-squish constants.\n *\n * Base UI sets `data-pressed`/`data-disabled` on the rendered `<button>`\n * automatically (see `ToggleDataAttributes`) — style off those directly\n * rather than re-deriving pressed state in React.\n */\nconst toggleVariants = cva(\n  \"group/toggle relative inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-transparent text-control text-muted-foreground whitespace-nowrap outline-none transition-colors duration-fast select-none hover:not-data-[pressed]:bg-muted hover:not-data-[pressed]:text-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:scale-[0.97] data-[pressed]:bg-accent data-[pressed]:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      size: {\n        default: \"h-8 min-w-8 px-2\",\n        sm: \"h-7 min-w-7 px-1.5\",\n        lg: \"h-9 min-w-9 px-2.5\",\n      },\n    },\n    defaultVariants: {\n      size: \"default\",\n    },\n  },\n);\n\nfunction Toggle<Value extends string = string>({\n  className,\n  size,\n  ...props\n}: TogglePrimitive.Props<Value> & VariantProps<typeof toggleVariants>) {\n  return (\n    <TogglePrimitive\n      data-slot=\"toggle\"\n      className={cn(toggleVariants({ size, className }))}\n      {...props}\n    />\n  );\n}\n\nexport { Toggle, toggleVariants };\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}
