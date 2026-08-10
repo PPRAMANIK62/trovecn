@@ -18,7 +18,7 @@ import {
   type ReactNode,
 } from "react";
 import { Combobox as ComboboxPrimitive } from "@base-ui/react/combobox";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { CheckIcon, ChevronDownIcon, SearchIcon, XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -132,16 +132,14 @@ function ComboboxClear({ className, ...props }: ComboboxPrimitive.Clear.Props) {
  * typed in this exact field," so lining its edges up with the input is the
  * legible choice, unlike a dropdown menu's independent action list. Same
  * `--popover` elevation step and `spring.moderate` scale-in as Popover/Menu
- * otherwise.
+ * otherwise. Its result surface follows filtering with the same shared
+ * spring, maintaining a continuous height transition as rows are added or
+ * removed.
  */
 function ComboboxPopup({ className, children, ...props }: ComboboxPrimitive.Popup.Props) {
-  // Height of the filtered result set animates to a self-measured layout
-  // pixel value on every keystroke, same ResizeObserver-driven technique
-  // AccordionContent uses for its open height — otherwise typing a filter
-  // down from 6 results to 1 just snaps the popup shorter mid-frame. `overflow-y-auto` +
-  // `max-h-(--available-height)` stay on the *outer* motion.div below and
-  // still cap/scroll a long result set once the animation lands; this only
-  // measures and animates the natural content height, uncapped.
+  // Measure the natural result-set height and interpolate between each value
+  // as filtering adds or removes rows. The outer shell continues to cap and
+  // scroll long result sets.
   const roRef = useRef<ResizeObserver | null>(null);
   const [contentHeight, setContentHeight] = useState<number | null>(null);
 
@@ -149,10 +147,13 @@ function ComboboxPopup({ className, children, ...props }: ComboboxPrimitive.Popu
     roRef.current?.disconnect();
     roRef.current = null;
     if (!el) return;
-    if (el.offsetHeight > 0) setContentHeight(el.offsetHeight);
-    const ro = new ResizeObserver(() => {
-      if (el.offsetHeight > 0) setContentHeight(el.offsetHeight);
-    });
+    const measure = () => {
+      if (el.offsetHeight > 0) {
+        setContentHeight(el.offsetHeight);
+      }
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
     ro.observe(el);
     roRef.current = ro;
   }, []);
@@ -170,11 +171,12 @@ function ComboboxPopup({ className, children, ...props }: ComboboxPrimitive.Popu
               "z-50 max-h-(--available-height) w-(--anchor-width) origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover p-1 text-popover-foreground shadow-popover outline-none",
               className,
             )}
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: exiting ? 0 : 1, scale: exiting ? 0.96 : 1 }}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: exiting ? 0 : 1, scale: exiting ? 0.98 : 1 }}
             transition={exiting ? spring.moderate.exit : spring.moderate.enter}
           >
             <motion.div
+              initial={false}
               animate={{ height: contentHeight ?? "auto" }}
               transition={spring.moderate.enter}
               className="overflow-hidden"
@@ -312,8 +314,15 @@ function useComboboxItemRegistration(ref: React.RefObject<HTMLElement | null>, i
   }, [index, ctx]);
 }
 
-function ComboboxItem({ className, children, index, ...props }: ComboboxPrimitive.Item.Props) {
+function ComboboxItem({
+  className,
+  children,
+  index,
+  render,
+  ...props
+}: ComboboxPrimitive.Item.Props) {
   const ref = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
   useComboboxItemRegistration(ref, index);
 
   return (
@@ -334,6 +343,17 @@ function ComboboxItem({ className, children, index, ...props }: ComboboxPrimitiv
         className,
       )}
       {...props}
+      render={
+        render ??
+        ((itemProps) => (
+          <motion.div
+            {...(itemProps as React.ComponentProps<typeof motion.div>)}
+            initial={{ opacity: 0, y: reduceMotion ? 0 : 3 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={spring.quick.enter}
+          />
+        ))
+      }
     >
       {children}
       <span
