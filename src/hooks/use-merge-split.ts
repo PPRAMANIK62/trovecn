@@ -25,9 +25,11 @@ import type { ItemRect } from "@/hooks/use-proximity-hover";
  * run's rect as `initialRect`, so consumers can start its spring from there
  * instead of popping in already at its own smaller size. Merged-away runs
  * simply drop out of the returned array while the surviving block springs
- * outward to cover them. Reconciliation also guarantees unique output keys:
- * a split can otherwise reuse a prior run's geometry-derived key for both
- * pieces in the same render.
+ * outward to cover them. When a hovered row bridges or splits selected runs,
+ * it becomes the origin so geometry completes in both directions from the
+ * clicked row. Reconciliation also guarantees unique output keys: a split
+ * can otherwise reuse a prior run's geometry-derived key for both pieces in
+ * the same render.
  */
 
 export interface MergeSplitBlock {
@@ -111,7 +113,12 @@ function claimUniqueKey(preferredKey: string, claimedKeys: Set<string>) {
   return key;
 }
 
-function reconcile(newRuns: RunRecord[], prevRuns: RunRecord[]): MergeSplitBlock[] {
+function reconcile(
+  newRuns: RunRecord[],
+  prevRuns: RunRecord[],
+  originIndex: number | null,
+  itemRects: readonly ItemRect[],
+): MergeSplitBlock[] {
   const claimedPrimaryKeys = new Set<string>();
   const outputKeys = new Set<string>();
 
@@ -132,6 +139,59 @@ function reconcile(newRuns: RunRecord[], prevRuns: RunRecord[]): MergeSplitBlock
     let primary = overlapping[0];
     for (const candidate of overlapping) {
       if (candidate.indices.length > primary.indices.length) primary = candidate;
+    }
+
+    // A click on the hovered gap joins selected runs above and below it.
+    // Preserve that row as the visual origin instead of retaining either
+    // existing run's key, which would make the merged geometry grow from
+    // only one side.
+    const originRect = originIndex === null ? undefined : itemRects[originIndex];
+    const originBridgesRuns =
+      originRect !== undefined &&
+      originIndex !== null &&
+      run.indices.includes(originIndex) &&
+      !prevRuns.some((previous) => previous.indices.includes(originIndex)) &&
+      overlapping.length > 1;
+    if (originBridgesRuns) {
+      // This must be a new Motion element, even if a prior bridge used the
+      // same geometry-derived `:origin` name. Reusing a currently rendered
+      // split piece's key would preserve its one-sided layout state and skip
+      // the center-origin `initialRect` on a repeated bridge.
+      const occupiedKeys = new Set([...prevRuns.map((previous) => previous.key), ...outputKeys]);
+      const key = claimUniqueKey(`${run.key}:origin`, occupiedKeys);
+      outputKeys.add(key);
+      return {
+        key,
+        indices: run.indices,
+        ...run.rect,
+        initialRect: originRect,
+      };
+    }
+
+    // The reverse transition: removing the hovered middle row splits one
+    // selected surface into two. Mount both result blocks from that old
+    // surface, so their inner edges pull apart together and open the gap at
+    // the clicked row rather than continuing from one retained side.
+    const originPreviousRun =
+      originIndex === null
+        ? undefined
+        : prevRuns.find((previous) => previous.indices.includes(originIndex));
+    const originSplitsRun =
+      originPreviousRun !== undefined &&
+      !run.indices.includes(originIndex!) &&
+      newRuns.filter((nextRun) =>
+        nextRun.indices.some((index) => originPreviousRun.indices.includes(index)),
+      ).length > 1;
+    if (originSplitsRun) {
+      const occupiedKeys = new Set([...prevRuns.map((previous) => previous.key), ...outputKeys]);
+      const key = claimUniqueKey(`${run.key}:origin-split`, occupiedKeys);
+      outputKeys.add(key);
+      return {
+        key,
+        indices: run.indices,
+        ...run.rect,
+        initialRect: originPreviousRun.rect,
+      };
     }
 
     if (!claimedPrimaryKeys.has(primary.key) && !outputKeys.has(primary.key)) {
@@ -156,6 +216,7 @@ function reconcile(newRuns: RunRecord[], prevRuns: RunRecord[]): MergeSplitBlock
 export function useMergeSplit(
   checkedIndices: readonly number[],
   itemRects: readonly ItemRect[],
+  originIndex: number | null = null,
 ): MergeSplitBlock[] {
   const prevRunsRef = useRef<RunRecord[]>([]);
   const checkedKey = useMemo(
@@ -165,12 +226,12 @@ export function useMergeSplit(
 
   const blocks = useMemo(() => {
     const newRuns = computeRuns(checkedIndices, itemRects);
-    return reconcile(newRuns, prevRunsRef.current);
-    // checkedKey/itemRects are the real dependencies (checkedIndices is
+    return reconcile(newRuns, prevRunsRef.current, originIndex, itemRects);
+    // checkedKey/itemRects/originIndex are the real dependencies (checkedIndices is
     // content-compared via checkedKey since a fresh array reference is
     // expected on every render).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [checkedKey, itemRects]);
+  }, [checkedKey, itemRects, originIndex]);
 
   // Commit the new runs as "previous" only after render, never while
   // computing this render's own value — mutating a ref mid-render isn't

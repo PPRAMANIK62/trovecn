@@ -255,7 +255,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value, namesTick]);
 
-    const blocks = useMergeSplit(checkedIndices, itemRects);
+    const blocks = useMergeSplit(checkedIndices, itemRects, activeIndex);
     const reduceMotion = useReducedMotion();
 
     const handleValueChange = useCallback(
