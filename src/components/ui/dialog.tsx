@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from "react";
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -35,6 +35,8 @@ function DialogPortal({ ...props }: DialogPrimitive.Portal.Props) {
  * doesn't defer removal the same way).
  */
 function DialogOverlay({ className, ...props }: DialogPrimitive.Backdrop.Props) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <DialogPrimitive.Backdrop
       data-slot="dialog-overlay"
@@ -46,7 +48,9 @@ function DialogOverlay({ className, ...props }: DialogPrimitive.Backdrop.Props) 
             className={cn("fixed inset-0 z-50 bg-black/40 backdrop-blur-sm", className)}
             initial={{ opacity: 0 }}
             animate={{ opacity: exiting ? 0 : 1 }}
-            transition={exiting ? spring.slow.exit : spring.slow.enter}
+            transition={
+              reduceMotion ? spring.fast.enter : exiting ? spring.slow.exit : spring.slow.enter
+            }
           />
         );
       }}
@@ -71,6 +75,9 @@ function DialogContent({
   size?: "sm" | "lg";
   showCloseButton?: boolean;
 }) {
+  const reduceMotion = useReducedMotion();
+  const restingOffset = reduceMotion ? "-50%" : "calc(-50% + 12px)";
+
   return (
     <DialogPortal>
       <DialogOverlay />
@@ -88,14 +95,19 @@ function DialogContent({
                 size === "lg" && "max-w-lg",
                 className,
               )}
-              initial={{ opacity: 0, scale: 0.97, x: "-50%", y: "-50%" }}
+              initial={{ opacity: 0, x: "-50%", y: restingOffset }}
               animate={{
                 opacity: exiting ? 0 : 1,
-                scale: exiting ? 0.97 : 1,
                 x: "-50%",
-                y: "-50%",
+                y: exiting ? restingOffset : "-50%",
               }}
-              transition={exiting ? spring.slow.exit : spring.slow.enter}
+              transition={
+                reduceMotion
+                  ? spring.fast.enter
+                  : exiting
+                    ? spring.slow.exit
+                    : { ...spring.slow.enter, delay: 0.06 }
+              }
             >
               {children}
               {showCloseButton && (
