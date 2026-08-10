@@ -10,7 +10,7 @@ import { spring } from "@/lib/springs";
 /**
  * Small, self-contained demos only — no full-screen overlays (Dialog,
  * Drawer), nothing that needs a right-click to discover (ContextMenu), and
- * nothing too wide for a grid cell (Menubar, NavigationMenu). See
+ * nothing too wide for a grid cell (NavigationMenu). See
  * docs/design-system.md "Preview-grid tile pattern."
  */
 const FEATURED = [
@@ -19,7 +19,6 @@ const FEATURED = [
   { slug: "accordion", example: "Single expand" },
   { slug: "tooltip", example: "Placement" },
   { slug: "combobox", example: "Standalone" },
-  { slug: "preview-card", example: "Profile" },
 ] as const;
 
 /**

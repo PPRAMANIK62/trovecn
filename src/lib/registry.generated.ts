@@ -12,17 +12,11 @@ import { contextMenu } from "../../registry/trovecn/context-menu/meta";
 import { dialog } from "../../registry/trovecn/dialog/meta";
 import { drawer } from "../../registry/trovecn/drawer/meta";
 import { menu } from "../../registry/trovecn/menu/meta";
-import { menubar } from "../../registry/trovecn/menubar/meta";
 import { navigationMenu } from "../../registry/trovecn/navigation-menu/meta";
 import { popover } from "../../registry/trovecn/popover/meta";
-import { previewCard } from "../../registry/trovecn/preview-card/meta";
-import { radioGroup } from "../../registry/trovecn/radio-group/meta";
-import { select } from "../../registry/trovecn/select/meta";
 import { slider } from "../../registry/trovecn/slider/meta";
 import { switch as switchItem } from "../../registry/trovecn/switch/meta";
 import { tabs } from "../../registry/trovecn/tabs/meta";
-import { toggle } from "../../registry/trovecn/toggle/meta";
-import { toggleGroup } from "../../registry/trovecn/toggle-group/meta";
 import { tooltip } from "../../registry/trovecn/tooltip/meta";
 
 export const registry: RegistryItem[] = [
@@ -35,16 +29,10 @@ export const registry: RegistryItem[] = [
   dialog,
   drawer,
   menu,
-  menubar,
   navigationMenu,
   popover,
-  previewCard,
-  radioGroup,
-  select,
   slider,
   switchItem,
   tabs,
-  toggle,
-  toggleGroup,
   tooltip,
 ];

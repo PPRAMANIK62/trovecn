@@ -67,11 +67,6 @@ downstream patterns depend on it.
       `ContextMenu` handles the click-point virtual anchor and touch
       long-press internally, so this file only re-applies the house motion
       layer, same as every other Menu-family primitive
-- [x] Menubar — registered in `registry.json` and on the docs site. Every
-      top-level menu is the dropdown Menu primitive nested in Base UI's
-      `Menubar` container, which wires the macOS/Windows gated hover-switch
-      behavior in natively — no dropdown-menu.tsx duplicate, just aliases
-      onto `menu.tsx`
 - [x] Navigation Menu — registered in `registry.json` and on the docs site.
       One shared, resizing `Viewport` crossfades between whichever
       top-level item is active (Base UI's own architecture, not a Radix or
@@ -80,10 +75,6 @@ downstream patterns depend on it.
       velocity and a few-px directional travel; the top-level trigger row
       gets the same `useProximityHover` wash every other interactive list
       here uses
-- [x] Preview Card (hover card) — registered in `registry.json` and on the
-      docs site. Same popup shape/motion as Tooltip (`spring.fast`, slide +
-      fade), 700ms/300ms open/close delay instead of Tooltip's 200/300 —
-      richer content shouldn't commit on every incidental pass-over
 - [ ] Toast — transient notifications
 - [x] Drawer — registered in `registry.json` and on the docs site. Edge-
       anchored, built on Base UI's `Dialog` rather than its dedicated
@@ -105,19 +96,10 @@ downstream patterns depend on it.
 
 Sourced from `docs/research/selection-inputs-motion-research.md` — the same
 "find real precedent, cite it, adapt the values" pass as the overlay/menu
-research, this time against fluidfunctionalism.com's own `checkbox-group`,
-`radio-group`, `select`, and `slider` source (Radix/Ariakit/React Aria
+research, this time against fluidfunctionalism.com's own `checkbox-group`
+and `slider` source (Radix/Ariakit/React Aria
 Components cross-checked for prior art Base UI's docs don't cover).
 
-- [x] Select — registered in `registry.json` and on the docs site. Two
-      distinct tiers per the research: popup open/close and the selected-row
-      background both on `spring.moderate` (a discrete open, not continuous
-      pointer-tracked motion, so one tier up from Combobox's `spring.fast`
-      hover pill), a 300ms selection-acknowledgment delay holding the popup
-      open on item-press so the checkmark draw is actually seen, and a
-      bespoke `pathLength` checkmark draw-on (0.08s/0.04s tween on
-      `easeOutStrong`, not a spring — a stroke draw doesn't tolerate
-      overshoot the way a scale does)
 - [x] Checkbox / CheckboxGroup — registered in `registry.json` and on the
       docs site, as two items sharing one file (`checkbox.tsx`): a standalone
       `Checkbox` for lone use, and `CheckboxGroup`/`CheckboxGroupItem`
@@ -126,22 +108,6 @@ Components cross-checked for prior art Base UI's docs don't cover).
       into one spring-tracked background block and split apart again on
       `spring.moderate`, the literal precedent this repo's own
       `spring.moderate` doc comment ("selection merge/split") already named
-- [x] Radio / RadioGroup — registered in `registry.json` and on the docs
-      site. No merge/split needed (a radio group's 0-or-1 selection
-      invariant means there's never more than one contiguous run) — a single
-      continuously-tracked selected background on `spring.moderate`, ported
-      from this repo's own `Tabs` indicator technique rather than
-      fluidfunctionalism's, plus a genuine spring-based dot scale-in
-      (`spring.fast`) unlike Checkbox's tween-based draw
-- [x] Toggle / ToggleGroup — registered in `registry.json` and on the docs
-      site, as two files matching Base UI's own separate `toggle`/
-      `toggle-group` packages. Standalone `Toggle`'s pressed-state fill is a
-      plain CSS transition, deliberately not a spring, per Rauno Freiberg's
-      "toggles should immediately take effect" guidance. `ToggleGroup`'s
-      single-select mode reuses `Tabs`' moving-indicator recipe; multi-select
-      mode gives each pressed item an independent persistent tint rather
-      than CheckboxGroup's merge/split geometry — a deliberate scope call,
-      not an oversight
 - [x] Slider — registered in `registry.json` and on the docs site. Confirmed
       by direct inspection that fluidfunctionalism's own Slider does **not**
       share Switch's hover-stretch/press-squish thumb physics (that

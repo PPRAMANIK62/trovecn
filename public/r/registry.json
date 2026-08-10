@@ -263,29 +263,6 @@
       ]
     },
     {
-      "name": "menubar",
-      "type": "registry:ui",
-      "title": "Menubar",
-      "description": "App-shell top menu — a row of dropdown Menus with macOS-style hover switching.",
-      "dependencies": [
-        "@base-ui/react",
-        "motion",
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "utils",
-        "springs",
-        "use-proximity-hover",
-        "menu"
-      ],
-      "files": [
-        {
-          "path": "src/components/ui/menubar.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
       "name": "navigation-menu",
       "type": "registry:ui",
       "title": "Navigation Menu",
@@ -322,69 +299,6 @@
       "files": [
         {
           "path": "src/components/ui/popover.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
-      "name": "preview-card",
-      "type": "registry:ui",
-      "title": "Preview Card",
-      "description": "A floating preview panel that opens on a longer hover delay than Tooltip.",
-      "dependencies": [
-        "@base-ui/react",
-        "motion"
-      ],
-      "registryDependencies": [
-        "utils",
-        "springs"
-      ],
-      "files": [
-        {
-          "path": "src/components/ui/preview-card.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
-      "name": "radio-group",
-      "type": "registry:ui",
-      "title": "Radio Group",
-      "description": "Base UI radio group with a spring-driven selected background and proximity hover across every row.",
-      "dependencies": [
-        "@base-ui/react",
-        "motion"
-      ],
-      "registryDependencies": [
-        "utils",
-        "springs",
-        "use-proximity-hover"
-      ],
-      "files": [
-        {
-          "path": "src/components/ui/radio-group.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
-      "name": "select",
-      "type": "registry:ui",
-      "title": "Select",
-      "description": "Base UI select with a spring-driven popup, a sliding selected-row highlight, and a checkmark that draws itself in.",
-      "dependencies": [
-        "@base-ui/react",
-        "motion",
-        "lucide-react"
-      ],
-      "registryDependencies": [
-        "utils",
-        "springs",
-        "use-proximity-hover"
-      ],
-      "files": [
-        {
-          "path": "src/components/ui/select.tsx",
           "type": "registry:ui"
         }
       ]
@@ -447,45 +361,6 @@
       "files": [
         {
           "path": "src/components/ui/tabs.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
-      "name": "toggle",
-      "type": "registry:ui",
-      "title": "Toggle",
-      "description": "Base UI two-state button — a favorite/star button, a toolbar formatting control.",
-      "dependencies": [
-        "@base-ui/react"
-      ],
-      "registryDependencies": [
-        "utils"
-      ],
-      "files": [
-        {
-          "path": "src/components/ui/toggle.tsx",
-          "type": "registry:ui"
-        }
-      ]
-    },
-    {
-      "name": "toggle-group",
-      "type": "registry:ui",
-      "title": "Toggle Group",
-      "description": "A row of linked Base UI Toggles — single-select segmented control with a sliding indicator, or independent multi-select.",
-      "dependencies": [
-        "@base-ui/react",
-        "motion"
-      ],
-      "registryDependencies": [
-        "utils",
-        "springs",
-        "use-proximity-hover"
-      ],
-      "files": [
-        {
-          "path": "src/components/ui/toggle-group.tsx",
           "type": "registry:ui"
         }
       ]

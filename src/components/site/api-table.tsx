@@ -20,8 +20,7 @@ export function ApiTable({ rows, className }: ApiTableProps) {
         <tbody>
           {rows.map((row, i) => (
             // Index, not row.prop: a section documenting several bundled
-            // sub-components (e.g. Select's "SelectTrigger / SelectValue /
-            // SelectIcon") can legitimately list the same prop name twice —
+            // sub-components can legitimately list the same prop name twice —
             // once per component — so the prop name alone isn't unique.
             <tr key={i} className={i < rows.length - 1 ? "border-b border-border" : ""}>
               <td className="w-36 px-5 py-5 align-top">
