@@ -14,7 +14,7 @@ import {
   type ReactNode,
 } from "react";
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { CheckIcon, ChevronRightIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -107,11 +107,9 @@ function MenuPortal({ ...props }: MenuPrimitive.Portal.Props) {
 }
 
 /**
- * Anchored floating list — same elevation step and scale-from-anchor
- * entrance as Popover (`--popover`, `origin-(--transform-origin)`,
- * `spring.moderate` — the tier the spring table already names for "dropdown
- * ... indicators"). Sized to its content (`min-w-40`) rather than matched to
- * the trigger's width the way a Select popup would be.
+ * Anchored floating list — same elevation step as Popover, entering from a
+ * small trigger-facing offset on `spring.moderate`. Sized to its content
+ * (`min-w-40`).
  */
 function MenuContent({
   align = "start",
@@ -124,6 +122,7 @@ function MenuContent({
 }: MenuPrimitive.Popup.Props &
   Pick<MenuPrimitive.Positioner.Props, "align" | "alignOffset" | "side" | "sideOffset">) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
   const { activeIndex, itemRects, handlers, registerItem, measureItems } = useProximityHover(
     containerRef,
     { axis: "y" },
@@ -135,6 +134,12 @@ function MenuContent({
 
   const activeRect = activeIndex !== null ? itemRects[activeIndex] : null;
   const indexedChildren = indexMenuChildren(children, { current: 0 });
+  const triggerOffset = reduceMotion
+    ? { x: 0, y: 0 }
+    : {
+        x: side === "right" ? -4 : side === "left" ? 4 : 0,
+        y: side === "bottom" ? -4 : side === "top" ? 4 : 0,
+      };
   // Without this, `{ registerItem }` is a fresh object every render, so
   // every item's registration effect (keyed on this context value) re-fires
   // every render, bumps useProximityHover's registerTick, and re-renders
@@ -168,8 +173,12 @@ function MenuContent({
                   "relative z-50 max-h-(--available-height) min-w-40 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover p-1 text-popover-foreground shadow-popover outline-none",
                   className,
                 )}
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: exiting ? 0 : 1, scale: exiting ? 0.96 : 1 }}
+                initial={{ opacity: 0, ...triggerOffset }}
+                animate={{
+                  opacity: exiting ? 0 : 1,
+                  x: exiting ? triggerOffset.x : 0,
+                  y: exiting ? triggerOffset.y : 0,
+                }}
                 transition={exiting ? spring.moderate.exit : spring.moderate.enter}
               >
                 <AnimatePresence>
