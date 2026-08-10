@@ -84,7 +84,7 @@ function DrawerOverlay({ className, ...props }: DrawerPrimitive.Backdrop.Props) 
         return (
           <motion.div
             {...(backdropProps as Record<string, unknown>)}
-            className={cn("fixed inset-0 z-50 bg-black/40 backdrop-blur-sm", className)}
+            className={cn("fixed inset-0 z-50 bg-black/30 backdrop-blur-none", className)}
             initial={{ opacity: 0 }}
             animate={{ opacity: exiting ? 0 : 1 }}
             transition={exiting ? spring.slow.exit : spring.slow.enter}
