@@ -287,7 +287,7 @@
       "name": "popover",
       "type": "registry:ui",
       "title": "Popover",
-      "description": "Anchored floating panel that grows out of its trigger, scaling from Base UI's transform-origin.",
+      "description": "Anchored floating panel that enters from its trigger with a small placement-aware offset.",
       "dependencies": [
         "motion",
         "@base-ui/react"
@@ -307,7 +307,7 @@
       "name": "slider",
       "type": "registry:ui",
       "title": "Slider",
-      "description": "Base UI slider with a spring-driven thumb — direct 1:1 tracking while dragging, a spring settle on release or track-press, and a delayed hover tooltip. Supports single-value and two-thumb range use out of the box.",
+      "description": "Base UI slider with a spring-driven thumb — direct 1:1 tracking while dragging, a spring settle on release or track-press, and a thumb-anchored value label that fades away cleanly. Supports single-value and two-thumb range use out of the box.",
       "dependencies": [
         "@base-ui/react",
         "motion"
@@ -347,7 +347,7 @@
       "name": "tabs",
       "type": "registry:ui",
       "title": "Tabs",
-      "description": "Tab list with a spring-driven sliding indicator and proximity hover across every tab.",
+      "description": "Tab list with a spring-driven sliding indicator, proximity hover, and a directional panel handoff.",
       "dependencies": [
         "motion",
         "@base-ui/react"
@@ -369,7 +369,7 @@
       "name": "tooltip",
       "type": "registry:ui",
       "title": "Tooltip",
-      "description": "Fast, fading label that slides in from the trigger's side.",
+      "description": "Fast, fading label with minimal collision-aware travel from its trigger.",
       "dependencies": [
         "motion",
         "@base-ui/react"
