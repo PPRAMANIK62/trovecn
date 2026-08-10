@@ -14,7 +14,7 @@ import {
   type ReactElement,
 } from "react";
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/springs";
@@ -338,16 +338,50 @@ function TabsTrigger({
 
 // ─── TabsContent ─────────────────────────────────────────────────────────────
 
-function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
+function TabsContent({ className, render: _render, ...props }: TabsPrimitive.Panel.Props) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <TabsPrimitive.Panel
-      data-slot="tabs-content"
-      // min-w-0: grid items default to min-width:auto, so an unbreakable
-      // child (the code block's <pre>, which never wraps) pushes the
-      // implicit grid column — and with it this whole tab card — wider than
-      // its container instead of triggering the pre's own overflow-x.
-      className={cn("col-start-1 row-start-2 min-w-0 outline-none", className)}
       {...props}
+      render={(panelProps, state) => {
+        const exiting = state.transitionStatus === "ending";
+        const offset = reduceMotion
+          ? { x: 0, y: 0 }
+          : {
+              x:
+                state.tabActivationDirection === "right"
+                  ? 4
+                  : state.tabActivationDirection === "left"
+                    ? -4
+                    : 0,
+              y:
+                state.tabActivationDirection === "down"
+                  ? 4
+                  : state.tabActivationDirection === "up"
+                    ? -4
+                    : 0,
+            };
+
+        return (
+          <motion.div
+            {...(panelProps as Record<string, unknown>)}
+            data-slot="tabs-content"
+            // min-w-0: grid items default to min-width:auto, so an unbreakable
+            // child (the code block's <pre>, which never wraps) pushes the
+            // implicit grid column — and with it this whole tab card — wider than
+            // its container instead of triggering the pre's own overflow-x.
+            className={cn("col-start-1 row-start-2 min-w-0 outline-none", className)}
+            initial={{ opacity: 0, ...offset }}
+            animate={{
+              opacity: exiting ? 0 : 1,
+              x: exiting ? -offset.x : 0,
+              y: exiting ? -offset.y : 0,
+            }}
+            transition={exiting ? spring.quick.exit : spring.moderate.enter}
+          />
+        );
+      }}
     />
   );
 }
