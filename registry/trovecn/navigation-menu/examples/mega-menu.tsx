@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  BellIcon,
-  BoxIcon,
-  KeyboardIcon,
-  LayersIcon,
-  LifeBuoyIcon,
-  NewspaperIcon,
-} from "lucide-react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import {
   NavigationMenu,
@@ -18,51 +11,87 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 
-const product = [
-  { title: "Primitives", description: "Structural building blocks.", icon: LayersIcon },
-  { title: "Components", description: "Composed, real-product patterns.", icon: BoxIcon },
-  { title: "Shortcuts", description: "Keyboard-first navigation.", icon: KeyboardIcon },
-  { title: "Notifications", description: "Toasts, badges, live updates.", icon: BellIcon },
+const components = [
+  {
+    title: "Accordion",
+    description: "Progressive disclosure with anchored content.",
+  },
+  {
+    title: "Combobox",
+    description: "Searchable choices in a stable surface.",
+  },
+  {
+    title: "Context Menu",
+    description: "Pointer-originated actions and submenus.",
+  },
+  {
+    title: "Drawer",
+    description: "Edge-attached panels with drag dismissal.",
+  },
+  {
+    title: "Navigation Menu",
+    description: "Shared viewport for richer site navigation.",
+  },
+  {
+    title: "Tabs",
+    description: "A selection indicator that preserves momentum.",
+  },
 ];
 
-const resources = [
-  { title: "Changelog", icon: NewspaperIcon },
-  { title: "Support", icon: LifeBuoyIcon },
-];
+function ListItem({
+  title,
+  children,
+  ...props
+}: ComponentPropsWithoutRef<typeof NavigationMenuLink> & { title: string; children: ReactNode }) {
+  return (
+    <li>
+      <NavigationMenuLink className="flex-col items-start gap-1 p-2.5" {...props}>
+        <span className="text-control font-medium text-foreground">{title}</span>
+        <span className="text-caption leading-snug text-muted-foreground">{children}</span>
+      </NavigationMenuLink>
+    </li>
+  );
+}
 
 export default function NavigationMenuMegaMenuExample() {
   return (
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Product</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[420px] grid-cols-2 gap-1">
-              {product.map(({ title, description, icon: Icon }) => (
-                <li key={title}>
-                  <NavigationMenuLink href="#" className="flex-col items-start gap-1">
-                    <span className="flex items-center gap-2 text-foreground">
-                      <Icon className="size-4" />
-                      {title}
-                    </span>
-                    <span className="text-caption text-muted-foreground">{description}</span>
-                  </NavigationMenuLink>
-                </li>
-              ))}
+            <ul className="grid w-[420px] grid-cols-[0.8fr_1fr] gap-1">
+              <li className="row-span-3">
+                <NavigationMenuLink
+                  href="#"
+                  className="flex h-full min-h-48 flex-col items-start justify-end rounded-md bg-muted p-4"
+                >
+                  <span className="text-title font-medium text-foreground">trovecn</span>
+                  <span className="mt-2 text-caption leading-snug text-muted-foreground">
+                    Motion-first primitives for interfaces that feel inevitable.
+                  </span>
+                </NavigationMenuLink>
+              </li>
+              <ListItem href="#" title="Installation">
+                Add the pieces you need and keep full ownership of the code.
+              </ListItem>
+              <ListItem href="#" title="Motion principles">
+                Origin, continuity, restraint, and reduced motion.
+              </ListItem>
+              <ListItem href="#" title="Documentation">
+                Explore the components, APIs, and implementation details.
+              </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Components</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="flex w-40 flex-col gap-1">
-              {resources.map(({ title, icon: Icon }) => (
-                <li key={title}>
-                  <NavigationMenuLink href="#">
-                    <Icon className="size-4" />
-                    {title}
-                  </NavigationMenuLink>
-                </li>
+            <ul className="grid w-[460px] grid-cols-2 gap-1">
+              {components.map(({ title, description }) => (
+                <ListItem key={title} href="#" title={title}>
+                  {description}
+                </ListItem>
               ))}
             </ul>
           </NavigationMenuContent>
@@ -72,7 +101,7 @@ export default function NavigationMenuMegaMenuExample() {
             href="#"
             className="inline-flex h-8 w-max items-center rounded-lg px-2.5 text-control text-muted-foreground hover:bg-muted hover:text-foreground"
           >
-            Pricing
+            Documentation
           </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>

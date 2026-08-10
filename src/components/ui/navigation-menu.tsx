@@ -33,20 +33,17 @@ import { useProximityHover, type ItemRect } from "@/hooks/use-proximity-hover";
  * (`src/components/ui/toast.tsx`), so this file transitions those
  * properties with CSS rather than fighting them with framer-motion, and
  * only retunes the stock scaffold's timing (350ms) down to this repo's
- * `spring.moderate` velocity (160ms in, 120ms out) and its slide distance
- * (a Radix-scale 208px) down to the few-px "settles in from where it came
- * from" travel every other primitive here uses. `data-motion` (Base UI's
- * `from-start`/`from-end`/`to-start`/`to-end`, computed from which side the
- * newly active trigger sits relative to the previous one) drives that
- * directional slide, so content always enters from the side matching the
- * user's left-to-right traversal.
+ * `spring.moderate` velocity and its slide distance (a Radix-scale 208px)
+ * down to a few-px "settles in from where it came from" travel. Base UI's
+ * `data-activation-direction` drives that directional entry, so content
+ * always arrives from the side matching the user's traversal.
  */
 const viewportTransition =
-  "transition-[top,left,right,bottom,width,height] duration-[160ms] ease-[cubic-bezier(0.32,0.72,0,1)] data-instant:transition-none";
+  "transition-[top,left,right,bottom,width,height] delay-50 duration-200 ease-out data-ending-style:delay-0 data-ending-style:duration-150 data-instant:transition-none";
 const popupTransition =
-  "transition-[opacity,transform,width,height] duration-[160ms] ease-[cubic-bezier(0.32,0.72,0,1)] data-ending-style:duration-[120ms]";
+  "transition-[opacity,transform,width,height] delay-50 duration-200 ease-out data-ending-style:delay-0 data-ending-style:duration-150";
 const contentTransition =
-  "transition-[opacity,transform] duration-[160ms] ease-[cubic-bezier(0.32,0.72,0,1)] data-ending-style:duration-[120ms]";
+  "transition-[opacity,transform] duration-200 ease-out data-ending-style:duration-150";
 
 // ─── Proximity hover (top-level trigger row) ─────────────────────────────────
 // Same transient "nearest item" wash Tabs/Accordion/DocsSidebar use, scoped
@@ -182,10 +179,8 @@ function NavigationMenuTrigger({
   );
 }
 
-/** A few px of directional travel + a cross-fade, not a fixed direction —
- * `data-motion` (`from-start`/`from-end`) is Base UI's own signal for which
- * side the newly active trigger sits on relative to the previous one, so
- * content always slides in from the side matching the user's traversal. */
+/** A 4px directional entry + a cross-fade. Base UI supplies the activation
+ * direction from the relative positions of the old and new triggers. */
 function NavigationMenuContent({ className, ...props }: NavigationMenuPrimitive.Content.Props) {
   return (
     <NavigationMenuPrimitive.Content
@@ -194,8 +189,8 @@ function NavigationMenuContent({ className, ...props }: NavigationMenuPrimitive.
         "h-full w-auto p-1 outline-none",
         contentTransition,
         "data-starting-style:opacity-0 data-ending-style:opacity-0",
-        "data-[motion=from-start]:-translate-x-2 data-[motion=from-end]:translate-x-2",
-        "data-[motion=to-start]:-translate-x-2 data-[motion=to-end]:translate-x-2",
+        "data-starting-style:data-[activation-direction=left]:-translate-x-1 data-starting-style:data-[activation-direction=right]:translate-x-1",
+        "data-starting-style:data-[activation-direction=up]:-translate-y-1 data-starting-style:data-[activation-direction=down]:translate-y-1",
         "group-data-[viewport=false]/navigation-menu:rounded-lg group-data-[viewport=false]/navigation-menu:bg-popover group-data-[viewport=false]/navigation-menu:text-popover-foreground group-data-[viewport=false]/navigation-menu:shadow-popover",
         "**:data-[slot=navigation-menu-link]:outline-none",
         className,
@@ -234,7 +229,7 @@ function NavigationMenuPositioner({
           className={cn(
             "relative h-(--popup-height) w-(--popup-width) origin-(--transform-origin) overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-popover outline-none",
             popupTransition,
-            "data-starting-style:scale-95 data-starting-style:opacity-0 data-ending-style:scale-95 data-ending-style:opacity-0",
+            "data-starting-style:opacity-0 data-ending-style:opacity-0",
           )}
         >
           <NavigationMenuPrimitive.Viewport className="relative size-full overflow-hidden" />

@@ -15,7 +15,7 @@ export const navigationMenu: RegistryItem = {
   examples: [
     {
       title: "Mega menu",
-      description: "A feature grid and a simple list, off two different triggers.",
+      description: "A featured getting-started panel and a compact component grid.",
       file: "registry/trovecn/navigation-menu/examples/mega-menu.tsx",
       Demo: NavigationMenuMegaMenuExample,
     },
