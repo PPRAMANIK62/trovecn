@@ -537,9 +537,24 @@ const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(
           // structural mismatch rather than hand-filter every conflicting key.
           {...(props as Record<string, unknown>)}
         >
-          <div ref={measureRef} className="px-3 pt-1 pb-3 text-caption text-muted-foreground">
+          {/* Let the container establish space before its copy arrives. On
+              close, the quicker shared exit gets the old copy out of the
+              way before the row has fully collapsed. */}
+          <motion.div
+            ref={measureRef}
+            className="px-3 pt-1 pb-3 text-caption text-muted-foreground"
+            initial={false}
+            animate={{ opacity: isOpen ? 1 : 0, y: reduceMotion ? 0 : isOpen ? 0 : 3 }}
+            transition={
+              reduceMotion
+                ? spring.quick.exit
+                : isOpen
+                  ? { ...spring.quick.enter, delay: 0.06 }
+                  : spring.quick.exit
+            }
+          >
             {children}
-          </div>
+          </motion.div>
         </motion.div>
       </AccordionPrimitive.Panel>
     );
