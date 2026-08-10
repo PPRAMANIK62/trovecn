@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 
 import { getComponentsByCategory } from "@/lib/components-registry";
+import { SidebarNewDot } from "@/components/site/sidebar-nav-link";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "Components — trove/cn",
@@ -26,29 +27,25 @@ export default function ComponentsIndexPage() {
           <p className="mt-3.5 max-w-xl text-lede leading-relaxed text-muted-foreground">
             {total} patterns, grouped by where you would reach for them.
           </p>
-          <div className="mt-10 flex flex-col gap-10">
+          <div className="mt-10 flex flex-col gap-8">
             {groups.map((group) => (
               <section key={group.category}>
                 <h2 className="text-label uppercase text-muted-foreground">{group.category}</h2>
-                <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <ul className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2.5 sm:grid-cols-3">
                   {group.items.map((item) => (
-                    <Link
-                      key={item.slug}
-                      href={`/docs/components/${item.slug}`}
-                      className="group flex flex-col rounded-lg border border-border bg-card p-4 transition-colors hover:border-foreground/30 hover:bg-accent"
-                    >
-                      <div>
-                        <div className="flex items-start justify-between gap-2">
-                          <h3 className="text-control text-foreground">{item.title}</h3>
-                          <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground" />
-                        </div>
-                        <p className="mt-1.5 text-caption leading-relaxed text-muted-foreground">
-                          {item.description}
-                        </p>
-                      </div>
-                    </Link>
+                    <li key={item.slug}>
+                      <Button
+                        variant="link"
+                        render={<Link href={`/docs/components/${item.slug}`} />}
+                        nativeButton={false}
+                        className="h-auto justify-start rounded-none border-none p-0 text-control font-normal text-foreground no-underline hover:text-link"
+                      >
+                        {item.title}
+                        {item.isNew && <SidebarNewDot />}
+                      </Button>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </section>
             ))}
           </div>
