@@ -9,12 +9,13 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
   type ComponentProps,
   type ReactElement,
   type ReactNode,
 } from "react";
 import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { CheckIcon, ChevronRightIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -115,6 +116,57 @@ function ContextMenuPortal({ ...props }: ContextMenuPrimitive.Portal.Props) {
   return <ContextMenuPrimitive.Portal data-slot="context-menu-portal" {...props} />;
 }
 
+function ContextMenuMotionSurface({
+  popupProps,
+  contentProps,
+  transitionStatus,
+  pointerTravel,
+  reduceMotion,
+  handlers,
+  className,
+  children,
+}: {
+  popupProps: Record<string, unknown>;
+  contentProps: Record<string, unknown>;
+  transitionStatus: string | undefined;
+  pointerTravel: { x: number; y: number };
+  reduceMotion: boolean | null;
+  handlers: Pick<
+    React.DOMAttributes<HTMLDivElement>,
+    "onMouseMove" | "onMouseEnter" | "onMouseLeave"
+  >;
+  className?: string;
+  children: ReactNode;
+}) {
+  // Base UI clears its initial "starting" state in the same frame that this
+  // popup mounts. Hold the first visual frame ourselves so Motion has a
+  // painted origin before it begins the pointer-side travel.
+  const [entered, setEntered] = useState(Boolean(reduceMotion));
+  useEffect(() => {
+    if (!reduceMotion) setEntered(true);
+  }, [reduceMotion]);
+
+  const exiting = transitionStatus === "ending";
+  const hidden = exiting || !entered;
+
+  return (
+    <motion.div
+      {...popupProps}
+      {...contentProps}
+      {...handlers}
+      className={cn(
+        "relative z-50 max-h-(--available-height) min-w-40 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover p-1 text-popover-foreground shadow-popover outline-none",
+        className,
+      )}
+      initial={false}
+      animate={hidden ? { opacity: 0, ...pointerTravel } : { opacity: 1, x: 0, y: 0 }}
+      transition={exiting ? spring.moderate.exit : spring.moderate.enter}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 /** Same popup styling/motion/proximity hover as MenuContent — see that
  * component's docstring in menu.tsx. `side="right"` default rather than
  * `"bottom"`: a context menu opens from the click point outward, not below
@@ -134,6 +186,13 @@ function ContextMenuContent({
     containerRef,
     { axis: "y" },
   );
+  const reduceMotion = useReducedMotion();
+  const pointerTravel = reduceMotion
+    ? { x: 0, y: 0 }
+    : {
+        x: side === "right" ? -6 : side === "left" ? 6 : 0,
+        y: side === "bottom" ? -6 : side === "top" ? 6 : 0,
+      };
 
   useEffect(() => {
     measureItems();
@@ -162,21 +221,15 @@ function ContextMenuContent({
           ref={containerRef}
           data-slot="context-menu-content"
           render={(popupProps, state) => {
-            const exiting = state.transitionStatus === "ending";
             return (
-              <motion.div
-                {...(popupProps as Record<string, unknown>)}
-                {...(props as Record<string, unknown>)}
-                onMouseMove={handlers.onMouseMove}
-                onMouseEnter={handlers.onMouseEnter}
-                onMouseLeave={handlers.onMouseLeave}
-                className={cn(
-                  "relative z-50 max-h-(--available-height) min-w-40 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover p-1 text-popover-foreground shadow-popover outline-none",
-                  className,
-                )}
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: exiting ? 0 : 1, scale: exiting ? 0.96 : 1 }}
-                transition={exiting ? spring.moderate.exit : spring.moderate.enter}
+              <ContextMenuMotionSurface
+                popupProps={popupProps as Record<string, unknown>}
+                contentProps={props as Record<string, unknown>}
+                transitionStatus={state.transitionStatus}
+                pointerTravel={pointerTravel}
+                reduceMotion={reduceMotion}
+                handlers={handlers}
+                className={typeof className === "function" ? className(state) : className}
               >
                 <AnimatePresence>
                   {activeRect && (
@@ -204,7 +257,7 @@ function ContextMenuContent({
                 <ContextMenuProximityContext.Provider value={proximityContextValue}>
                   {indexedChildren}
                 </ContextMenuProximityContext.Provider>
-              </motion.div>
+              </ContextMenuMotionSurface>
             );
           }}
         />
