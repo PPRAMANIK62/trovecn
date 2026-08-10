@@ -159,10 +159,10 @@ function DrawerContent({
               {...(props as Record<string, unknown>)}
               className={cn(
                 "fixed z-50 flex flex-col overflow-hidden bg-background shadow-panel outline-none",
-                side === "left" && "inset-y-0 left-0 w-64 max-w-[85vw] rounded-r-3xl",
-                side === "right" && "inset-y-0 right-0 w-64 max-w-[85vw] rounded-l-3xl",
-                side === "top" && "inset-x-0 top-0 h-auto max-h-[85vh] rounded-b-3xl",
-                side === "bottom" && "inset-x-0 bottom-0 h-auto max-h-[85vh] rounded-t-3xl",
+                side === "left" && "inset-y-0 left-0 w-64 max-w-[85vw] rounded-r-xl",
+                side === "right" && "inset-y-0 right-0 w-64 max-w-[85vw] rounded-l-xl",
+                side === "top" && "inset-x-0 top-0 h-auto max-h-[85vh] rounded-b-xl",
+                side === "bottom" && "inset-x-0 bottom-0 h-auto max-h-[85vh] rounded-t-xl",
                 className,
               )}
               drag={draggable ? axis : false}
