@@ -101,11 +101,23 @@ function Tabs({
         populates valueOrder pre-paint, so the corrected value lands before
         anything is visible.
       */}
+      {/* grid, not flex-col: Base UI mounts the incoming panel before
+          unmounting the outgoing one, so for one paint frame both panels are
+          in the DOM at once. In a flex column that briefly doubles the
+          block's height (both panels stacked) — invisible on its own, but
+          enough to visibly nudge anything that vertically centers this
+          block against a fixed-height box (see docs/design-system.md
+          "Preview-grid tile pattern"), which then bleeds into an in-flight
+          layout animation like the selected-tab pill's slide. Explicitly
+          placing every TabsContent in the same grid cell (below) means an
+          overlapping pair shares space instead of stacking, so that
+          transient frame never changes the block's height at all — same
+          fix TabsTrigger's own ghost-span already uses for width. */}
       <TabsPrimitive.Root
         data-slot="tabs"
         value={resolvedValue ?? ""}
         onValueChange={handleValueChange}
-        className={cn("flex flex-col gap-2", className)}
+        className={cn("grid gap-2", className)}
         {...props}
       >
         {children}
@@ -211,7 +223,7 @@ function TabsList({ children, className, ...props }: TabsPrimitive.List.Props) {
           if (!isMouseInsideRef.current) setHoveredIndex(null);
         }}
         className={cn(
-          "relative inline-flex w-fit items-center gap-0.5 rounded-lg bg-background p-1 text-muted-foreground shadow-well",
+          "relative col-start-1 row-start-1 inline-flex w-fit items-center gap-0.5 rounded-lg bg-background p-1 text-muted-foreground shadow-well",
           className,
         )}
         {...props}
@@ -330,7 +342,7 @@ function TabsContent({ className, ...props }: TabsPrimitive.Panel.Props) {
   return (
     <TabsPrimitive.Panel
       data-slot="tabs-content"
-      className={cn("outline-none", className)}
+      className={cn("col-start-1 row-start-2 outline-none", className)}
       {...props}
     />
   );
