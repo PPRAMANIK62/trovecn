@@ -134,6 +134,8 @@
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.955 0 0);
   --muted-foreground: oklch(0.45 0 0);
+  --agent-activity-shimmer-base: var(--muted-foreground);
+  --agent-activity-shimmer-peak: var(--foreground);
   --accent: oklch(0.955 0 0);
   --accent-foreground: oklch(0.205 0 0);
   /* Interactive-state overlays, not surfaces — a foreground-tinted wash
@@ -208,6 +210,12 @@
   --secondary-foreground: oklch(0.97 0 0);
   --muted: oklch(0.295 0 0);
   --muted-foreground: oklch(0.72 0 0);
+  --agent-activity-shimmer-base: color-mix(
+    in oklab,
+    var(--muted-foreground) 42%,
+    var(--background)
+  );
+  --agent-activity-shimmer-peak: var(--muted-foreground);
   --accent: oklch(0.33 0 0);
   --accent-foreground: oklch(0.97 0 0);
   --hover: color-mix(in oklab, var(--foreground) 6%, transparent);
@@ -245,6 +253,45 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* The active agent step remains identifiable while text or results are still
+   arriving. This is deliberately grayscale: --foreground and
+   --muted-foreground preserve the component's status distinction without
+   creating a second brand accent. Reduced-motion users receive the same
+   active state as plain foreground text (the class is omitted in React). */
+@keyframes agent-activity-shimmer {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 100% center;
+  }
+}
+
+.agent-activity-shimmer {
+  /* A real text color first: unsupported text clipping must never hide an
+     in-flight agent step. The clipped gradient below is a progressive
+     enhancement. */
+  color: var(--agent-activity-shimmer-base);
+}
+
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .agent-activity-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--agent-activity-shimmer-base) 0%,
+      var(--agent-activity-shimmer-base) 35%,
+      var(--agent-activity-shimmer-peak) 50%,
+      var(--agent-activity-shimmer-base) 65%,
+      var(--agent-activity-shimmer-base) 100%
+    );
+    background-size: 300% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: agent-activity-shimmer 1.5s linear infinite;
   }
 }
 
