@@ -202,7 +202,7 @@
       "name": "conversation",
       "type": "registry:ui",
       "title": "Conversation",
-      "description": "An editorial AI transcript with stable streaming states and anchored response branches.",
+      "description": "A quiet conversation surface with authored hierarchy and contextual message actions.",
       "dependencies": [
         "lucide-react",
         "motion"
