@@ -22,6 +22,7 @@ export interface ApiSection {
 }
 
 export const categories = [
+  "AI Workbench",
   "Primitives",
   "Navigation",
   "Hero & Marketing",

@@ -14,6 +14,7 @@ import { drawer } from "../../registry/trovecn/drawer/meta";
 import { menu } from "../../registry/trovecn/menu/meta";
 import { navigationMenu } from "../../registry/trovecn/navigation-menu/meta";
 import { popover } from "../../registry/trovecn/popover/meta";
+import { promptComposer } from "../../registry/trovecn/prompt-composer/meta";
 import { slider } from "../../registry/trovecn/slider/meta";
 import { switch as switchItem } from "../../registry/trovecn/switch/meta";
 import { tabs } from "../../registry/trovecn/tabs/meta";
@@ -31,6 +32,7 @@ export const registry: RegistryItem[] = [
   menu,
   navigationMenu,
   popover,
+  promptComposer,
   slider,
   switchItem,
   tabs,
