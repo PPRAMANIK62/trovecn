@@ -261,7 +261,7 @@ function MenuItem({
       data-inset={inset}
       data-variant={variant}
       className={cn(
-        "group/menu-item relative z-10 flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-control text-muted-foreground outline-none transition-colors select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:text-foreground data-inset:pl-7 data-[variant=destructive]:text-destructive data-[variant=destructive]:data-highlighted:text-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg]:text-muted-foreground data-highlighted:[&_svg]:text-foreground data-[variant=destructive]:[&_svg]:text-destructive",
+        "group/menu-item relative z-10 flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-control text-muted-foreground outline-none transition-colors select-none data-disabled:pointer-events-none data-disabled:cursor-not-allowed data-disabled:opacity-50 data-highlighted:text-foreground data-inset:pl-7 data-[variant=destructive]:text-destructive data-[variant=destructive]:data-highlighted:text-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg]:text-muted-foreground data-highlighted:[&_svg]:text-foreground data-[variant=destructive]:[&_svg]:text-destructive",
         className,
       )}
       {...props}
@@ -296,7 +296,7 @@ function MenuSubTrigger({
         // data-highlighted, painted separately by the proximity pill below).
         // bg-accent would sit ~0.03 L off this popup's bg-popover in dark
         // mode — see --active's definition in globals.css.
-        "relative z-10 flex cursor-default items-center gap-2 rounded-md px-2 py-1.5 text-control text-muted-foreground outline-none transition-colors select-none data-inset:pl-7 data-highlighted:text-foreground data-popup-open:bg-active data-popup-open:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg]:text-muted-foreground",
+        "relative z-10 flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-control text-muted-foreground outline-none transition-colors select-none data-inset:pl-7 data-highlighted:text-foreground data-popup-open:bg-active data-popup-open:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg]:text-muted-foreground",
         className,
       )}
       {...props}
@@ -356,7 +356,7 @@ function MenuCheckboxItem({
       data-slot="menu-checkbox-item"
       data-inset={inset}
       className={cn(
-        "group/menu-item relative z-10 flex cursor-default items-center gap-2 rounded-md py-1.5 pr-8 pl-2 text-control text-muted-foreground outline-none transition-colors select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:text-foreground data-inset:pl-7 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "group/menu-item relative z-10 flex cursor-pointer items-center gap-2 rounded-md py-1.5 pr-8 pl-2 text-control text-muted-foreground outline-none transition-colors select-none data-disabled:pointer-events-none data-disabled:cursor-not-allowed data-disabled:opacity-50 data-highlighted:text-foreground data-inset:pl-7 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       checked={checked}
@@ -399,11 +399,14 @@ function MenuRadioItem({
   className,
   children,
   inset,
+  indicator = "dot",
   _index,
   ...props
 }: MenuPrimitive.RadioItem.Props &
   MenuIndexProp & {
     inset?: boolean;
+    /** Defaults to the compact dot used by generic radio menus. */
+    indicator?: "dot" | "check";
   }) {
   const ref = useRef<HTMLDivElement>(null);
   useMenuItemRegistration(ref, _index);
@@ -414,7 +417,7 @@ function MenuRadioItem({
       data-slot="menu-radio-item"
       data-inset={inset}
       className={cn(
-        "group/menu-item relative z-10 flex cursor-default items-center gap-2 rounded-md py-1.5 pr-8 pl-2 text-control text-muted-foreground outline-none transition-colors select-none data-disabled:pointer-events-none data-disabled:opacity-50 data-highlighted:text-foreground data-inset:pl-7 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "group/menu-item relative z-10 flex cursor-pointer items-center gap-2 rounded-md py-1.5 pr-8 pl-2 text-control text-muted-foreground outline-none transition-colors select-none data-disabled:pointer-events-none data-disabled:cursor-not-allowed data-disabled:opacity-50 data-highlighted:text-foreground data-inset:pl-7 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className,
       )}
       {...props}
@@ -433,8 +436,12 @@ function MenuRadioItem({
                 initial={false}
                 animate={{ opacity: visible ? 1 : 0, scale: visible ? 1 : 0.5 }}
                 transition={visible ? spring.fast.enter : spring.fast.exit}
-                className="flex size-1.5 rounded-full bg-foreground"
-              />
+                className={
+                  indicator === "dot" ? "flex size-1.5 rounded-full bg-foreground" : "flex"
+                }
+              >
+                {indicator === "check" ? <CheckIcon className="size-3.5" /> : null}
+              </motion.span>
             );
           }}
         />
