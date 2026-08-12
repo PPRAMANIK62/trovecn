@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { usePathname } from "next/navigation";
 
 import { getComponentsByCategory } from "@/lib/components-registry";
+import { examples } from "@/lib/examples-registry";
 import { useProximityHover } from "@/hooks/use-proximity-hover";
 import { ProximityHoverPill } from "@/components/ui/proximity-hover-pill";
 import { SidebarNavLink, SidebarNewDot } from "@/components/site/sidebar-nav-link";
@@ -14,6 +15,7 @@ const pinned = [
   { label: "Introduction", href: "/docs" },
   { label: "Installation", href: "/docs/installation" },
   { label: "Components", href: "/docs/components" },
+  { label: "Examples", href: "/docs/examples" },
 ];
 
 export function DocsSidebar() {
@@ -56,6 +58,30 @@ export function DocsSidebar() {
             );
           })}
         </ul>
+        {examples.length > 0 ? (
+          <div>
+            <p className="text-label uppercase text-muted-foreground">Examples</p>
+            <ul className="mt-2.5 flex flex-col gap-0.5">
+              {examples.map((example) => {
+                index += 1;
+                const itemIndex = index;
+                const href = `/docs/examples/${example.slug}`;
+                return (
+                  <li key={example.slug}>
+                    <SidebarNavLink
+                      href={href}
+                      index={itemIndex}
+                      active={pathname === href}
+                      registerItem={registerItem}
+                    >
+                      {example.title}
+                    </SidebarNavLink>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ) : null}
         {populatedGroups.length === 0 ? (
           <p className="text-muted-foreground">No components yet — check back soon.</p>
         ) : (

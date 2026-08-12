@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 
 import { getComponent } from "@/lib/components-registry";
+import { getExample } from "@/lib/examples-registry";
 
 interface Crumb {
   label: string;
@@ -30,6 +31,20 @@ function useCrumbs(): Crumb[] {
       { label: "Docs", href: "/docs" },
       { label: "Components", href: "/docs/components" },
       { label: item?.title ?? slug },
+    ];
+  }
+
+  if (pathname === "/docs/examples") {
+    return [{ label: "Docs", href: "/docs" }, { label: "Examples" }];
+  }
+
+  const exampleSlug = pathname.match(/^\/docs\/examples\/(.+)$/)?.[1];
+  if (exampleSlug) {
+    const example = getExample(exampleSlug);
+    return [
+      { label: "Docs", href: "/docs" },
+      { label: "Examples", href: "/docs/examples" },
+      { label: example?.title ?? exampleSlug },
     ];
   }
 
