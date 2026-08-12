@@ -8,8 +8,8 @@ export const promptComposer: RegistryItem = {
   description:
     "A focused multiline prompt surface with attachment and model menus plus an explicit send/stop lifecycle.",
   category: "AI Workbench",
-  dependencies: ["lucide-react", "@base-ui/react", "class-variance-authority"],
-  registryDependencies: ["utils", "button", "menu"],
+  dependencies: ["lucide-react", "@base-ui/react", "class-variance-authority", "motion"],
+  registryDependencies: ["utils", "button", "menu", "springs"],
   file: "src/components/trovecn/ai-workbench/prompt-composer.tsx",
   isNew: true,
   examples: [
@@ -72,6 +72,20 @@ export const promptComposer: RegistryItem = {
           type: "readonly PromptComposerAttachmentOption[] / (option) => void",
           default: "[] / —",
           description: "Attachment choices opened above the composer.",
+        },
+        {
+          prop: "files / onFilesChange / filePreviewSize",
+          type: "readonly PromptComposerFile[] / (files) => void / number",
+          default: "[] / — / 64",
+          description:
+            "Controlled attachments for the current draft, shown as removable preview tiles.",
+        },
+        {
+          prop: "queue / onQueueChange",
+          type: "readonly PromptComposerQueuedMessage[] / (queue) => void",
+          default: "[] / —",
+          description:
+            "Messages waiting to send while isRunning is true. Providing onQueueChange keeps the draft open and turns Send into Queue instead of locking the composer.",
         },
       ],
     },

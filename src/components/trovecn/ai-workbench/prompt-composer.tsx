@@ -4,12 +4,16 @@ import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent 
 import {
   ArrowUpIcon,
   ChevronDownIcon,
+  ClockIcon,
+  FileIcon,
   FileTextIcon,
   ImageIcon,
+  ListPlusIcon,
   PlusIcon,
   SquareIcon,
+  XIcon,
 } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, Reorder, useReducedMotion } from "motion/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -34,6 +38,21 @@ export interface PromptComposerAttachmentOption {
   kind?: "file" | "image" | "folder";
 }
 
+export type PromptComposerFileKind = "image" | "file";
+
+export interface PromptComposerFile {
+  id: string;
+  name: string;
+  kind?: PromptComposerFileKind;
+  /** Object URL or remote URL rendered inside the preview tile for image files. */
+  previewUrl?: string;
+}
+
+export interface PromptComposerQueuedMessage {
+  id: string;
+  prompt: string;
+}
+
 export interface PromptComposerProps {
   /** Controlled draft text. */
   value?: string;
@@ -56,12 +75,24 @@ export interface PromptComposerProps {
   /** Choices opened by the attachment menu above the composer. */
   attachmentOptions?: readonly PromptComposerAttachmentOption[];
   onAttachmentOptionSelect?: (option: PromptComposerAttachmentOption) => void;
+  /** Attachments for the current draft, shown as preview tiles above the textarea. */
+  files?: readonly PromptComposerFile[];
+  onFilesChange?: (files: readonly PromptComposerFile[]) => void;
+  /** Side length, in pixels, of each file preview tile. */
+  filePreviewSize?: number;
+  /**
+   * Messages waiting to send while a response is running. Providing this
+   * (with `onQueueChange`) lets the draft stay open and Send become Queue
+   * mid-response, instead of locking the composer until it finishes.
+   */
+  queue?: readonly PromptComposerQueuedMessage[];
+  onQueueChange?: (queue: readonly PromptComposerQueuedMessage[]) => void;
   className?: string;
 }
 
 /**
  * The minimal prompt surface shared by chat, generation, and agent products.
- * Attachments and model choice are optional, controlled enhancements.
+ * Attachments, model choice, and queueing are optional, controlled enhancements.
  */
 function PromptComposer({
   value,
@@ -78,6 +109,11 @@ function PromptComposer({
   onModelChange,
   attachmentOptions = [],
   onAttachmentOptionSelect,
+  files = [],
+  onFilesChange,
+  filePreviewSize = 64,
+  queue = [],
+  onQueueChange,
   className,
 }: PromptComposerProps) {
   const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
@@ -88,7 +124,10 @@ function PromptComposer({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const reduceMotion = useReducedMotion();
   const prompt = value ?? uncontrolledValue;
-  const canSubmit = prompt.trim().length > 0 && !disabled && !isRunning && !isSending;
+  const canQueue = isRunning && Boolean(onQueueChange);
+  const canSubmit = prompt.trim().length > 0 && !disabled && !isSending && (!isRunning || canQueue);
+  const showQueueAction = canQueue && prompt.trim().length > 0;
+  const showStop = isRunning && !showQueueAction;
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -105,6 +144,10 @@ function PromptComposer({
   function submit() {
     if (!canSubmit) return;
     setIsSending(true);
+    if (canQueue) {
+      onQueueChange?.([...queue, { id: crypto.randomUUID(), prompt: prompt.trim() }]);
+      return;
+    }
     onSubmit?.({ prompt: prompt.trim() });
   }
 
@@ -125,6 +168,33 @@ function PromptComposer({
     submit();
   }
 
+  function removeFile(id: string) {
+    onFilesChange?.(files.filter((file) => file.id !== id));
+  }
+
+  function removeQueuedMessage(id: string) {
+    onQueueChange?.(queue.filter((item) => item.id !== id));
+  }
+
+  function editQueuedMessage(id: string) {
+    const target = queue.find((item) => item.id === id);
+    if (!target) return;
+    setPrompt(target.prompt);
+    onQueueChange?.(queue.filter((item) => item.id !== id));
+    textareaRef.current?.focus();
+  }
+
+  function moveQueuedMessage(id: string, direction: -1 | 1) {
+    const index = queue.findIndex((item) => item.id === id);
+    if (index === -1) return;
+    const nextIndex = index + direction;
+    if (nextIndex < 0 || nextIndex >= queue.length) return;
+    const next = [...queue];
+    const [item] = next.splice(index, 1);
+    next.splice(nextIndex, 0, item);
+    onQueueChange?.(next);
+  }
+
   return (
     <form
       data-slot="prompt-composer"
@@ -137,6 +207,95 @@ function PromptComposer({
       <span id={statusId} role="status" aria-live="polite" className="sr-only">
         {isRunning ? "Generating response. Stop is available." : "Ready to send prompt."}
       </span>
+
+      {queue.length > 0 ? (
+        <Reorder.Group
+          as="ul"
+          axis="y"
+          values={[...queue]}
+          onReorder={(next) => onQueueChange?.(next)}
+          className="flex flex-col gap-1 px-1 pt-1"
+        >
+          {queue.map((item) => (
+            <Reorder.Item
+              key={item.id}
+              value={item}
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (!event.altKey || (event.key !== "ArrowUp" && event.key !== "ArrowDown")) {
+                  return;
+                }
+                event.preventDefault();
+                moveQueuedMessage(item.id, event.key === "ArrowUp" ? -1 : 1);
+              }}
+              className="flex items-center gap-2 rounded-lg border border-border bg-muted/60 px-2.5 py-1.5 text-body text-muted-foreground"
+            >
+              <ClockIcon className="size-3.5 shrink-0 opacity-60" aria-hidden="true" />
+              <button
+                type="button"
+                onDoubleClick={() => editQueuedMessage(item.id)}
+                title="Double-click to edit"
+                className="min-w-0 flex-1 truncate text-left"
+              >
+                {item.prompt}
+              </button>
+              <button
+                type="button"
+                onClick={() => removeQueuedMessage(item.id)}
+                aria-label="Remove queued message"
+                className="flex size-5 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-background hover:text-foreground"
+              >
+                <XIcon className="size-3" />
+              </button>
+            </Reorder.Item>
+          ))}
+        </Reorder.Group>
+      ) : null}
+
+      {files.length > 0 ? (
+        <ul className="flex flex-wrap gap-2 px-1 pt-2">
+          <AnimatePresence initial={false}>
+            {files.map((file) => (
+              <motion.li
+                key={file.id}
+                layout
+                initial={reduceMotion ? false : { opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.85 }}
+                transition={reduceMotion ? { duration: 0 } : spring.quick.enter}
+                className="group/file relative shrink-0 overflow-hidden rounded-xl border border-border bg-muted"
+                style={{ width: filePreviewSize, height: filePreviewSize }}
+              >
+                {file.kind === "image" && file.previewUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={file.previewUrl} alt={file.name} className="size-full object-cover" />
+                ) : (
+                  <div className="flex size-full flex-col items-center justify-center gap-1 px-1.5 text-center">
+                    {file.kind === "image" ? (
+                      <ImageIcon className="size-4 text-muted-foreground" aria-hidden="true" />
+                    ) : (
+                      <FileIcon className="size-4 text-muted-foreground" aria-hidden="true" />
+                    )}
+                    <span className="line-clamp-2 text-[0.6rem] leading-tight break-all text-muted-foreground">
+                      {file.name}
+                    </span>
+                  </div>
+                )}
+                {!disabled ? (
+                  <button
+                    type="button"
+                    onClick={() => removeFile(file.id)}
+                    aria-label={`Remove ${file.name}`}
+                    className="absolute top-1 right-1 flex size-5 items-center justify-center rounded-full bg-background/90 text-foreground opacity-0 shadow-sm transition-opacity duration-quick group-hover/file:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                  >
+                    <XIcon className="size-3" />
+                  </button>
+                ) : null}
+              </motion.li>
+            ))}
+          </AnimatePresence>
+        </ul>
+      ) : null}
 
       <label htmlFor={textareaId} className="sr-only">
         Prompt
@@ -153,7 +312,7 @@ function PromptComposer({
           ref={textareaRef}
           id={textareaId}
           value={prompt}
-          disabled={disabled || isRunning || isSending}
+          disabled={disabled || isSending || (isRunning && !onQueueChange)}
           aria-describedby={statusId}
           placeholder={placeholder}
           maxLength={maxLength}
@@ -173,7 +332,7 @@ function PromptComposer({
                   type="button"
                   variant="ghost"
                   size="icon-sm"
-                  disabled={disabled || isRunning}
+                  disabled={disabled || showStop}
                   aria-label="Add an attachment"
                   title="Add an attachment"
                   className="rounded-full text-muted-foreground hover:text-foreground"
@@ -214,7 +373,7 @@ function PromptComposer({
                   type="button"
                   variant="ghost"
                   size="sm"
-                  disabled={disabled || isRunning}
+                  disabled={disabled || showStop}
                   className="text-body text-muted-foreground hover:text-foreground"
                 />
               }
@@ -238,7 +397,7 @@ function PromptComposer({
             </MenuContent>
           </Menu>
         ) : null}
-        {isRunning ? (
+        {showStop ? (
           <Button
             type="button"
             size="icon-sm"
@@ -255,11 +414,28 @@ function PromptComposer({
             type="submit"
             size="icon-sm"
             disabled={!canSubmit}
-            aria-label="Send prompt"
-            title="Send prompt (Enter)"
+            aria-label={showQueueAction ? "Queue prompt" : "Send prompt"}
+            title={
+              showQueueAction ? "Send once the current response finishes" : "Send prompt (Enter)"
+            }
             className="rounded-full"
           >
-            <ArrowUpIcon className="size-4" />
+            <AnimatePresence initial={false} mode="wait">
+              <motion.span
+                key={showQueueAction ? "queue" : "send"}
+                className="flex"
+                initial={reduceMotion ? false : { opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.7 }}
+                transition={reduceMotion ? { duration: 0 } : spring.quick.enter}
+              >
+                {showQueueAction ? (
+                  <ListPlusIcon className="size-4" />
+                ) : (
+                  <ArrowUpIcon className="size-4" />
+                )}
+              </motion.span>
+            </AnimatePresence>
           </Button>
         )}
       </div>

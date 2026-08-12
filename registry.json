@@ -352,12 +352,14 @@
       "dependencies": [
         "lucide-react",
         "@base-ui/react",
-        "class-variance-authority"
+        "class-variance-authority",
+        "motion"
       ],
       "registryDependencies": [
         "utils",
         "button",
-        "menu"
+        "menu",
+        "springs"
       ],
       "files": [
         {

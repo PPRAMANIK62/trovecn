@@ -6,7 +6,7 @@ export const promptComposer: RegistryManifestItem = {
   title: "Prompt Composer",
   description:
     "A focused multiline prompt surface with attachment and model menus plus an explicit send/stop lifecycle.",
-  dependencies: ["lucide-react", "@base-ui/react", "class-variance-authority"],
-  registryDependencies: ["utils", "button", "menu"],
+  dependencies: ["lucide-react", "@base-ui/react", "class-variance-authority", "motion"],
+  registryDependencies: ["utils", "button", "menu", "springs"],
   files: [{ path: "src/components/trovecn/ai-workbench/prompt-composer.tsx", type: "registry:ui" }],
 };
