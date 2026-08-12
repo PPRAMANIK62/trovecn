@@ -197,6 +197,24 @@
       ]
     },
     {
+      "name": "comparison-slider",
+      "type": "registry:ui",
+      "title": "Comparison Slider",
+      "description": "Draggable clip-path divider that reveals one live layer over another.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/trovecn/motion-demos/comparison-slider.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "context-menu",
       "type": "registry:ui",
       "title": "Context Menu",

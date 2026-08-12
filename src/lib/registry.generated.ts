@@ -9,6 +9,7 @@ import { button } from "../../registry/trovecn/button/meta";
 import { checkbox } from "../../registry/trovecn/checkbox/meta";
 import { checkboxGroup } from "../../registry/trovecn/checkbox-group/meta";
 import { combobox } from "../../registry/trovecn/combobox/meta";
+import { comparisonSlider } from "../../registry/trovecn/comparison-slider/meta";
 import { contextMenu } from "../../registry/trovecn/context-menu/meta";
 import { conversation } from "../../registry/trovecn/conversation/meta";
 import { dialog } from "../../registry/trovecn/dialog/meta";
@@ -29,6 +30,7 @@ export const registry: RegistryItem[] = [
   checkbox,
   checkboxGroup,
   combobox,
+  comparisonSlider,
   contextMenu,
   conversation,
   dialog,
