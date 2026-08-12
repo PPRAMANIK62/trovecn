@@ -2,11 +2,17 @@
 
 import { useEffect, useState } from "react";
 
+import { useDemoPlaying } from "@/components/site/demo-playback";
+
 /**
  * Stream narrative output in compact batches. This is intentionally reserved
  * for prose: files, commands, sources, and diffs arrive as discrete traces.
+ * Re-evaluates from the current character count on every render, so pausing
+ * (ComponentPreview's transport control) just means skipping a tick — no
+ * elapsed-time bookkeeping needed to resume correctly.
  */
 function useStreamingText(text: string, active: boolean, charactersPerTick = 3, tickMs = 16) {
+  const isPlaying = useDemoPlaying();
   const [count, setCount] = useState(0);
   const length = text.length;
 
@@ -16,6 +22,7 @@ function useStreamingText(text: string, active: boolean, charactersPerTick = 3, 
       return;
     }
 
+    if (!isPlaying) return;
     if (count >= length) return;
 
     const timer = window.setTimeout(
@@ -24,7 +31,7 @@ function useStreamingText(text: string, active: boolean, charactersPerTick = 3, 
     );
 
     return () => window.clearTimeout(timer);
-  }, [active, charactersPerTick, count, length, tickMs]);
+  }, [active, isPlaying, charactersPerTick, count, length, tickMs]);
 
   if (!active && count > 0) return text;
   if (!active) return text;

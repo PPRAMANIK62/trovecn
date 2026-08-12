@@ -8,6 +8,7 @@ import {
   type AgentActivityEntry,
   type AgentActivityStatus,
 } from "@/components/trovecn/ai-workbench/agent-activity";
+import { useDemoPlaying } from "@/components/site/demo-playback";
 import { spring } from "@/lib/springs";
 
 import { useDemoSequence } from "./use-demo-sequence";
@@ -31,38 +32,33 @@ function statusFor(index: number, visible: number): AgentActivityStatus {
   return index === visible - 1 ? "active" : "pending";
 }
 
+const ROLLING_COUNT_TICKS = 6; // 2.4s total at 400ms/tick, matching the previous wall-clock duration.
+
+// Ticks elapsed rather than wall-clock progress, so pausing (ComponentPreview's
+// transport control) just means skipping a tick — it re-evaluates from the
+// current tick count on every render instead of needing to track paused time.
 function useRollingCount(target: number, active: boolean) {
-  const [value, setValue] = useState(active ? 1 : target);
+  const isPlaying = useDemoPlaying();
+  const [ticks, setTicks] = useState(0);
 
   useEffect(() => {
     if (!active) {
-      setValue(target);
+      setTicks(0);
       return;
     }
 
-    let cancelled = false;
-    let timer: number | undefined;
-    const startedAt = performance.now();
+    if (!isPlaying) return;
+    if (ticks >= ROLLING_COUNT_TICKS) return;
 
-    const tick = () => {
-      if (cancelled) return;
+    const timer = window.setTimeout(
+      () => setTicks((t) => Math.min(t + 1, ROLLING_COUNT_TICKS)),
+      400,
+    );
+    return () => window.clearTimeout(timer);
+  }, [active, isPlaying, ticks]);
 
-      const progress = Math.min((performance.now() - startedAt) / 2_400, 1);
-      const nextValue = Math.max(1, Math.round(target * progress));
-      setValue(nextValue);
-
-      if (progress < 1) timer = window.setTimeout(tick, 400);
-    };
-
-    timer = window.setTimeout(tick, 400);
-
-    return () => {
-      cancelled = true;
-      if (timer !== undefined) window.clearTimeout(timer);
-    };
-  }, [active, target]);
-
-  return value;
+  if (!active) return target;
+  return Math.max(1, Math.round(target * (ticks / ROLLING_COUNT_TICKS)));
 }
 
 function RollingDiffValue({

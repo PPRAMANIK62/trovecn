@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { usePausableWait } from "@/components/site/demo-playback";
+
 export interface DemoStepTiming {
   /** Time the current step remains active before the next one begins. */
   hold: number;
@@ -12,13 +14,16 @@ export interface DemoStepTiming {
 /**
  * Advance a demo through working, result, and complete states. Result fragments
  * arrive while their step is active, so a trace reads as work being done rather
- * than as a completed record appearing all at once.
+ * than as a completed record appearing all at once. `wait` comes from
+ * usePausableWait so ComponentPreview's pause control freezes the sequence
+ * mid-step instead of it continuing in the background.
  */
 export function useDemoSequence(
   timings: readonly DemoStepTiming[],
   reduceMotion: boolean | null,
   startDelay = 400,
 ) {
+  const { wait } = usePausableWait();
   const [visible, setVisible] = useState(reduceMotion ? timings.length + 1 : 0);
   const [revealLevels, setRevealLevels] = useState<number[]>(
     reduceMotion ? timings.map((timing) => timing.reveals?.length ?? 0) : timings.map(() => 0),
@@ -32,12 +37,6 @@ export function useDemoSequence(
     }
 
     let cancelled = false;
-    let timer: number | undefined;
-
-    const wait = (duration: number) =>
-      new Promise<void>((resolve) => {
-        timer = window.setTimeout(resolve, duration);
-      });
 
     const run = async () => {
       setVisible(0);
@@ -70,9 +69,8 @@ export function useDemoSequence(
 
     return () => {
       cancelled = true;
-      if (timer !== undefined) window.clearTimeout(timer);
     };
-  }, [reduceMotion, startDelay, timings]);
+  }, [reduceMotion, startDelay, timings, wait]);
 
   return { revealLevels, visible };
 }
