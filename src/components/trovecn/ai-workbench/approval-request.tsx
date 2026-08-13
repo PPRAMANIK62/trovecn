@@ -251,7 +251,10 @@ function ApprovalRequest({
               >
                 {pendingAction === "approve" ? (
                   <>
-                    <Loader2Icon className="size-3.5 animate-spin" aria-hidden="true" />
+                    <Loader2Icon
+                      className={cn("size-3.5", !reduceMotion && "animate-spin")}
+                      aria-hidden="true"
+                    />
                     Approving…
                   </>
                 ) : (
@@ -268,7 +271,10 @@ function ApprovalRequest({
               >
                 {pendingAction === "deny" ? (
                   <>
-                    <Loader2Icon className="size-3.5 animate-spin" aria-hidden="true" />
+                    <Loader2Icon
+                      className={cn("size-3.5", !reduceMotion && "animate-spin")}
+                      aria-hidden="true"
+                    />
                     Denying…
                   </>
                 ) : (
