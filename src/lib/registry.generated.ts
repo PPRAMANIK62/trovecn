@@ -5,6 +5,7 @@ import type { RegistryItem } from "./registry-types";
 
 import { accordion } from "../../registry/trovecn/accordion/meta";
 import { agentActivity } from "../../registry/trovecn/agent-activity/meta";
+import { approvalRequest } from "../../registry/trovecn/approval-request/meta";
 import { button } from "../../registry/trovecn/button/meta";
 import { checkbox } from "../../registry/trovecn/checkbox/meta";
 import { checkboxGroup } from "../../registry/trovecn/checkbox-group/meta";
@@ -26,6 +27,7 @@ import { tooltip } from "../../registry/trovecn/tooltip/meta";
 export const registry: RegistryItem[] = [
   accordion,
   agentActivity,
+  approvalRequest,
   button,
   checkbox,
   checkboxGroup,
