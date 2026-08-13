@@ -38,6 +38,14 @@ export interface ApprovalRequestProps {
   /** A rejected promise renders the anchored inline error state with Retry — never a toast. */
   onApprove?: () => void | Promise<void>;
   onDeny?: () => void | Promise<void>;
+  /**
+   * "card" (default) is the standalone, persistent-in-stream surface this
+   * component is built for. "embedded" strips its own card chrome for the
+   * one sanctioned nesting case — ToolRun handing its body off to this
+   * component for the needs-approval status — so the pause reads as one
+   * card, not two stacked shadows.
+   */
+  variant?: "card" | "embedded";
   className?: string;
 }
 
@@ -128,6 +136,7 @@ function ApprovalRequest({
   decidedAt,
   onApprove,
   onDeny,
+  variant = "card",
   className,
 }: ApprovalRequestProps) {
   const reduceMotion = useReducedMotion();
@@ -188,7 +197,11 @@ function ApprovalRequest({
       initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={reduceMotion ? spring.quick.exit : spring.moderate.enter}
-      className={cn("shadow-bevel w-full max-w-md rounded-lg bg-card px-4 py-3.5", className)}
+      className={cn(
+        "w-full",
+        variant === "card" ? "shadow-bevel max-w-md rounded-lg bg-card px-4 py-3.5" : "max-w-none",
+        className,
+      )}
     >
       {context || flag ? (
         <div className="flex flex-wrap items-center gap-1.5">
