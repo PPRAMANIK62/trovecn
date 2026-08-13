@@ -22,6 +22,7 @@ import { promptComposer } from "../../registry/trovecn/prompt-composer/meta";
 import { slider } from "../../registry/trovecn/slider/meta";
 import { switch as switchItem } from "../../registry/trovecn/switch/meta";
 import { tabs } from "../../registry/trovecn/tabs/meta";
+import { toolRun } from "../../registry/trovecn/tool-run/meta";
 import { tooltip } from "../../registry/trovecn/tooltip/meta";
 
 export const registry: RegistryItem[] = [
@@ -44,5 +45,6 @@ export const registry: RegistryItem[] = [
   slider,
   switchItem,
   tabs,
+  toolRun,
   tooltip,
 ];
