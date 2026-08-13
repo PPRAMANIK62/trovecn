@@ -1,6 +1,5 @@
 import type { RegistryItem } from "@/lib/registry-types";
 
-import ApprovalRequestAllStatesExample from "./examples/all-states";
 import ApprovalRequestBasicExample from "./examples/basic";
 import ApprovalRequestErrorRecoveryExample from "./examples/error-recovery";
 import ApprovalRequestMessagePreviewExample from "./examples/message-preview";
@@ -36,13 +35,6 @@ export const approvalRequest: RegistryItem = {
         "A rejected onApprove renders an anchored inline error next to the request it belongs to, not a toast.",
       file: "registry/trovecn/approval-request/examples/error-recovery.tsx",
       Demo: ApprovalRequestErrorRecoveryExample,
-    },
-    {
-      title: "All states",
-      description:
-        "Every status value side by side — resolved treatments differ only in icon and label.",
-      file: "registry/trovecn/approval-request/examples/all-states.tsx",
-      Demo: ApprovalRequestAllStatesExample,
     },
   ],
   api: [
