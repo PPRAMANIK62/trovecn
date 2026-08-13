@@ -11,7 +11,6 @@ const checkboxItem: RegistryItem = {
   dependencies: ["@base-ui/react", "motion"],
   registryDependencies: ["utils", "springs"],
   file: "src/components/ui/checkbox.tsx",
-  isNew: true,
   examples: [
     {
       title: "Single",

@@ -11,7 +11,6 @@ export const promptComposer: RegistryItem = {
   dependencies: ["lucide-react", "@base-ui/react", "class-variance-authority", "motion"],
   registryDependencies: ["utils", "button", "menu", "springs"],
   file: "src/components/trovecn/ai-workbench/prompt-composer.tsx",
-  isNew: true,
   examples: [
     {
       title: "Agent prompt",

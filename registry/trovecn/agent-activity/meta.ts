@@ -15,7 +15,6 @@ export const agentActivity: RegistryItem = {
   dependencies: ["lucide-react", "motion"],
   registryDependencies: ["utils", "springs"],
   file: "src/components/trovecn/ai-workbench/agent-activity.tsx",
-  isNew: true,
   examples: [
     {
       title: "Basic",

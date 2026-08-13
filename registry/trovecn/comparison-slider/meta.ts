@@ -13,7 +13,6 @@ export const comparisonSlider: RegistryItem = {
   dependencies: ["lucide-react"],
   registryDependencies: ["utils"],
   file: "src/components/trovecn/motion-demos/comparison-slider.tsx",
-  isNew: true,
   examples: [
     {
       title: "Magnetic pull",

@@ -11,7 +11,6 @@ const sliderItem: RegistryItem = {
   dependencies: ["motion", "@base-ui/react"],
   registryDependencies: ["utils", "springs"],
   file: "src/components/ui/slider.tsx",
-  isNew: true,
   examples: [
     {
       title: "Basic",

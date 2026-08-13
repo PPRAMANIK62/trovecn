@@ -11,7 +11,6 @@ const checkboxGroupItem: RegistryItem = {
   dependencies: ["@base-ui/react", "motion"],
   registryDependencies: ["utils", "springs", "use-proximity-hover", "use-merge-split"],
   file: "src/components/ui/checkbox.tsx",
-  isNew: true,
   examples: [
     {
       title: "Basic",
