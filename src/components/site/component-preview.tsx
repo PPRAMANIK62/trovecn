@@ -23,14 +23,37 @@ interface ComponentPreviewProps {
  * before a replay doesn't restart frozen. Pause instead flows through
  * DemoPlaybackProvider to whichever scripted demo is mounted; demos that
  * don't animate simply never read it.
+ *
+ * The remount itself is a hard cut — the old take's DOM is destroyed the
+ * same frame the new one appears, with no interim state. That's invisible
+ * once; clicked repeatedly it flickers. `isReplaying` wraps the swap in a
+ * brief crossfade (stage fades out, remount happens, stage fades back in)
+ * and disables the button for that window so rapid clicks queue instead of
+ * landing mid-fade.
  */
 export function ComponentPreview({ children, label, className }: ComponentPreviewProps) {
   const [take, setTake] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isReplaying, setIsReplaying] = useState(false);
+
+  function handleReplay() {
+    if (isReplaying) return;
+    setIsReplaying(true);
+    window.setTimeout(() => {
+      setTake((t) => t + 1);
+      setIsPlaying(true);
+      setIsReplaying(false);
+    }, 140);
+  }
 
   return (
     <div className={cn("rounded-xl bg-card p-[5px] shadow-card", className)}>
-      <div className="flex justify-center rounded-lg bg-background p-8 shadow-well sm:p-12">
+      <div
+        className={cn(
+          "flex justify-center rounded-lg bg-background p-8 shadow-well transition-opacity duration-quick sm:p-12",
+          isReplaying ? "opacity-0" : "opacity-100",
+        )}
+      >
         {/* A Fragment, not a div: any wrapping element here becomes a nested
             shrink-to-fit box between the flex container and the demo's own
             w-full/max-w-sm root, and that nesting doesn't reliably respect
@@ -73,10 +96,8 @@ export function ComponentPreview({ children, label, className }: ComponentPrevie
             type="button"
             variant="elevated"
             size="2xs"
-            onClick={() => {
-              setTake((t) => t + 1);
-              setIsPlaying(true);
-            }}
+            disabled={isReplaying}
+            onClick={handleReplay}
             className="text-muted-foreground hover:text-foreground"
           >
             <RotateCw
