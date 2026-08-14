@@ -39,45 +39,85 @@ the source of truth for implementation.
 ## First planned collection: AI workbench
 
 The first collection is an end-to-end workspace for collaborating with an AI
-agent:
+agent. Each component earns its place by owning a distinct job in that
+lifecycle — not by matching a feature list from an existing product.
 
 ```text
-PromptComposer → Conversation → AgentActivity → ToolRun / Approval → ArtifactDock
+PromptComposer → Conversation → PlanChecklist → ToolRun → ApprovalRequest →
+ChangeReview → ErrorRecovery → RunHistory → ContextMeter → ArtifactDock
 ```
 
-It is the best first slice because it proves the important contracts in one
-coherent environment: streaming, asynchronous work, errors and recovery,
-provenance, progressive disclosure, and a context-preserving inspector.
+This is the required spine for a regular agent workflow: capture intent,
+show history, state the plan, do the work, gate consequential actions, let
+the user review and accept what changed, recover cleanly when it breaks,
+resume past runs, and stay aware of the context/cost budget. Everything
+under "Deferred" below is conditional on a vertical (retrieval grounding,
+branching chat, multi-agent orchestration) and should wait for a real demo
+that needs it, rather than being built ahead of use.
 
-### Conversation and composition
+### Built
 
 - `PromptComposer` — draft input, attachments, context chips, model/tool
   choices, and immediate send/stop states.
 - `Conversation` — message rows, markdown and code, message actions, and
   response branches.
-- `BranchPicker` — compare or return to alternative responses without losing
-  the conversation anchor.
-- `Citation` and `Sources` — inline provenance with source preview and an
-  inspectable source list.
-
-### Agent execution
-
-- `AgentActivity` — readable live plan and stage list.
-- `ReasoningDisclosure` — a controllable summary/detail surface that can be
-  live while work runs and compact once it completes.
+- `AgentActivity` — readable live plan and stage list, including inline
+  streaming reasoning text. Supersedes the separate `ReasoningDisclosure`
+  idea this document used to list — the two shared one job.
 - `ToolRun` — queued/running/approval/success/error states, input/output
   summaries, and inspectable parameters.
 - `ApprovalRequest` — a stable, explicit pause for a user decision; never a
   spinner standing in for consent.
-- `TaskQueue`, `AgentHandoff`, and `RunHistory` — background work, ownership,
-  recovery, and durable history.
 
-### Results and artifacts
+### Next
 
+- `PlanChecklist` — the agent's stated intentions before and while it acts:
+  pending/in-progress/done items, live-editable and reorderable. Distinct
+  from `AgentActivity`: that component narrates what already happened, this
+  one states what's about to happen.
+- `ChangeReview` — proposed edits (code, prose, config, a record's fields —
+  not just files) presented for accept/reject/amend, hunk by hunk. This is
+  where most agent products actually earn trust, not only in `ArtifactDock`.
+  The fuller PR-style `DiffReview` under Developer workspace below composes
+  this primitive rather than duplicating it.
+- `ErrorRecovery` — anchored failure state with retry/rollback for any of
+  the above. Promoted out of "supporting components to extract" below: every
+  one of the spine's stateful pieces will fail sometimes, and how failure
+  surfaces is not a polish pass, it's core trust infrastructure.
+- `RunHistory` — resume a past run or session. Promoted for the same reason:
+  almost no agent product ships without a session list.
+- `ContextMeter` — a live, per-run signal (tokens/context window/cost so
+  far). Distinct job from the billing-page `UsageMeter` below — this one
+  answers "is my context about to fall off a cliff mid-task," not "what's my
+  plan limit."
+
+### Composed demo: Codex-style workbench
+
+Once `PlanChecklist` and `ChangeReview` exist, add a single composed
+Examples-page recipe (alongside `steered-conversation`) that assembles the
+spine into one screen: a sidebar listing mock projects and chats, and an
+active conversation pane running a plan → tool call → approval → change
+review loop. State-only sidebar, no real routing — it proves the components
+work together, it isn't a mini-app.
+
+### Deferred — conditional on a vertical, not core to a regular workflow
+
+- `BranchPicker` — compare or return to alternative responses without losing
+  the conversation anchor. Real, but specific to chat-regenerate UX; most
+  agent apps don't expose branching.
+- `Citation` and `Sources` — inline provenance with source preview and an
+  inspectable source list. Only matters once a demo is grounded in
+  retrieval.
 - `ArtifactDock` — a dockable result surface for code, documents, images, or
-  structured data.
-- `CodePreview`, `FileTree`, `TerminalTranscript`, and `TestReport` —
-  focused artifact viewers that can also stand alone in developer products.
+  structured data. Still the spine's last node, but lower priority than the
+  items above; build it once a demo needs a result surface beyond
+  `ChangeReview`.
+- `CodePreview`, `FileTree`, `TerminalTranscript`, and `TestReport` — focused
+  artifact viewers. IDE-specific instantiations of `ArtifactDock`; build
+  each only once a developer-workspace demo needs that exact artifact type.
+- `TaskQueue` and `AgentHandoff` — background job ownership and multi-agent
+  handoff. Real trend, but most people building agent apps today run one
+  agent, not a fleet.
 
 ## Planned domain collections
 
@@ -93,7 +133,8 @@ the registry into a full IDE template.
 - `FileTree` and `FileTabs` — hierarchy, active state, pinned items, and
   context actions.
 - `DiffReview` — unified/side-by-side changes, line comments, threads,
-  resolution, and review summary.
+  resolution, and review summary. Composes the workbench's `ChangeReview`
+  primitive rather than duplicating its accept/reject job.
 - `TerminalTranscript` — commands, output, live runs, copy/re-run, and
   deliberate auto-follow behaviour.
 - `TestReport`, `StackTrace`, and `RunActivity` — summary-first diagnosis with
@@ -135,7 +176,9 @@ progress and consequences clearly.
 - `IntegrationConnect` — provider selection, permissions, redirect/return,
   verification, and recovery.
 - `PlanSelector`, `UsageMeter`, and `APIKeyLifecycle` — plans, limits,
-  credentials, and explicit destructive confirmation.
+  credentials, and explicit destructive confirmation. `UsageMeter` here is
+  the account/billing view; the workbench's `ContextMeter` is a different,
+  live per-run job and is not replaced by this one.
 
 ## Supporting components to extract when proven
 
@@ -145,8 +188,12 @@ extract stable building blocks rather than generalizing early:
 - `StatusBadge` and `ActivityRow`
 - `InspectorPanel` and `ResizableShell`
 - `EmptyState` and `BulkActionTray`
-- `ProgressNarrative` and `ErrorRecovery`
+- `ProgressNarrative`
 - `SourcePreview` and `ArtifactHeader`
+
+`ErrorRecovery` used to be listed here; it moved to the AI workbench spine
+above once the acceptance-standard cost of "not core" stopped applying to
+it.
 
 ## Component acceptance standard
 
