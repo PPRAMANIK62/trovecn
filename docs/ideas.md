@@ -73,13 +73,13 @@ that needs it, rather than being built ahead of use.
   summaries, and inspectable parameters.
 - `ApprovalRequest` — a stable, explicit pause for a user decision; never a
   spinner standing in for consent.
-
-### Next
-
 - `PlanChecklist` — the agent's stated intentions before and while it acts:
   pending/in-progress/done items, live-editable and reorderable. Distinct
   from `AgentActivity`: that component narrates what already happened, this
   one states what's about to happen.
+
+### Next
+
 - `ChangeReview` — proposed edits (code, prose, config, a record's fields —
   not just files) presented for accept/reject/amend, hunk by hunk. This is
   where most agent products actually earn trust, not only in `ArtifactDock`.
@@ -123,6 +123,21 @@ work together, it isn't a mini-app.
 - `TaskQueue` and `AgentHandoff` — background job ownership and multi-agent
   handoff. Real trend, but most people building agent apps today run one
   agent, not a fleet.
+
+## Signature components
+
+A second track, governed by [sourcing.md](sourcing.md) rather than by the
+spine above. These are not part of a collection and do not depend on each
+other; each one is a single recognisable interaction that nobody has shipped
+as something you can install. The vetted candidates waiting to be built are
+in [signature components](signature-components.md).
+
+### Built
+
+- `ScrubField` — a number input whose label is the drag handle, scrubbing
+  under pointer lock so the cursor never hits a screen edge.
+- `ElasticSlider` — a bounded-value slider whose track thickens under the
+  grab and stretches with damped resistance past either end.
 
 ## Planned domain collections
 
