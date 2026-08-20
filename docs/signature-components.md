@@ -23,17 +23,29 @@ thing.
 
 **Signature detail.** Drag the label sideways and the value scrubs. Pointer
 Lock means the cursor never leaves the field or hits the screen edge, so the
-drag has no range limit. Shift scrubs at a tenth of the speed for precision.
+drag has no range limit. Alt scrubs at a tenth of the speed for precision.
 
 **Claim status.** Leva ships this, buried inside an entire debug GUI nobody
 wants in production. There is no standalone version in any shadcn-compatible
 registry.
 
-**Hard parts.** Pointer Lock plus accumulated `movementX`, which Safari
-reports on a different scale than Chrome and has to be normalised. A drag
-under roughly four pixels has to fall back to a plain click that focuses and
-selects the text, or the field stops working as a text input. Arrow keys step,
-Shift and arrow steps larger.
+**Hard parts.** Less than expected, and worth recording why. Base UI ships
+`number-field` with a `ScrubArea` and `ScrubAreaCursor`, so pointer lock,
+the accumulated pointer delta, `pixelSensitivity`, Intl formatting, clamping,
+keyboard stepping and the ARIA wiring all come for free. An earlier draft of
+this entry claimed Safari's `movementX` scaling and a click-to-edit fallback
+were the hard parts. Neither is ours: Base UI normalises the delta, and the
+scrub area is a separate region from the input, so typing was never in
+conflict with dragging. The modifiers also run the other way from what that
+draft said, Alt is fine and Shift is coarse. Base UI disables the custom
+scrub cursor in Safari, where the Pointer Lock notification causes a layout
+shift.
+
+What is actually hard is the layout. A number field has an intrinsic size,
+and every early version stretched it to fill a row and then tried to hide the
+leftover width. The answer was to stop stretching: one fixed-width control
+with the label inside it, the left region scrubbing and the right typing, so
+a stack aligns with no work from the caller.
 
 **Motion notes.** The value itself gets no spring. It tracks the pointer one
 to one or the gesture feels broken and laggy. The motion lives in the cursor

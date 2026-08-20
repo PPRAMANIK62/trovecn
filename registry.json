@@ -429,6 +429,25 @@
       ]
     },
     {
+      "name": "scrub-field",
+      "type": "registry:ui",
+      "title": "Scrub Field",
+      "description": "A number input whose label is the drag handle, scrubbing under pointer lock.",
+      "dependencies": [
+        "@base-ui/react",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/trovecn/inputs/scrub-field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "slider",
       "type": "registry:ui",
       "title": "Slider",
