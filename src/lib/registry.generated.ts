@@ -15,6 +15,7 @@ import { contextMenu } from "../../registry/trovecn/context-menu/meta";
 import { conversation } from "../../registry/trovecn/conversation/meta";
 import { dialog } from "../../registry/trovecn/dialog/meta";
 import { drawer } from "../../registry/trovecn/drawer/meta";
+import { elasticSlider } from "../../registry/trovecn/elastic-slider/meta";
 import { menu } from "../../registry/trovecn/menu/meta";
 import { navigationMenu } from "../../registry/trovecn/navigation-menu/meta";
 import { planChecklist } from "../../registry/trovecn/plan-checklist/meta";
@@ -40,6 +41,7 @@ export const registry: RegistryItem[] = [
   conversation,
   dialog,
   drawer,
+  elasticSlider,
   menu,
   navigationMenu,
   planChecklist,
