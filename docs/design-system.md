@@ -56,6 +56,12 @@ with, and the code will not warn you.
   `meta.ts`. Hand-edits get overwritten on the next `predev` or `prebuild`.
 - Tailwind v4 has **no `tailwind.config.js`**. Tokens live in `@theme inline`
   in `globals.css`.
+- **`--duration-*` is not one of those namespaces.** Put the four timing
+  tokens in `@theme` and Tailwind emits no `duration-fast` utility and
+  tree-shakes the variable away, so every call site silently falls back to
+  the 150ms default. They live in `:root` with hand-written `@utility` rules
+  beside them. Same trap for any token whose namespace Tailwind doesn't own —
+  `--ease-*` it does, `--duration-*` it doesn't.
 - Turbopack is already the default in Next 16. No `--turbopack` flag.
 
 ## Concept

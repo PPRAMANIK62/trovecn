@@ -48,14 +48,10 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  /* Mirrors src/lib/springs.ts's four tiers (fast/quick/moderate/slow enter
-     durations) for the handful of plain-CSS transitions that can't consume
-     a Framer Motion spring object directly. Keep these numbers in sync with
-     springs.ts by hand if that file's durations ever change. */
-  --duration-fast: 80ms;
-  --duration-quick: 140ms;
-  --duration-moderate: 200ms;
-  --duration-slow: 320ms;
+  /* springs.ts's `easeOutStrong`, reachable from a class name. Plain-CSS
+     transitions have no way to consume the exported array form, and the
+     built-in easing keywords are too weak for anything that travels. */
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 /*
@@ -183,6 +179,42 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.89 0 0);
   --sidebar-ring: oklch(0.556 0 0 / 40%);
+
+  /* Mirrors src/lib/springs.ts's four tiers (fast/quick/moderate/slow enter
+     durations) for the handful of plain-CSS transitions that can't consume
+     a Framer Motion spring object directly. Keep these numbers in sync with
+     springs.ts by hand if that file's durations ever change.
+
+     Declared here rather than in `@theme`: `--duration-*` is not one of
+     Tailwind v4's theme namespaces, so a `@theme` entry generates no
+     `duration-fast` utility and gets tree-shaken out of `:root` entirely —
+     every call site silently falls back to the 150ms default. The
+     `@utility` rules below are what actually make the class names work. */
+  --duration-fast: 80ms;
+  --duration-quick: 140ms;
+  --duration-moderate: 200ms;
+  --duration-slow: 320ms;
+}
+
+/* Hand-written because `duration-*` is a built-in functional utility with no
+   theme namespace behind it — it takes bare numbers and arbitrary values
+   only. These four mirror exactly what `duration-200` emits, so they compose
+   with `transition-*` and stack under variants (`active:duration-fast`). */
+@utility duration-fast {
+  --tw-duration: var(--duration-fast);
+  transition-duration: var(--duration-fast);
+}
+@utility duration-quick {
+  --tw-duration: var(--duration-quick);
+  transition-duration: var(--duration-quick);
+}
+@utility duration-moderate {
+  --tw-duration: var(--duration-moderate);
+  transition-duration: var(--duration-moderate);
+}
+@utility duration-slow {
+  --tw-duration: var(--duration-slow);
+  transition-duration: var(--duration-slow);
 }
 
 .dark {
