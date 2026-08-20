@@ -13,7 +13,6 @@ export const planChecklist: RegistryItem = {
   dependencies: ["lucide-react", "motion"],
   registryDependencies: ["utils", "button", "springs"],
   file: "src/components/trovecn/ai-workbench/plan-checklist.tsx",
-  isNew: true,
   examples: [
     {
       title: "Basic",

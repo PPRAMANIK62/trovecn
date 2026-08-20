@@ -13,7 +13,6 @@ export const toolRun: RegistryItem = {
   dependencies: ["lucide-react", "motion"],
   registryDependencies: ["utils", "button", "approval-request", "springs"],
   file: "src/components/trovecn/ai-workbench/tool-run.tsx",
-  isNew: true,
   examples: [
     {
       title: "Basic",
