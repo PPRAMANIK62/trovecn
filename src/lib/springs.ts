@@ -2,9 +2,16 @@ import type { Easing, Transition } from "motion/react";
 
 /**
  * Motion tokens. Four tiers, each an enter spring paired with a faster,
- * bounce-free exit tween. Never hand-write a duration/transition inline —
- * import the tier that matches how big the thing moving is, and how often
- * it fires.
+ * bounce-free exit tween. Import the tier that matches how big the thing
+ * moving is, and how often it fires. Don't hand-write a duration to taste.
+ *
+ * Gesture and physics motion is exempt. A drag that tracks the pointer one
+ * to one, a rubber-band overshoot, a throw carrying velocity, and a hold
+ * whose duration *is* the interaction all own their own curves, because
+ * none of these four can express them. Name the curve and the reason in the
+ * component's file header. `hold-to-delete-button` is the shipped example:
+ * a linear two-second fill against a fast snap back, where the asymmetry is
+ * the whole component.
  */
 
 /** Strong ease-out, matching this repo's `docs/design-system.md` guidance that built-in
