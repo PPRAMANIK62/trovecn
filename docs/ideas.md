@@ -14,6 +14,11 @@ For the evidence, reference ecosystems, state-model guidance, and detailed
 motion recommendations behind this plan, see
 [Compound UX components research](research/ux-component-ecosystem.md).
 
+What gets added to this roadmap is governed by the
+[sourcing standard](sourcing.md). Vetted candidates that clear it are in
+[signature components](signature-components.md). The AI workbench spine
+below predates that standard and is exempt from it.
+
 ## Product principles
 
 - **Own a job, not an element.** `ToolRun` owns a tool's lifecycle, approval,
