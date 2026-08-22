@@ -114,6 +114,27 @@
       ]
     },
     {
+      "name": "approval-request",
+      "type": "registry:ui",
+      "title": "Approval Request",
+      "description": "A stable, explicit pause for a human decision inside an agent run — never a spinner standing in for consent.",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "button",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/trovecn/ai-workbench/approval-request.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
@@ -192,6 +213,24 @@
       "files": [
         {
           "path": "src/components/ui/combobox.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "comparison-slider",
+      "type": "registry:ui",
+      "title": "Comparison Slider",
+      "description": "Draggable clip-path divider that reveals one live layer over another.",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/trovecn/motion-demos/comparison-slider.tsx",
           "type": "registry:ui"
         }
       ]
@@ -282,6 +321,46 @@
       ]
     },
     {
+      "name": "elastic-slider",
+      "type": "registry:ui",
+      "title": "Elastic Slider",
+      "description": "A bounded-value slider whose track thickens under the grab and stretches with real resistance past either end.",
+      "dependencies": [
+        "motion",
+        "@base-ui/react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/trovecn/inputs/elastic-slider.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "list-detail-morph",
+      "type": "registry:ui",
+      "title": "List Detail Morph",
+      "description": "List to detail navigation where the row you pressed becomes the detail view, and reverses from wherever it is if you leave early.",
+      "dependencies": [
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/trovecn/navigation/list-detail-morph.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "menu",
       "type": "registry:ui",
       "title": "Menu",
@@ -325,6 +404,47 @@
       ]
     },
     {
+      "name": "notification-stack",
+      "type": "registry:ui",
+      "title": "Notification Stack",
+      "description": "A persistent notification centre whose items collapse into a pile with uniform peeking edges and fan out on a pull.",
+      "dependencies": [
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/trovecn/feedback/notification-stack.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "plan-checklist",
+      "type": "registry:ui",
+      "title": "Plan Checklist",
+      "description": "The agent's stated intentions before and while it acts — pending, in-progress, and done steps, live-editable and reorderable while they're still ahead.",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "button",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/trovecn/ai-workbench/plan-checklist.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "popover",
       "type": "registry:ui",
       "title": "Popover",
@@ -352,16 +472,59 @@
       "dependencies": [
         "lucide-react",
         "@base-ui/react",
-        "class-variance-authority"
+        "class-variance-authority",
+        "motion"
       ],
       "registryDependencies": [
         "utils",
         "button",
-        "menu"
+        "menu",
+        "springs"
       ],
       "files": [
         {
           "path": "src/components/trovecn/ai-workbench/prompt-composer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "scrub-field",
+      "type": "registry:ui",
+      "title": "Scrub Field",
+      "description": "A number input whose label is the drag handle, scrubbing under pointer lock.",
+      "dependencies": [
+        "@base-ui/react",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils"
+      ],
+      "files": [
+        {
+          "path": "src/components/trovecn/inputs/scrub-field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "selection-toolbar",
+      "type": "registry:ui",
+      "title": "Selection Toolbar",
+      "description": "A formatting toolbar for a text selection, anchored to the line the drag ended on rather than centred over the paragraph, and flipped below that line when the line above is selected too.",
+      "dependencies": [
+        "@base-ui/react",
+        "motion",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "utils",
+        "button",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/trovecn/inputs/selection-toolbar.tsx",
           "type": "registry:ui"
         }
       ]
@@ -424,6 +587,28 @@
       "files": [
         {
           "path": "src/components/ui/tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tool-run",
+      "type": "registry:ui",
+      "title": "Tool Run",
+      "description": "A single tool call's lifecycle — queued, running, paused on approval, and resolved — with arguments and results one click away.",
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "utils",
+        "button",
+        "approval-request",
+        "springs"
+      ],
+      "files": [
+        {
+          "path": "src/components/trovecn/ai-workbench/tool-run.tsx",
           "type": "registry:ui"
         }
       ]
