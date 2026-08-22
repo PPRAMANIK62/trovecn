@@ -63,16 +63,7 @@ not the clip.
 
 ## Next
 
-**ListDetailMorph.** List to detail navigation, the most common transition in
-software. The row you tapped becomes the detail view, and it is interruptible.
-Hit back halfway and it reverses from where it is. View Transitions demos are
-everywhere and none of them can do that, because the API cannot. Motion's
-layout animations can, which is the whole opening.
-
-Interruption has to work from the first commit, not be added later. Content
-inside the morphing container has to crossfade at a fixed size while the
-container animates, or the text stretches and it reads as a scale. Scroll
-position has to survive the return trip.
+Nothing vetted. Run the test above against a backlog entry before starting one.
 
 ## Backlog
 

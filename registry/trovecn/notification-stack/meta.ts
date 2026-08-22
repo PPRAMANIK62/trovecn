@@ -13,7 +13,6 @@ export const notificationStack: RegistryItem = {
   dependencies: ["motion", "lucide-react"],
   registryDependencies: ["utils", "springs"],
   file: "src/components/trovecn/feedback/notification-stack.tsx",
-  isNew: true,
   examples: [
     {
       title: "Basic",

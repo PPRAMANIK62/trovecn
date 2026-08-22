@@ -16,6 +16,7 @@ import { conversation } from "../../registry/trovecn/conversation/meta";
 import { dialog } from "../../registry/trovecn/dialog/meta";
 import { drawer } from "../../registry/trovecn/drawer/meta";
 import { elasticSlider } from "../../registry/trovecn/elastic-slider/meta";
+import { listDetailMorph } from "../../registry/trovecn/list-detail-morph/meta";
 import { menu } from "../../registry/trovecn/menu/meta";
 import { navigationMenu } from "../../registry/trovecn/navigation-menu/meta";
 import { notificationStack } from "../../registry/trovecn/notification-stack/meta";
@@ -44,6 +45,7 @@ export const registry: RegistryItem[] = [
   dialog,
   drawer,
   elasticSlider,
+  listDetailMorph,
   menu,
   navigationMenu,
   notificationStack,

@@ -13,7 +13,6 @@ export const selectionToolbar: RegistryItem = {
   dependencies: ["@base-ui/react", "motion", "lucide-react"],
   registryDependencies: ["utils", "button", "springs"],
   file: "src/components/trovecn/inputs/selection-toolbar.tsx",
-  isNew: true,
   examples: [
     {
       title: "Basic",
