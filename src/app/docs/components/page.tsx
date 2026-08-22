@@ -25,7 +25,8 @@ export default function ComponentsIndexPage() {
       ) : (
         <>
           <p className="mt-3.5 max-w-xl text-lede leading-relaxed text-muted-foreground">
-            {total} patterns, grouped by where you would reach for them.
+            {total} components. Each description says what it does under your hand, because that is
+            what it had to prove to get here.
           </p>
           <div className="mt-10 flex flex-col gap-8">
             {groups.map((group) => (

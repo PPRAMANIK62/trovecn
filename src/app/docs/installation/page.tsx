@@ -34,7 +34,8 @@ const foundationFiles = [
   },
   {
     title: "Springs",
-    description: "Three-tier spring/tween motion tokens — fast, moderate, slow.",
+    description:
+      "Four-tier spring/tween motion tokens — fast, quick, moderate, slow — each an enter spring paired with a faster, bounce-free exit.",
     path: "src/lib/springs.ts",
   },
   {

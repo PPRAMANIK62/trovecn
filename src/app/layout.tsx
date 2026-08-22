@@ -17,8 +17,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const title = "trove/cn — a collected component registry";
-const description = "A curated registry of premium UI patterns, ready to install.";
+const title = "trove/cn — components that keep listening";
+const description =
+  "Native controls track your input the whole way. Most web components fire once and stop. These don't — installed as source you own.";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://trovecn.dev"),

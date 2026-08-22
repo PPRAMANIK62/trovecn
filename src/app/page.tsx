@@ -1,9 +1,25 @@
 import { SiteHeader } from "@/components/site/site-header";
 import { Hero } from "@/components/site/hero";
-import { LandingShowcase } from "@/components/site/landing-showcase";
+import { LandingProof } from "@/components/site/landing-proof";
+import { LandingEvidence } from "@/components/site/landing-evidence";
+import { LandingPrimitives } from "@/components/site/landing-primitives";
+import { LandingClosing } from "@/components/site/landing-closing";
+import { SiteFooter } from "@/components/site/site-footer";
 import { Brand } from "@/components/site/brand";
 import { ThemeToggle } from "@/components/site/theme-toggle";
 
+/**
+ * Marketing. The argument runs hero → proof → what installs → what it stands
+ * on → why it matters, and hands off to /docs.
+ *
+ * The fixed bottom fog this page used to carry is gone. It existed to sit
+ * over the old grid's first row peeking up at rest, and the new hero is short
+ * enough that the proof strip's own hairline crosses the fold instead — a
+ * better scroll cue than a gradient, and one that does not blur the section
+ * rules the layout is now built from. SiteFooter, not a fade, is what anchors
+ * the bottom — see its header for why the docs shell's ScrollFade does not
+ * transfer to a normal document scroll.
+ */
 export default function Home() {
   return (
     <>
@@ -13,16 +29,12 @@ export default function Home() {
       </SiteHeader>
       <main>
         <Hero />
-        <LandingShowcase />
+        <LandingProof />
+        <LandingEvidence />
+        <LandingPrimitives />
+        <LandingClosing />
       </main>
-      {/* Pinned to the viewport's own bottom edge, not to any section's box
-          — the whole page is one normal scroll (no fixed-height pane the
-          way docs has), so this is the only anchor that's guaranteed to
-          sit over whatever's actually cut off at the bottom of the window,
-          most importantly LandingShowcase's first row peeking up at rest.
-          Same fog-over-content mask as ScrollFadeTop/Bottom
-          (scroll-fade.tsx). */}
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 h-20 bg-gradient-to-t from-background via-background/70 to-transparent" />
+      <SiteFooter />
     </>
   );
 }
