@@ -19,3 +19,7 @@ Read the relevant one before writing UI code or proposing a component.
 Neither file records what was already built or why. That goes in the header of
 the component's own file, next to the code it explains. Do not add build notes,
 decision logs, or history to `docs/`.
+
+One component's design, worked out before it is built, goes in
+`studies/<slug>.md`. See `studies/README.md`. That and the file header are the
+only two places one component's reasoning belongs.
