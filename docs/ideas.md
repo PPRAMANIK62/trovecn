@@ -138,6 +138,9 @@ in [signature components](signature-components.md).
   under pointer lock so the cursor never hits a screen edge.
 - `ElasticSlider` — a bounded-value slider whose track thickens under the
   grab and stretches with damped resistance past either end.
+- `NotificationStack` — a persistent notification centre whose items collapse
+  into a pile with uniform peeking edges, pull open against resistance, and
+  restack in two beats after a card is thrown off.
 
 ## Planned domain collections
 

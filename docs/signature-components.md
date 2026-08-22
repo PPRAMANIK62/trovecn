@@ -10,9 +10,10 @@ decorative tier and what makes it worth building twice: once for the clip,
 and then for the years it sits in somebody's codebase.
 
 Entries stay here until they are built, then move to
-[ideas.md](ideas.md) under Built — `ScrubField` and `ElasticSlider` have
-already gone that way. Whatever an entry taught while it was being built
-goes to [decisions.md](decisions.md) rather than leaving with it. Anything
+[ideas.md](ideas.md) under Built. `ScrubField`, `ElasticSlider`, and
+`NotificationStack` have already gone that way. Whatever an entry taught
+while it was being built goes to [decisions.md](decisions.md) rather than
+leaving with it. Anything
 in the backlog at the bottom is unvetted and has to pass the saturation
 check before it moves up.
 
@@ -54,24 +55,6 @@ first commit, not be retrofitted. Content inside the morphing container must
 cross-fade at a fixed size while the container animates, or text stretches
 and the morph reads as a scale. Scroll position has to survive the return
 trip.
-
-## NotificationStack
-
-**Job.** A notification centre holding grouped, persistent items.
-
-**Source.** The iOS lock screen.
-
-**Signature detail.** Notifications collapse into a pile with the edges of
-the ones underneath peeking out. Expand and they fan out with a stagger.
-Dismiss one and the rest restack.
-
-**Claim status.** Sonner owns transient toasts and stops there. The
-persistent grouped centre is unclaimed, and it is the obvious sibling.
-
-**Hard parts.** Collapsed and expanded have to be the same DOM with different
-transforms, so the change is a layout animation rather than a swap. Cap the
-visible pile at three. On dismiss the list closes its gap first and restacks
-second, because doing both at once turns into mush.
 
 ## Rejected
 
