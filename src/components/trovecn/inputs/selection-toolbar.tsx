@@ -18,15 +18,19 @@
  * - **How often is this seen?** Every time you select text. At that frequency,
  *   a reviewer who notices the animation has found too much of it.
  *
- * An earlier version had a link mode, a URL field that replaced the controls
- * in place. It is gone, and so is the `CSS.highlights` repaint that existed
- * only to survive it. What is left formats a selection and nothing else.
- * `docs/decisions.md` keeps the findings from that version. They still hold
- * for the platform, but they no longer describe this file.
+ * An earlier version had a link mode: a URL field that replaced the controls
+ * in place, behind a width morph. It is gone, and so is the `CSS.highlights`
+ * repaint that existed only to survive it. Two reasons worth keeping. The
+ * morph was built as a signature detail on the grounds that it is seen once
+ * per link, but it lived inside chrome that appears on every selection, and
+ * the user cannot separate the two. And nothing was watching it — mid-morph it
+ * is 100px of container edge in the periphery while the eye is on the words
+ * being linked, so the motion only ever showed up as latency. Link mode is a
+ * plain conditional now; the container resizes with its content in one frame.
  *
- * Three things measured in Chrome 150 rather than assumed. The candidate entry
- * in `docs/signature-components.md` guessed most of them wrong, which is the
- * `ScrubField` lesson in `docs/decisions.md` repeating itself.
+ * Three things measured in Chrome 150 rather than assumed. The proposal for
+ * this component guessed all three wrong, because they were written before
+ * anyone read Base UI's source.
  *
  * 1. A toolbar button taking focus does not destroy the selection, but it
  *    does move the caret, so controls refuse focus on `mousedown`. Only an

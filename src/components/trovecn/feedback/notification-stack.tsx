@@ -239,9 +239,10 @@ function resist(travel: number) {
 /**
  * Deliberately shallow. A buried card is the same material as the front one,
  * only further back, and scale, blur, and the peek carry the depth. Fading hard
- * washes the card tone towards the surface behind it, the bug `decisions.md`
- * records under "Card-toned demos on a card-toned stage". The pile stops
- * reading as separate planes and becomes one smudge.
+ * washes the card tone towards the surface behind it — the same failure
+ * `design-system.md` warns about under "Surfaces must visibly step", arrived at
+ * from the inside. The pile stops reading as separate planes and becomes one
+ * smudge.
  */
 function depthOpacity(depth: number) {
   if (depth === 0) return 1;

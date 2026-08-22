@@ -16,8 +16,9 @@ its source, done. CLI installs are on the roadmap but not wired up yet.
 - [Shiki](https://shiki.style) for syntax-highlighted code blocks
 
 See [`docs/design-system.md`](docs/design-system.md) for the visual language
-and component conventions, and [`docs/ideas.md`](docs/ideas.md) for the
-component backlog.
+and component conventions, and
+[`docs/what-to-build.md`](docs/what-to-build.md) for how components are chosen
+and what is next.
 
 ## Development
 
