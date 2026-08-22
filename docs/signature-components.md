@@ -10,31 +10,12 @@ decorative tier and what makes it worth building twice: once for the clip,
 and then for the years it sits in somebody's codebase.
 
 Entries stay here until they are built, then move to
-[ideas.md](ideas.md) under Built. `ScrubField`, `ElasticSlider`, and
-`NotificationStack` have already gone that way. Whatever an entry taught
-while it was being built goes to [decisions.md](decisions.md) rather than
-leaving with it. Anything
-in the backlog at the bottom is unvetted and has to pass the saturation
-check before it moves up.
-
-## SelectionToolbar
-
-**Job.** Formatting a text selection in any editor or comment box.
-
-**Source.** Medium, Notion, Linear's composer.
-
-**Signature detail.** Hit the link button and the toolbar morphs into the URL
-field in place. Same container, width animates, icons cross-fade out as the
-input fades in. Escape morphs it back.
-
-**Claim status.** Tiptap and ProseMirror ship bubble menus, unstyled and
-without the morph. Every styled version in the wild swaps one popover for
-another, which is the exact thing this replaces.
-
-**Hard parts.** Anchoring to a `Range` that spans wrapped lines and survives
-scrolling. Keeping the document selection alive while the toolbar takes
-focus. The container has to own its width during the morph or the icons
-reflow mid-animation and the illusion collapses.
+[ideas.md](ideas.md) under Built. `ScrubField`, `ElasticSlider`,
+`NotificationStack`, and `SelectionToolbar` have already gone that way.
+Whatever an entry taught while it was being built goes to
+[decisions.md](decisions.md) rather than leaving with it. Anything in the
+backlog at the bottom is unvetted and has to pass the saturation check
+before it moves up.
 
 ## ListDetailMorph
 

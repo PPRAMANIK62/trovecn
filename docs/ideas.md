@@ -141,6 +141,9 @@ in [signature components](signature-components.md).
 - `NotificationStack` — a persistent notification centre whose items collapse
   into a pile with uniform peeking edges, pull open against resistance, and
   restack in two beats after a card is thrown off.
+- `SelectionToolbar` anchors a formatting toolbar to the line the drag ended
+  on rather than the centre of the paragraph, and flips it below that line
+  when the line above is selected too.
 
 ## Planned domain collections
 

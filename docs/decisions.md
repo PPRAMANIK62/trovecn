@@ -291,3 +291,110 @@ so the stage never changes size. The reserve is measured, not guessed, and it is
 why `basic` caps its list rather than growing without limit. `ComponentPreview`
 cannot help here. Its stage is a bare flex container by design, for reasons
 recorded in its own header.
+
+## A selection's anchor is a line, not a box
+
+`SelectionToolbar` anchors to `range.getClientRects()`, picking the rect that
+holds the selection's focus point, rather than to `getBoundingClientRect()`.
+
+The bounding box of a selection that wraps is as wide as the column. One
+measured case: rects at x=297 and x=49, bounding box x=49 w=545 centring at
+321, focus point at 251. Centring on the box puts the toolbar seventy pixels
+from where the drag ended, on a line the user was not looking at.
+
+floating-ui's `inline()` middleware exists for exactly this and is unreachable:
+Base UI re-exports it but `Popover.Positioner` has no `middleware` prop. That
+turned out to be luck rather than a limitation. `inline()` would have picked a
+rect; the focus point picks _the_ rect, the one the gesture ended on.
+
+The rule needed a second half that only showed up once it ran. Anchoring above
+the focus line covers the line above it, and on a downward multi-line selection
+that line is selected. Measured: toolbar bottom at y=154 with the focus line
+starting at y=162, sitting squarely on selected text. The toolbar now flips
+below whenever its focus line is not the topmost one, so it never hides what it
+is about to format. A single-line selection keeps the conventional side above.
+
+## Focusing an input destroys a selection, it does not grey it out
+
+The `SelectionToolbar` entry in [signature components](signature-components.md)
+budgeted for "keeping the document selection alive while the toolbar takes
+focus", on the assumption that a blurred selection merely stops being painted.
+
+It stops existing. Focus the URL field and Chrome collapses the document
+selection: `getSelection().toString()` returns `""` and `isCollapsed` is true.
+So there is no keeping it alive. The range is cloned when the toolbar opens,
+restored before any action runs, and repainted in the meantime with
+`CSS.highlights` plus a `::highlight()` rule, which paints independently of
+focus and needs no per-rect overlay elements.
+
+A toolbar _button_ taking focus is a different matter and does not collapse
+anything, but it still moves the caret, so controls keep the usual
+`preventDefault` on `mousedown`. Only editable controls are the problem.
+
+Restoring the range is half the job, and the missing half stayed hidden through
+a whole round of testing because the selection _looked_ right. Commands run
+against the focused editable, and focus is on `<body>` after any trip through
+the URL field. Escape out of link mode, press Bold, and the markup does not
+change at all. `restoreSelection` now focuses the range's editing host too,
+walking up to the element that actually carries the attribute, since
+`isContentEditable` is true for every descendant and a `<b>` is not focusable.
+
+## Base UI dismisses a popover opened during a gesture
+
+`SelectionToolbar` opens on `pointerup`, and opening synchronously there never
+worked: `onOpenChange(false)` fired immediately after every open, with no event
+attached. The popup goes on screen before the `click` that follows `pointerup`,
+and Base UI's outside-press dismissal reads that click as a press outside it.
+
+Deferring the open by one task is the fix, and it costs a frame nobody can see.
+
+Escape has the mirror-image problem. Link mode should reverse one step rather
+than dismiss, and that keydown cannot be caught on the popup, because Base UI's
+own escape handling closes the popover before a bubbled React handler runs.
+`details.reason === "escape-key"` in `onOpenChange` is the only interception
+point left. Both of these are worth knowing before wiring any Base UI popover
+to something other than a trigger press.
+
+## `new DOMRect()` at module scope breaks the route
+
+A `"use client"` file is still evaluated on the server, and `DOMRect` is not
+defined in Node, so a module-scope `new DOMRect(0, 0, 0, 0)` sentinel 500s the
+page. The failure is easy to miss in dev, because a client-side render of the
+route keeps working from cache while `curl` returns a 500.
+
+`SelectionToolbar` uses a plain object literal cast to `DOMRect` instead. Base
+UI only ever calls `getBoundingClientRect` on a virtual anchor, so the shape is
+all it needs.
+
+## The selection toolbar's link morph, removed
+
+`SelectionToolbar` shipped its link mode as a morph: the container animated its
+own width on `layout="size"` while the format controls and the URL field
+crossfaded through a 2px blur, staggered by a `CONTENT_LEAD` so the text never
+arrived before its container had made room. It read well described and poorly
+in use, and it is gone.
+
+Three reasons, in the order they matter.
+
+The frequency tier was wrong. This toolbar appears on every text selection,
+which `design-system.md` puts in the band where "a hover animation a reviewer
+notices is usually too much". The morph was built as a signature detail on the
+grounds that it is seen once per link, but it lives inside the chrome of a
+surface seen constantly, and the two could not be separated by the user.
+
+Nothing was watching it. A toolbar mid-morph is 100px of container edge in the
+periphery; the eye is on the words being linked, which is why the component
+goes to the trouble of repainting the selection with `CSS.highlights` in the
+first place. Motion spent where nobody is looking is motion that only shows up
+as latency.
+
+It also did not do what its own comments claimed. `contentTransition(false)`
+was never called, because both branches passed `true`. The outgoing controls
+inherited the enter spring plus the 70ms lead and left late and bouncy, the
+exact artefact the constant's doc comment said it existed to prevent. That is
+the second time a `SelectionToolbar` behaviour survived review because the
+prose was more convincing than the frames.
+
+Link mode is now a plain conditional. The container resizes with its content in
+one frame. What remains is the popover's own fade-and-travel, which is the
+house recipe and is justified by a surface appearing where there was none.
