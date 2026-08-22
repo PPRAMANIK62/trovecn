@@ -227,7 +227,7 @@ export function useProximityHover<T extends HTMLElement>(
       setIsMeasured(false);
       scheduleMeasurement(measurementAttempts);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [registerTick]);
 
   const handleMouseMove = useCallback(

@@ -169,7 +169,7 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>((props, ref) => {
   // keeps a stable identity across re-renders where the open values haven't
   // actually changed.
   const openValuesKey = openValuesList.join(",");
-  const openValues = useMemo(() => new Set(openValuesList), [openValuesKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  const openValues = useMemo(() => new Set(openValuesList), [openValuesKey]); // oxlint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     measureItems();

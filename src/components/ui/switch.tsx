@@ -66,7 +66,7 @@ function Switch({
     }
     const controls = animate(motionX, thumbX, spring.moderate.enter);
     return () => controls.stop();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [thumbX]);
 
   return (

@@ -12,7 +12,7 @@ export default function CheckboxBasicExample() {
   return (
     <div className="flex flex-col gap-3">
       {items.map((item) => (
-        // eslint-disable-next-line jsx-a11y/label-has-associated-control -- see Checkbox's own note in single.tsx
+        // oxlint-disable-next-line jsx-a11y/label-has-associated-control -- see Checkbox's own note in single.tsx
         <label key={item} className="flex items-center gap-2.5">
           <Checkbox
             checked={checkedItems[item] ?? false}

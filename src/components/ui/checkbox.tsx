@@ -202,7 +202,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
       return indices;
       // namesTick invalidates the memo when the (ref-backed) names map
       // changes shape, since the map itself isn't a stable dependency.
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+      // oxlint-disable-next-line react-hooks/exhaustive-deps
     }, [value, namesTick]);
 
     const { blocks, change } = useMergeSplit(checkedIndices, itemRects, activeIndex);
@@ -361,7 +361,7 @@ const CheckboxGroupItem = forwardRef<HTMLLabelElement, CheckboxGroupItemProps>(
     }, [index, ctx, name]);
 
     return (
-      // eslint-disable-next-line jsx-a11y/label-has-associated-control -- Checkbox renders a real hidden <input> beside its visual span, so wrapping it in <label> does associate a control; the rule can't see through the component boundary to confirm it.
+      // oxlint-disable-next-line jsx-a11y/label-has-associated-control -- Checkbox renders a real hidden <input> beside its visual span, so wrapping it in <label> does associate a control; the rule can't see through the component boundary to confirm it.
       <label
         ref={(node: HTMLLabelElement | null) => {
           (internalRef as React.MutableRefObject<HTMLLabelElement | null>).current = node;

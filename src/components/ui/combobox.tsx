@@ -284,7 +284,7 @@ function useComboboxItemRegistration(ref: React.RefObject<HTMLElement | null>, i
     if (index === undefined || !ctx) return;
     ctx.registerItem(index, ref.current);
     return () => ctx.registerItem(index, null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [index, ctx]);
 }
 

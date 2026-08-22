@@ -82,7 +82,7 @@ function Slider({
     });
     return () => controls.forEach((control) => control?.stop());
     // motionValues are stable refs; re-run only when the actual values/range change.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [values.join(","), min, max, dragging, reduceMotion]);
 
   const leftPercent0 = useTransform(motion0, (position) => `${position}%`);

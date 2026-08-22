@@ -225,7 +225,7 @@ export function useMergeSplit(
     // checkedKey/itemRects/originIndex are the real dependencies (checkedIndices is
     // content-compared via checkedKey since a fresh array reference is
     // expected on every render).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [checkedKey, itemRects, originIndex]);
 
   // Commit the new runs as "previous" only after render, never while

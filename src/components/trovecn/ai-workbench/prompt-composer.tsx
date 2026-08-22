@@ -267,7 +267,7 @@ function PromptComposer({
                 style={{ width: filePreviewSize, height: filePreviewSize }}
               >
                 {file.kind === "image" && file.previewUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
+                  // oxlint-disable-next-line next/no-img-element
                   <img src={file.previewUrl} alt={file.name} className="size-full object-cover" />
                 ) : (
                   <div className="flex size-full flex-col items-center justify-center gap-1 px-1.5 text-center">

@@ -113,7 +113,7 @@ function NavigationMenuItem({
     if (_index === undefined || !ctx) return;
     ctx.registerItem(_index, ref.current);
     return () => ctx.registerItem(_index, null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [_index, ctx]);
 
   return (
