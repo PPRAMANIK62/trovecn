@@ -23,6 +23,7 @@ import { planChecklist } from "../../registry/trovecn/plan-checklist/meta";
 import { popover } from "../../registry/trovecn/popover/meta";
 import { promptComposer } from "../../registry/trovecn/prompt-composer/meta";
 import { scrubField } from "../../registry/trovecn/scrub-field/meta";
+import { selectionToolbar } from "../../registry/trovecn/selection-toolbar/meta";
 import { slider } from "../../registry/trovecn/slider/meta";
 import { switch as switchItem } from "../../registry/trovecn/switch/meta";
 import { tabs } from "../../registry/trovecn/tabs/meta";
@@ -50,6 +51,7 @@ export const registry: RegistryItem[] = [
   popover,
   promptComposer,
   scrubField,
+  selectionToolbar,
   slider,
   switchItem,
   tabs,
