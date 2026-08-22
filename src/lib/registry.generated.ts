@@ -18,6 +18,7 @@ import { drawer } from "../../registry/trovecn/drawer/meta";
 import { elasticSlider } from "../../registry/trovecn/elastic-slider/meta";
 import { menu } from "../../registry/trovecn/menu/meta";
 import { navigationMenu } from "../../registry/trovecn/navigation-menu/meta";
+import { notificationStack } from "../../registry/trovecn/notification-stack/meta";
 import { planChecklist } from "../../registry/trovecn/plan-checklist/meta";
 import { popover } from "../../registry/trovecn/popover/meta";
 import { promptComposer } from "../../registry/trovecn/prompt-composer/meta";
@@ -44,6 +45,7 @@ export const registry: RegistryItem[] = [
   elasticSlider,
   menu,
   navigationMenu,
+  notificationStack,
   planChecklist,
   popover,
   promptComposer,

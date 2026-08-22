@@ -13,7 +13,6 @@ export const elasticSlider: RegistryItem = {
   dependencies: ["motion", "@base-ui/react"],
   registryDependencies: ["utils", "springs"],
   file: "src/components/trovecn/inputs/elastic-slider.tsx",
-  isNew: true,
   examples: [
     {
       title: "Basic",

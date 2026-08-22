@@ -14,7 +14,6 @@ export const scrubField: RegistryItem = {
   dependencies: ["@base-ui/react", "lucide-react"],
   registryDependencies: ["utils"],
   file: "src/components/trovecn/inputs/scrub-field.tsx",
-  isNew: true,
   examples: [
     {
       title: "Basic",
