@@ -120,9 +120,9 @@ const PULL_TO_COMMIT = 54;
  *
  * Open, the cards below travel a full card height and the arrival reads on that
  * alone. Collapsed, it is a text swap in place plus `PEEK` of growth, which is
- * sub-perceptual and used to register as a blink. So the collapsed case gets a
- * bigger gesture rather than a longer one. Further to fall, deeper to compress,
- * a real overshoot on the rungs.
+ * sub-perceptual and registers as a blink. So the collapsed case gets a bigger
+ * gesture rather than a longer one. Further to fall, deeper to compress, a real
+ * overshoot on the rungs.
  */
 const ARRIVE_DROP_OPEN = 10;
 const ARRIVE_DROP_PILE = 22;
@@ -144,8 +144,8 @@ const ARRIVE_IMPACT = 0.11;
  *  overshoot is the demotion. Without it the front card slides its 12px and
  *  nothing says it just became the second one. */
 const ARRIVE_SETTLE = { type: "spring", duration: 0.26, bounce: 0.32 } as const;
-/** A label waits for its container to make room. `docs/design-system.md` lists
- *  the reverse under Avoid, and the restack was doing it. */
+/** Restacking content waits for its container to make room. The reverse is
+ *  listed under Avoid in `docs/design-system.md`. */
 const CONTENT_LEAD = 0.08;
 /** Landing squash. Compresses *into* the contact and rebounds out of it rather
  *  than snapping to compressed and springing back. Something is falling onto
@@ -161,18 +161,17 @@ const LAND: Transition = {
 const SQUASH_OPEN = 0.975;
 const SQUASH_PILE = 0.955;
 /** A throw leaves at the speed it was released at, so it takes a velocity
- *  rather than a duration. The card used to go invisible at 180ms while the
- *  list waited until 400ms to notice, so this is shorter and the fade riding it
- *  out is longer. */
+ *  rather than a duration. `THROW_FADE` is tuned close to it, so the card does
+ *  not go invisible long before the list has finished noticing it left. */
 const THROW = { type: "spring", bounce: 0, duration: 0.32 } as const;
 const THROW_FADE = 0.26;
 /**
  * A card leaving under its own steam rather than under a thumb.
  *
- * `spring.quick.exit` used to do this at 100ms, the icon-crossfade tier. Four
- * sizes too small for a whole surface, and the reason a dismissal read as a pop
- * rather than as something leaving. Still quicker than the arrival, which is
- * the asymmetry the tiers encode.
+ * Not `spring.quick.exit` at 100ms, the icon-crossfade tier: four sizes too
+ * small for a whole surface, and a dismissal on it reads as a pop rather than
+ * as something leaving. Still quicker than the arrival, which is the asymmetry
+ * the tiers encode.
  */
 const DEPART = { duration: 0.22, ease: easeOutStrong } as const;
 /**
@@ -363,7 +362,7 @@ function StackCard({
   const departLead = expanded ? DEPART_LEAD_OPEN : DEPART_LEAD_PILE;
   const restackLead = expanded ? RESTACK_LEAD_OPEN : RESTACK_LEAD_PILE;
   // An arrival's rungs wait for contact. Same curve, offset in time, which
-  // reads as cause and effect rather than the mixed curves this used to run.
+  // reads as cause and effect. Mixing curves here reads as one blur of movement.
   const stagger = arriving
     ? ARRIVE_IMPACT
     : settle === "restacking"

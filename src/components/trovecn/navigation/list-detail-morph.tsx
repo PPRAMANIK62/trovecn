@@ -16,6 +16,9 @@
  * cannot do otherwise; Motion's projection can, which is the whole reason this
  * exists as a component instead of a CSS recipe.
  *
+ * Every value is documented at its definition below, with the measurements
+ * behind it. This header covers what no single constant owns.
+ *
  * How it is built, and why each piece is the way it is:
  *
  * - The list never unmounts. The detail is an overlay over the same container
@@ -29,11 +32,9 @@
  *   shell's projection scale reaches the content and stretches it: a circular
  *   avatar renders as a 2.5:1 ellipse partway through. `layout` gives the child
  *   its own projection, which cancels the parent's.
- * - The detail's body waits the shell's whole travel, not part of it. It is
- *   laid out at its final size throughout, so a shell still growing clips it
- *   and the cut falls mid-glyph. Text arriving before its container has made
- *   room is in the Avoid column of the house recipes, and here it is not a
- *   matter of taste: it is a visible slice through a word. See `CONTENT_LEAD`.
+ * - The detail's body arrives late rather than early. It is laid out at its
+ *   final size throughout, so a shell still growing would slice it mid-glyph.
+ *   See `CONTENT_LEAD`.
  *
  * The list stays mounted but does not stay visible. The rows fade out the
  * moment something opens, because while the shell is still travelling its edge
@@ -46,27 +47,20 @@
  * before the shell returns to row size. Nothing else changes: the rows are
  * still mounted, still measured, still the target the return morph flies to.
  *
- * Every row but the one that opened. That exclusion is the whole reason this is
- * a fade per row instead of one fade on the list, which is what it was first
- * and which is subtly wrong in a way nothing warns about. Motion crossfades the
- * `layoutId` pair, holding the row's own content at full opacity through the
- * first half of the morph and clearing it at 95% of it, and the detail's body
- * is timed to arrive as that clears. Dimming the whole list multiplies the
- * opening row down to nothing in the first 50ms, which erases the near side of
- * that handover: the shell then spends most of its travel as an empty card
- * inflating, which is the generic version of this transition and the thing the
- * component exists to beat. The rows around it were the measured problem. The
- * one growing never was.
+ * Every row but the one that opened. Dimming the whole list instead multiplies
+ * the opening row down to nothing in the first 50ms, which erases the near side
+ * of Motion's crossfade and leaves the shell spending most of its travel as an
+ * empty card inflating: the generic version of this transition, and the thing
+ * the component exists to beat. `CONTENT_LEAD` carries the handover timings.
+ * The rows around it were the measured problem. The one growing never was.
  *
  * The gesture. Drag the open detail down and it tracks your finger one to one,
  * shrinking as it goes so it reads as receding toward the row rather than
- * sliding off a screen edge. Release past `DISMISS_TRAVEL`, or flick faster
- * than `DISMISS_VELOCITY` from anywhere, and it commits: the close runs from
- * wherever your finger left it, because Motion snapshots the shell's rendered
- * position and that already carries the drag transform. Release short of both
- * and it springs back open under its own release velocity. Dragging *up* has
- * nowhere to go, so it gets the house saturating rubber band instead of a hard
- * stop, the same curve `elastic-slider` and `notification-stack` use.
+ * sliding off a screen edge. On commit the close runs from wherever your finger
+ * left it, because Motion snapshots the shell's rendered position and that
+ * already carries the drag transform. Dragging *up* has nowhere to go, so it
+ * gets the house saturating rubber band instead of a hard stop, the same curve
+ * `elastic-slider` and `notification-stack` use.
  *
  * Scroll arbitration, which is the part that makes or breaks a gesture like
  * this. The detail's body scrolls, so a downward drag is almost always a
@@ -78,13 +72,6 @@
  * per press and never revisited. `ListDetailMorph.Handle` is the escape hatch:
  * a press there engages immediately whatever the scroll position, which is the
  * only way to dismiss from halfway down a long detail.
- *
- * The release velocity is measured across `VELOCITY_WINDOW`, not from the last
- * `pointermove` delta. Two moves are about 4ms apart on a 240Hz screen, so a
- * single delta turns three pixels of lift-off jitter into 750px/s and throws
- * the detail away on a gesture that was a tap. A window also lets a held drag
- * decay to nothing, so pulling halfway, stopping to read, and letting go does
- * not commit on a number taken before the pause. See `VELOCITY_STALE`.
  *
  * Bespoke constants, under the gesture-and-physics exemption in `@/lib/springs`.
  * A drag that tracks a pointer one to one and a release that carries velocity
@@ -104,16 +91,12 @@
  *    `border-width` is not in Motion's correction table
  *    (`motion-dom/.../scale-correction.mjs` registers only the radii and
  *    `box-shadow`), so a real 1px border thickens non-uniformly as the shell
- *    grows. `RING` below is exactly five parsed tokens, which is the most
- *    `correctBoxShadow` accepts before it gives up and returns the value
- *    untouched. It also costs the shell a pixel of padding: an inset shadow
- *    paints under any descendant's background, so an opaque child at the edge
- *    covers the hairline. See `RING_INSET`.
+ *    grows. See `RING` and `RING_INSET`.
  * 3. The shell therefore cannot also carry `shadow-panel` or `shadow-card`.
  *    Those are three-shadow recipes, and adding one puts the parsed value over
- *    that five-token limit, which would silently drop the ring correction too.
- *    Separation comes from `--card` against `--background` instead, which is
- *    the house mechanism for it.
+ *    `correctBoxShadow`'s five-token limit, which would silently drop the ring
+ *    correction too. Separation comes from `--card` against `--background`
+ *    instead, which is the house mechanism for it.
  * 4. The scroll fades are built from `black` rather than a token. A mask reads
  *    its gradient as an alpha channel, not as a colour, and it has to stay
  *    fully opaque in both themes, so a themed value would be wrong here rather
@@ -151,13 +134,9 @@
  * rather than the caller's.
  *
  * The root reserves a height while the detail is open. The overlay is
- * positioned, so it contributes nothing to flow, and the root is otherwise
- * only as tall as its list. Open the detail over a list that has since emptied
- * (a filter clearing, rows still loading) and the root falls to zero with the
- * visible detail inside it. Measured: an open detail over an empty list
- * rendered as a blank gap. So the list's last non-zero height is held as a
- * floor for as long as something is open, backed by `MIN_VIEWPORT` for the case
- * where there was never a row to measure. Callers can still size the root
+ * positioned, so it contributes nothing to flow, and a list that empties
+ * underneath an open detail would otherwise collapse the root to zero with the
+ * visible detail inside it. See `MIN_VIEWPORT`. Callers can still size the root
  * themselves and usually should; this is the floor under them, not a policy.
  *
  * The return trip brings its row back into view first. The list scrolls
